@@ -6,14 +6,14 @@ import { motion } from 'framer-motion'
 type GameScreen = 'title' | 'main' | 'portfolio'
 
 interface MainMenuProps {
-  onNavigate: (screen: GameScreen) => void
+  onNavigate: (screen: GameScreen, section?: string) => void
   onBack: () => void
 }
 
 const menuItems = [
   { id: 'portfolio', label: 'PORTFOLIO', description: 'Ver mi trabajo y proyectos' },
-  { id: 'online', label: 'CONTACTO', description: 'Conectar conmigo' },
-  { id: 'settings', label: 'SOBRE MÍ', description: 'Conocer mi historia' },
+  { id: 'about', label: 'SOBRE MÍ', description: 'Conocer mi trayectoria' },
+  { id: 'contact', label: 'CONTACTO', description: 'Conectar conmigo' },
   { id: 'exit', label: 'SALIR', description: 'Volver al inicio' },
 ]
 
@@ -22,8 +22,8 @@ export default function MainMenu({ onNavigate, onBack }: MainMenuProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
   const handleSelect = (id: string) => {
-    if (id === 'portfolio') {
-      onNavigate('portfolio')
+    if (id === 'portfolio' || id === 'about' || id === 'contact') {
+      onNavigate('portfolio', id)
     } else if (id === 'exit') {
       onBack()
     }

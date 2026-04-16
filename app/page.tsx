@@ -11,6 +11,7 @@ type GameScreen = 'title' | 'main' | 'portfolio'
 export default function Home() {
   const [currentScreen, setCurrentScreen] = useState<GameScreen>('title')
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [initialSection, setInitialSection] = useState<string | undefined>(undefined)
   const lastScrollTime = useRef(0)
 
   useEffect(() => {
@@ -45,9 +46,10 @@ export default function Home() {
     }
   }, [currentScreen, isTransitioning])
 
-  const handleNavigate = (screen: GameScreen) => {
+  const handleNavigate = (screen: GameScreen, section?: string) => {
     if (isTransitioning) return
     setIsTransitioning(true)
+    setInitialSection(section)
     setTimeout(() => {
       setCurrentScreen(screen)
       setIsTransitioning(false)
