@@ -3,265 +3,162 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 
-interface FormData {
-  name: string
-  email: string
-  subject: string
-  message: string
-}
-
 export default function Contact() {
-  const [formData, setFormData] = useState<FormData>({
-    name: '',
+  const [formData, setFormData] = useState({
+    nombre: '',
     email: '',
-    subject: '',
-    message: '',
+    mensaje: '',
   })
-  const [submitted, setSubmitted] = useState(false)
+  const [enviado, setEnviado] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Simulate submission
-    console.log('Form submitted:', formData)
-    setSubmitted(true)
+    setEnviado(true)
     setTimeout(() => {
-      setSubmitted(false)
-      setFormData({ name: '', email: '', subject: '', message: '' })
+      setEnviado(false)
+      setFormData({ nombre: '', email: '', mensaje: '' })
     }, 3000)
   }
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const socialLinks = [
-    {
-      name: 'GitHub',
-      icon: '💻',
-      url: 'https://github.com/yeisonfajardo',
-      color: 'hover:text-gray-400',
-    },
-    {
-      name: 'LinkedIn',
-      icon: '💼',
-      url: 'https://linkedin.com/in/yeison-fajardo',
-      color: 'hover:text-blue-400',
-    },
-    {
-      name: 'Twitter',
-      icon: '🐦',
-      url: 'https://twitter.com/yeisonfajardo',
-      color: 'hover:text-blue-300',
-    },
-    {
-      name: 'Email',
-      icon: '📧',
-      url: 'mailto:andresfajardo1606@gmail.com',
-      color: 'hover:text-amber-400',
-    },
-  ]
-
   return (
-    <section className="relative py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
-      {/* Section Title */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="text-center mb-16"
-      >
-        <h2 className="text-5xl sm:text-6xl font-cinzel font-black text-amber-300 mb-4">
-          TELEGRAPH
-        </h2>
-        <div className="h-1 w-24 bg-gradient-to-r from-red-700 via-amber-500 to-red-700 mx-auto" />
-        <p className="text-amber-100/60 mt-4 text-lg">Send your message across the frontier</p>
-      </motion.div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* Contact Form */}
+    <div className="min-h-screen p-8">
+      <div className="max-w-3xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, x: -30 }}
-          whileInView={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="p-8 bg-gradient-to-br from-slate-900/60 via-slate-800/40 to-slate-900/60 border-2 border-amber-900/40 rounded-sm backdrop-blur">
-            <h3 className="text-2xl font-cinzel font-bold text-amber-300 mb-6">
-              Send A Telegraph
-            </h3>
+          <p className="text-[#bb0000] text-sm tracking-widest mb-4">
+            CONTACTO
+          </p>
+          
+          <h2 className="text-[#dcc09a] text-4xl font-medium mb-8">
+            Hablemos
+          </h2>
+        </motion.div>
 
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+          >
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Name Field */}
               <div>
-                <label className="block text-amber-300 font-cinzel font-bold text-sm mb-2">
-                  YOUR NAME
+                <label className="block text-[#7a7d77] text-sm mb-2">
+                  Nombre
                 </label>
-                <motion.input
-                  whileFocus={{ boxShadow: '0 0 10px rgba(254, 172, 1, 0.3)' }}
+                <input
                   type="text"
-                  name="name"
-                  value={formData.name}
+                  name="nombre"
+                  value={formData.nombre}
                   onChange={handleChange}
-                  placeholder="John Marston"
-                  className="w-full px-4 py-3 bg-slate-800/50 border-2 border-amber-900/40 text-amber-100 placeholder-amber-700/50 focus:border-amber-500 focus:outline-none font-cinzel transition-colors"
                   required
+                  className="w-full px-4 py-3 bg-[#28251c] border border-[#3a3529] text-[#dcc09a] focus:border-[#bb0000] focus:outline-none transition-colors"
                 />
               </div>
-
-              {/* Email Field */}
+              
               <div>
-                <label className="block text-amber-300 font-cinzel font-bold text-sm mb-2">
-                  EMAIL ADDRESS
+                <label className="block text-[#7a7d77] text-sm mb-2">
+                  Email
                 </label>
-                <motion.input
-                  whileFocus={{ boxShadow: '0 0 10px rgba(254, 172, 1, 0.3)' }}
+                <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="john@frontier.com"
-                  className="w-full px-4 py-3 bg-slate-800/50 border-2 border-amber-900/40 text-amber-100 placeholder-amber-700/50 focus:border-amber-500 focus:outline-none font-cinzel transition-colors"
                   required
+                  className="w-full px-4 py-3 bg-[#28251c] border border-[#3a3529] text-[#dcc09a] focus:border-[#bb0000] focus:outline-none transition-colors"
                 />
               </div>
-
-              {/* Subject Field */}
+              
               <div>
-                <label className="block text-amber-300 font-cinzel font-bold text-sm mb-2">
-                  SUBJECT
+                <label className="block text-[#7a7d77] text-sm mb-2">
+                  Mensaje
                 </label>
-                <motion.input
-                  whileFocus={{ boxShadow: '0 0 10px rgba(254, 172, 1, 0.3)' }}
-                  type="text"
-                  name="subject"
-                  value={formData.subject}
+                <textarea
+                  name="mensaje"
+                  value={formData.mensaje}
                   onChange={handleChange}
-                  placeholder="Job Opportunity"
-                  className="w-full px-4 py-3 bg-slate-800/50 border-2 border-amber-900/40 text-amber-100 placeholder-amber-700/50 focus:border-amber-500 focus:outline-none font-cinzel transition-colors"
                   required
-                />
-              </div>
-
-              {/* Message Field */}
-              <div>
-                <label className="block text-amber-300 font-cinzel font-bold text-sm mb-2">
-                  MESSAGE
-                </label>
-                <motion.textarea
-                  whileFocus={{ boxShadow: '0 0 10px rgba(254, 172, 1, 0.3)' }}
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  placeholder="Tell me about the opportunity..."
                   rows={5}
-                  className="w-full px-4 py-3 bg-slate-800/50 border-2 border-amber-900/40 text-amber-100 placeholder-amber-700/50 focus:border-amber-500 focus:outline-none font-cinzel transition-colors resize-none"
-                  required
+                  className="w-full px-4 py-3 bg-[#28251c] border border-[#3a3529] text-[#dcc09a] focus:border-[#bb0000] focus:outline-none transition-colors resize-none"
                 />
               </div>
-
-              {/* Submit Button */}
+              
               <motion.button
-                whileHover={{
-                  scale: 1.02,
-                  boxShadow: '0 0 20px rgba(189, 8, 26, 0.6)',
-                }}
-                whileTap={{ scale: 0.98 }}
                 type="submit"
-                className="w-full px-6 py-3 bg-red-700 hover:bg-red-800 text-amber-100 font-cinzel font-bold tracking-widest border-2 border-red-600 transition-all duration-300"
+                className="w-full px-6 py-3 bg-[#bb0000] text-[#dcc09a] text-sm tracking-wider hover:bg-[#8a0000] transition-colors"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
-                {submitted ? 'TELEGRAPH SENT! ✓' : 'SEND TELEGRAPH'}
+                {enviado ? 'MENSAJE ENVIADO' : 'ENVIAR MENSAJE'}
               </motion.button>
             </form>
-          </div>
-        </motion.div>
+          </motion.div>
 
-        {/* Contact Info & Social Links */}
-        <motion.div
-          initial={{ opacity: 0, x: 30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6 }}
-          className="flex flex-col gap-8"
-        >
-          {/* Contact Details */}
-          <div className="p-8 bg-gradient-to-br from-amber-900/30 via-slate-900/30 to-slate-900/30 border-2 border-amber-700/50 rounded-sm">
-            <h3 className="text-2xl font-cinzel font-bold text-amber-300 mb-6">
-              Direct Contact
-            </h3>
-
-            <div className="space-y-6">
-              {/* Email */}
-              <motion.div
-                whileHover={{ x: 5 }}
-                className="flex items-center gap-4"
-              >
-                <div className="w-12 h-12 rounded-full bg-red-900/40 border-2 border-amber-600 flex items-center justify-center text-xl flex-shrink-0">
-                  📧
-                </div>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="space-y-8"
+          >
+            <div>
+              <h3 className="text-[#dcc09a] text-lg mb-4">Informacion de Contacto</h3>
+              
+              <div className="space-y-4">
                 <div>
-                  <p className="text-amber-400 font-cinzel font-bold text-sm">EMAIL</p>
-                  <a
+                  <p className="text-[#7a7d77] text-sm">Email</p>
+                  <a 
                     href="mailto:andresfajardo1606@gmail.com"
-                    className="text-amber-100 hover:text-amber-300 transition-colors break-all"
+                    className="text-[#dcc09a] hover:text-[#bb0000] transition-colors"
                   >
                     andresfajardo1606@gmail.com
                   </a>
                 </div>
-              </motion.div>
-
-              {/* Location */}
-              <motion.div whileHover={{ x: 5 }} className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-red-900/40 border-2 border-amber-600 flex items-center justify-center text-xl flex-shrink-0">
-                  📍
-                </div>
+                
                 <div>
-                  <p className="text-amber-400 font-cinzel font-bold text-sm">LOCATION</p>
-                  <p className="text-amber-100">Buenos Aires, Argentina</p>
+                  <p className="text-[#7a7d77] text-sm">Ubicacion</p>
+                  <p className="text-[#dcc09a]">Buenos Aires, Argentina</p>
                 </div>
-              </motion.div>
-
-              {/* Availability */}
-              <motion.div whileHover={{ x: 5 }} className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-green-900/40 border-2 border-green-600 flex items-center justify-center text-xl flex-shrink-0">
-                  ✓
-                </div>
+                
                 <div>
-                  <p className="text-amber-400 font-cinzel font-bold text-sm">STATUS</p>
-                  <p className="text-amber-100">Available for Work</p>
+                  <p className="text-[#7a7d77] text-sm">Estado</p>
+                  <p className="text-[#bb0000]">Disponible para trabajar</p>
                 </div>
-              </motion.div>
+              </div>
             </div>
-          </div>
 
-          {/* Social Links */}
-          <div className="p-8 bg-gradient-to-br from-slate-900/60 via-slate-800/40 to-slate-900/60 border-2 border-amber-900/40 rounded-sm">
-            <h3 className="text-2xl font-cinzel font-bold text-amber-300 mb-6">
-              Find Me Online
-            </h3>
-
-            <div className="grid grid-cols-2 gap-4">
-              {socialLinks.map((link) => (
-                <motion.a
-                  key={link.name}
-                  href={link.url}
+            <div>
+              <h3 className="text-[#dcc09a] text-lg mb-4">Redes</h3>
+              
+              <div className="flex gap-4">
+                <a
+                  href="https://github.com/Yeisonfjrd"
                   target="_blank"
                   rel="noopener noreferrer"
-                  whileHover={{ scale: 1.05, y: -5 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="p-4 bg-slate-800/50 border-2 border-amber-900/40 text-amber-300 font-cinzel font-bold text-center hover:border-amber-600/60 transition-all duration-300 flex flex-col items-center gap-2"
+                  className="px-4 py-2 border border-[#3a3529] text-[#7a7d77] text-sm hover:text-[#dcc09a] hover:bg-[#28251c] transition-colors"
                 >
-                  <span className="text-3xl">{link.icon}</span>
-                  <span className="text-xs">{link.name}</span>
-                </motion.a>
-              ))}
+                  GitHub
+                </a>
+                <a
+                  href="https://linkedin.com/in/yeison-fajardo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 border border-[#3a3529] text-[#7a7d77] text-sm hover:text-[#dcc09a] hover:bg-[#28251c] transition-colors"
+                >
+                  LinkedIn
+                </a>
+              </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
-
-      {/* Section Divider */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-700/50 to-transparent" />
-    </section>
+    </div>
   )
 }

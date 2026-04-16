@@ -4,53 +4,39 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* RDR2 Official Hex Colors → HSL Conversion */
-  /* #bd081a (blood red) → 358, 95%, 37% */
-  /* #feac01 (aged gold) → 38, 100%, 50% */
-  /* #b90303 (dark red) → 0, 100%, 36% */
-  /* #020002 (pure black) → 240, 10%, 1% */
-  /* #fffeff (broken white) → 40, 100%, 100% */
+  --rdr-blood: #bb0000;
+  --rdr-cream: #dcc09a;
+  --rdr-brown-dark: #1e1b14;
+  --rdr-brown-mid: #28251c;
+  --rdr-brown-light: #3a3529;
+  --rdr-olive: #353631;
+  --rdr-gray: #7a7d77;
   
-  --background: 240 10% 1%;
-  --foreground: 40 100% 100%;
-  --card: 0 0% 12%;
-  --card-foreground: 40 100% 100%;
-  --popover: 0 0% 12%;
-  --popover-foreground: 40 100% 100%;
-  --primary: 358 95% 37%;
-  --primary-foreground: 40 100% 100%;
-  --secondary: 38 100% 50%;
-  --secondary-foreground: 0 0% 5%;
-  --muted: 0 0% 30%;
-  --muted-foreground: 0 0% 65%;
-  --accent: 0 100% 36%;
-  --accent-foreground: 40 100% 100%;
-  --destructive: 358 95% 37%;
-  --destructive-foreground: 40 100% 100%;
-  --border: 0 0% 25%;
-  --input: 0 0% 15%;
-  --ring: 38 100% 50%;
-  --chart-1: 358 95% 37%;
-  --chart-2: 38 100% 50%;
-  --chart-3: 0 100% 36%;
-  --chart-4: 18 45% 48%;
-  --chart-5: 30 65% 55%;
+  --background: 43 22% 12%;
+  --foreground: 38 43% 73%;
+  --card: 43 18% 15%;
+  --card-foreground: 38 43% 73%;
+  --popover: 43 18% 15%;
+  --popover-foreground: 38 43% 73%;
+  --primary: 0 100% 37%;
+  --primary-foreground: 38 43% 90%;
+  --secondary: 38 43% 73%;
+  --secondary-foreground: 43 22% 12%;
+  --muted: 43 15% 25%;
+  --muted-foreground: 38 20% 55%;
+  --accent: 0 100% 37%;
+  --accent-foreground: 38 43% 90%;
+  --destructive: 0 100% 37%;
+  --destructive-foreground: 38 43% 90%;
+  --border: 43 20% 22%;
+  --input: 43 18% 18%;
+  --ring: 0 100% 37%;
   --radius: 0px;
-  --sidebar: 0 0% 12%;
-  --sidebar-foreground: 40 100% 100%;
-  --sidebar-primary: 358 95% 37%;
-  --sidebar-primary-foreground: 40 100% 100%;
-  --sidebar-accent: 38 100% 50%;
-  --sidebar-accent-foreground: 0 0% 5%;
-  --sidebar-border: 0 0% 25%;
-  --sidebar-ring: 38 100% 50%;
 }
 
 @theme inline {
-  --font-sans: 'Caveat', cursive;
-  --font-mono: 'Cinzel', serif;
-  --font-caveat: 'Caveat', cursive;
-  --font-cinzel: 'Cinzel', serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -70,229 +56,50 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
   html {
     scroll-behavior: smooth;
+    background: #1e1b14;
   }
   body {
-    @apply bg-background text-foreground;
-    position: relative;
-    overflow-x: hidden;
-    background: linear-gradient(135deg, #0a0808 0%, #1a1416 50%, #0a0808 100%);
-  }
-
-  /* RDR2 Atmospheric effects: grime, dust, vignette */
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: 
-      /* Grainy noise texture */
-      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" seed="2" /></filter><rect width="100" height="100" fill="rgba(255,255,255,0.02)" filter="url(%23noise)" /></svg>'),
-      /* Vignette effect */
-      radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
-    background-size: 100px 100px, cover;
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  /* Dust particles overlay */
-  body::after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: 
-      radial-gradient(1px 1px at 20px 30px, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0)),
-      radial-gradient(2px 2px at 60px 70px, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)),
-      radial-gradient(1px 1px at 50px 50px, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)),
-      radial-gradient(1px 1px at 130px 80px, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0)),
-      radial-gradient(2px 2px at 90px 10px, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0)),
-      radial-gradient(1px 1px at 10px 90px, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
-    background-repeat: repeat;
-    background-size: 200px 200px;
-    pointer-events: none;
-    z-index: 0.5;
-    animation: dust-drift 20s linear infinite;
-  }
-
-  @keyframes dust-drift {
-    0% { transform: translateX(0) translateY(0); }
-    100% { transform: translateX(100px) translateY(50px); }
-  }
-
-  main {
-    position: relative;
-    z-index: 2;
+    background: #1e1b14;
+    color: #dcc09a;
+    min-height: 100vh;
   }
 }
 
-@layer components {
-  /* Typography */
-  .text-journal {
-    @apply font-[family-name:var(--font-caveat)] text-lg tracking-wide;
+@layer utilities {
+  .text-rdr-blood {
+    color: #bb0000;
   }
-
-  .text-wanted {
-    @apply font-[family-name:var(--font-cinzel)] font-black tracking-widest;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+  .text-rdr-cream {
+    color: #dcc09a;
   }
-
-  /* Wanted Poster - Authentic RDR2 Style */
-  .wanted-poster {
-    @apply relative;
-    background: linear-gradient(135deg, #f5e6d3 0%, #e8d5c4 50%, #d9c5b3 100%);
-    border: 6px solid #8b6f47;
-    box-shadow: 
-      inset 0 1px 0 rgba(255, 255, 255, 0.5),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.3),
-      0 10px 30px rgba(0, 0, 0, 0.7),
-      0 0 0 3px #1a1416;
-    position: relative;
-    transform: perspective(1200px) rotateY(-2deg) rotateX(1deg);
+  .text-rdr-muted {
+    color: #7a7d77;
   }
-
-  .wanted-poster::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: 
-      repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0, 0, 0, 0.05) 2px, rgba(0, 0, 0, 0.05) 4px),
-      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.03) 2px, rgba(0, 0, 0, 0.03) 4px);
-    pointer-events: none;
+  .bg-rdr-dark {
+    background-color: #1e1b14;
   }
-
-  .wanted-poster::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at 20% 30%, rgba(139, 111, 71, 0.1), transparent 60%);
-    pointer-events: none;
+  .bg-rdr-card {
+    background-color: #28251c;
   }
-
-  /* Metal Pin Detail */
-  .metal-pin {
-    @apply absolute w-4 h-4 rounded-full;
-    background: radial-gradient(circle at 30% 30%, #d4af37, #8b7d28);
-    box-shadow: 
-      inset 0 1px 2px rgba(0, 0, 0, 0.8),
-      0 2px 4px rgba(0, 0, 0, 0.6);
+  .bg-rdr-light {
+    background-color: #3a3529;
   }
-
-  /* Worn Border Effect */
-  .worn-edge {
-    position: relative;
+  .border-rdr {
+    border-color: #3a3529;
   }
-
-  .worn-edge::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: 
-      radial-gradient(circle at 0% 0%, rgba(139, 69, 19, 0.3), transparent 50%),
-      radial-gradient(circle at 100% 100%, rgba(0, 0, 0, 0.2), transparent 50%);
-    pointer-events: none;
-  }
-
-  /* Glow Effects for RDR2 Style */
-  .glow-red {
-    text-shadow: 
-      0 0 10px rgba(189, 8, 26, 0.8),
-      0 0 20px rgba(189, 8, 26, 0.4),
-      0 0 30px rgba(189, 8, 26, 0.2);
-  }
-
-  .glow-gold {
-    text-shadow: 
-      0 0 10px rgba(254, 172, 1, 0.8),
-      0 0 20px rgba(254, 172, 1, 0.4),
-      0 0 30px rgba(254, 172, 1, 0.2);
-  }
-
-  /* Scanlines - CRT Effect */
-  .scanlines {
-    background-image: 
-      repeating-linear-gradient(
-        0deg,
-        rgba(0, 0, 0, 0.08) 0px,
-        rgba(0, 0, 0, 0.08) 1px,
-        transparent 1px,
-        transparent 2px
-      );
-  }
-
-  /* Cinematric Vignette */
-  .vignette {
-    position: relative;
-  }
-
-  .vignette::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
-    pointer-events: none;
-  }
-
-  /* Distressed Text */
-  .distressed {
-    position: relative;
-    font-weight: 900;
-    letter-spacing: 0.1em;
-  }
-
-  .distressed::before {
-    content: attr(data-text);
-    position: absolute;
-    left: 2px;
-    top: 2px;
-    z-index: -1;
-    opacity: 0.3;
-  }
-
-  /* Paper Texture */
-  .paper-texture {
-    background-image: 
-      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="paper"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5" result="noise" /><feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" /></filter><rect width="200" height="200" fill="rgba(0,0,0,0.02)" filter="url(%23paper)" /></svg>');
-  }
-
-  /* Bullet Holes / Worn Details */
-  .bullet-hole {
-    @apply w-3 h-3 rounded-full;
-    background: radial-gradient(circle at 30% 30%, #3a3a3a, #0a0a0a);
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.8), 0 1px 2px rgba(0, 0, 0, 0.5);
-  }
-
-  /* Sheriff Star */
-  .sheriff-star {
-    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  .border-rdr-blood {
+    border-color: #bb0000;
   }
 }
