@@ -57,10 +57,10 @@ const config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       fontFamily: {
-        sans: ['var(--font-geist-sans)'],
-        mono: ['var(--font-geist-mono)'],
-        caveat: ['var(--font-caveat)'],
-        cinzel: ['var(--font-cinzel)'],
+        sans: ['var(--font-caveat)'],
+        mono: ['var(--font-cinzel)'],
+        caveat: ['var(--font-caveat)', 'cursive'],
+        cinzel: ['var(--font-cinzel)', 'serif'],
       },
       animation: {
         'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',

@@ -105,9 +105,9 @@ export default function DeveloperConsole({ onClose }: DeveloperConsoleProps) {
             </p>
 
             <div className="space-y-2 mb-6 text-green-400/80">
-              <p>> Initializing portfolio system...</p>
-              <p>> Loading developer profile...</p>
-              <p>> Checking system resources...</p>
+              <p>{'>'}  Initializing portfolio system...</p>
+              <p>{'>'}  Loading developer profile...</p>
+              <p>{'>'}  Checking system resources...</p>
               <p className="text-green-500">{'>'} System ready. Type "help" for commands.</p>
             </div>
 
