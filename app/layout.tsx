@@ -33,8 +33,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${caveat.variable} ${cinzel.variable}`}>
-      <body className="font-sans antialiased bg-slate-950 text-slate-100">
+    <html lang="en" className={`${caveat.variable} ${cinzel.variable} bg-slate-950`}>
+      <body className="antialiased bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-amber-50 relative overflow-x-hidden">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

@@ -15,185 +15,221 @@ export default function Hero({ onEnter }: HeroProps) {
   }, [])
 
   const containerVariants = {
-    hidden: { opacity: 0 },
+    hidden: { opacity: 0, scale: 0.95 },
     visible: {
       opacity: 1,
+      scale: 1,
       transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.3,
+        duration: 0.8,
+        staggerChildren: 0.15,
       },
     },
   }
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 30 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.8, ease: 'easeOut' },
+      transition: { duration: 0.7, ease: 'easeOut' },
     },
   }
 
   return (
-    <div className="relative w-full h-screen flex items-center justify-center overflow-hidden pt-20">
-      {/* Wanted Poster Background */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1 }}
-        className="absolute inset-0 pointer-events-none"
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-amber-900/20 via-transparent to-slate-950" />
-      </motion.div>
+    <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-12">
+      {/* Background: Snowy Pine Forest with Mist (RDR2 aesthetic) */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-800 via-slate-900 to-slate-950" />
+        
+        {/* Atmospheric mist and fog */}
+        <motion.div
+          className="absolute inset-0"
+          animate={{ opacity: [0.4, 0.6, 0.4] }}
+          transition={{ duration: 8, repeat: Infinity }}
+        >
+          <div className="absolute top-0 inset-x-0 h-1/2 bg-gradient-to-b from-slate-700/40 via-transparent to-transparent" />
+        </motion.div>
 
-      {/* Main Content */}
+        {/* Pine trees silhouettes */}
+        <div className="absolute bottom-0 left-0 w-1/3 h-1/2 opacity-30">
+          <svg viewBox="0 0 200 400" className="w-full h-full fill-slate-950">
+            <polygon points="100,0 0,200 60,200 0,320 100,320" />
+            <polygon points="150,50 80,200 110,200 60,320 150,320" />
+          </svg>
+        </div>
+        <div className="absolute bottom-0 right-0 w-1/3 h-1/2 opacity-30 scale-x-[-1]">
+          <svg viewBox="0 0 200 400" className="w-full h-full fill-slate-950">
+            <polygon points="100,0 0,200 60,200 0,320 100,320" />
+            <polygon points="150,50 80,200 110,200 60,320 150,320" />
+          </svg>
+        </div>
+      </div>
+
+      {/* Main Content - Wanted Poster */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate={isLoaded ? 'visible' : 'hidden'}
-        className="relative z-10 text-center max-w-4xl px-4"
+        className="relative z-10 max-w-2xl mx-auto px-4"
       >
-        {/* "WANTED" Text */}
-        <motion.div variants={itemVariants} className="mb-8">
-          <motion.h1
-            className="text-7xl sm:text-8xl font-cinzel font-black tracking-widest text-amber-300 drop-shadow-2xl"
-            animate={{
-              textShadow: [
-                '0 0 10px rgba(253, 224, 71, 0.5)',
-                '0 0 20px rgba(253, 224, 71, 0.8)',
-                '0 0 10px rgba(253, 224, 71, 0.5)',
-              ],
-            }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            WANTED
-          </motion.h1>
-          <motion.div
-            className="h-1 w-32 bg-gradient-to-r from-red-700 via-amber-500 to-red-700 mx-auto mt-4"
-            animate={{ scaleX: [0.8, 1, 0.8] }}
-            transition={{ duration: 3, repeat: Infinity }}
-          />
-        </motion.div>
-
-        {/* Portrait Placeholder */}
+        {/* Outer shadow/perspective frame */}
         <motion.div
-          variants={itemVariants}
-          className="mb-8 flex justify-center"
+          className="p-8"
+          animate={{ y: [0, -8, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <div className="relative w-48 h-56 sm:w-64 sm:h-80">
-            <div className="absolute inset-0 border-4 border-amber-900 bg-gradient-to-br from-slate-700 via-slate-800 to-slate-900 flex items-center justify-center overflow-hidden">
-              {/* Placeholder Image with Film Effect */}
-              <div className="w-full h-full bg-gradient-to-br from-amber-900/40 via-slate-800 to-slate-950 flex items-center justify-center relative">
-                <motion.div
-                  animate={{ opacity: [0.3, 0.6, 0.3] }}
-                  transition={{ duration: 4, repeat: Infinity }}
-                  className="text-6xl"
+          {/* WANTED Poster - Paper texture */}
+          <div className="wanted-poster paper-texture p-0 relative">
+            {/* Metal pins at corners */}
+            <motion.div className="metal-pin -top-2 -left-2" />
+            <motion.div className="metal-pin -top-2 -right-2" />
+            <motion.div className="metal-pin -bottom-2 -left-2" />
+            <motion.div className="metal-pin -bottom-2 -right-2" />
+
+            <div className="p-8 sm:p-12">
+              {/* "WANTED" Distressed Title */}
+              <motion.div variants={itemVariants} className="mb-6">
+                <motion.h1
+                  className="text-6xl sm:text-7xl font-cinzel font-black tracking-widest text-center text-red-900 drop-shadow-lg glow-red relative"
+                  style={{
+                    textShadow: '2px 2px 0px rgba(0,0,0,0.3), 3px 3px 0px rgba(189, 8, 26, 0.5)',
+                  }}
+                  animate={{
+                    scale: [1, 1.02, 1],
+                  }}
+                  transition={{ duration: 3, repeat: Infinity }}
                 >
-                  📸
-                </motion.div>
-                {/* Film burn effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-400/10 to-transparent opacity-30" />
-              </div>
+                  WANTED
+                </motion.h1>
+                {/* Decorative line */}
+                <motion.div
+                  className="h-1 w-2/3 mx-auto mt-4 bg-gradient-to-r from-transparent via-red-900 to-transparent"
+                  animate={{ scaleX: [0.8, 1, 0.8] }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                />
+              </motion.div>
+
+              {/* Bounty Portrait */}
+              <motion.div variants={itemVariants} className="mb-8 flex justify-center">
+                <div className="relative w-48 h-64 sm:w-56 sm:h-72">
+                  {/* Sepia-toned photograph frame */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-900 via-yellow-800 to-amber-950 border-2 border-amber-700 shadow-inner">
+                    {/* Sepia photo effect */}
+                    <div className="w-full h-full bg-gradient-to-br from-amber-100/40 via-yellow-900/20 to-amber-900/40 flex items-center justify-center relative overflow-hidden">
+                      {/* Portrait placeholder with sepia color */}
+                      <motion.div
+                        animate={{ opacity: [0.5, 0.8, 0.5] }}
+                        transition={{ duration: 5, repeat: Infinity }}
+                        className="text-7xl sepia-[80%]"
+                      >
+                        🤠
+                      </motion.div>
+
+                      {/* Worn/scratched effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-400/5 to-transparent opacity-40" />
+                    </div>
+                  </div>
+
+                  {/* Torn edges effect */}
+                  <div className="absolute -top-1 -left-1 w-8 h-8 border-l-4 border-t-4 border-amber-900 opacity-40" />
+                  <div className="absolute -top-1 -right-1 w-8 h-8 border-r-4 border-t-4 border-amber-900 opacity-40" />
+                  <div className="absolute -bottom-1 -left-1 w-8 h-8 border-l-4 border-b-4 border-amber-900 opacity-40" />
+                  <div className="absolute -bottom-1 -right-1 w-8 h-8 border-r-4 border-b-4 border-amber-900 opacity-40" />
+
+                  {/* Bullet holes */}
+                  <motion.div className="bullet-hole absolute top-10 left-8 animate-pulse" />
+                  <motion.div className="bullet-hole absolute bottom-16 right-12 animate-pulse" />
+                </div>
+              </motion.div>
+
+              {/* Name - Bold serif uppercase */}
+              <motion.div variants={itemVariants} className="text-center mb-4">
+                <h2 className="text-3xl sm:text-4xl font-cinzel font-black text-amber-900 tracking-widest">
+                  YEISON FAJARDO
+                </h2>
+                <div className="h-0.5 w-1/2 mx-auto bg-gradient-to-r from-transparent via-amber-800 to-transparent mt-3" />
+              </motion.div>
+
+              {/* Tagline in cursive */}
+              <motion.div variants={itemVariants} className="mb-6 text-center">
+                <p className="text-lg sm:text-xl font-caveat text-amber-900 italic tracking-wide">
+                  &quot;Code Outlaw • Architecture Gunslinger&quot;
+                </p>
+              </motion.div>
+
+              {/* Details / Description */}
+              <motion.div variants={itemVariants} className="mb-6 space-y-2 text-center text-sm text-amber-950/80 font-caveat">
+                <p>Full Stack Developer | 3 Years in the Code Frontier</p>
+                <p>Known for: TypeScript Mastery, Scalable Web Architecture</p>
+                <p>Last Seen: Building Digital Empires</p>
+              </motion.div>
+
+              {/* REWARD box */}
+              <motion.div variants={itemVariants} className="mb-8 text-center">
+                <div className="inline-block border-3 border-red-900 px-6 py-3 bg-yellow-50/30 backdrop-blur-sm">
+                  <p className="font-cinzel font-bold text-red-900 tracking-widest">REWARD FOR CAPTURE</p>
+                  <p className="text-amber-900 text-xl font-cinzel mt-1">💼 HIRE ME 💼</p>
+                </div>
+              </motion.div>
+
+              {/* Action Buttons - RDR2 Style */}
+              <motion.div
+                variants={itemVariants}
+                className="flex flex-col sm:flex-row gap-4 justify-center"
+              >
+                <motion.button
+                  whileHover={{
+                    scale: 1.05,
+                    boxShadow: '0 0 20px rgba(189, 8, 26, 0.8)',
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    onEnter?.()
+                    document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })
+                  }}
+                  className="px-6 py-2 bg-red-900 hover:bg-red-950 text-yellow-50 font-cinzel font-bold tracking-widest border-3 border-red-700 transition-all duration-300 shadow-lg hover:shadow-red-900/50 text-sm sm:text-base"
+                >
+                  ENTER THE FRONTIER
+                </motion.button>
+
+                <motion.a
+                  href="#contact"
+                  whileHover={{
+                    scale: 1.05,
+                    boxShadow: '0 0 20px rgba(254, 172, 1, 0.6)',
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-6 py-2 bg-amber-800/50 hover:bg-amber-800/70 text-yellow-100 font-cinzel font-bold tracking-widest border-3 border-amber-700 transition-all duration-300 text-sm sm:text-base"
+                >
+                  SEND TELEGRAPH
+                </motion.a>
+              </motion.div>
+
+              {/* Sheriff Star Decorations */}
+              <motion.div
+                className="absolute -top-6 left-1/2 -translate-x-1/2 w-10 h-10 bg-amber-700 sheriff-star opacity-70"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+              />
             </div>
-            <motion.div
-              className="absolute -top-2 -left-2 w-6 h-6 bg-amber-600"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-            />
-            <motion.div
-              className="absolute -bottom-2 -right-2 w-6 h-6 bg-amber-600"
-              animate={{ rotate: -360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-            />
           </div>
-        </motion.div>
-
-        {/* Name & Title */}
-        <motion.div variants={itemVariants} className="mb-6">
-          <h2 className="text-4xl sm:text-5xl font-cinzel font-bold text-amber-100 mb-3 drop-shadow-lg">
-            YEISON FAJARDO
-          </h2>
-          <p className="text-xl sm:text-2xl font-caveat text-amber-300 italic">
-            &quot;A Developer Worth Every Dollar&quot;
-          </p>
-        </motion.div>
-
-        {/* Description */}
-        <motion.div variants={itemVariants} className="mb-8">
-          <p className="text-amber-100/80 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-            Full Stack Developer | 3 Years Experience | TypeScript Specialist
-          </p>
-          <p className="text-amber-100/60 text-sm sm:text-base mt-3">
-            Available for work • Specialized in Web Architecture & Scalable Solutions
-          </p>
-        </motion.div>
-
-        {/* Reward Amount */}
-        <motion.div variants={itemVariants} className="mb-8">
-          <div className="inline-block border-2 border-amber-600 px-8 py-4 bg-slate-900/50 backdrop-blur">
-            <p className="text-amber-300 font-cinzel font-bold text-xl">REWARD</p>
-            <p className="text-amber-400 font-caveat text-3xl">Hire Me!</p>
-          </div>
-        </motion.div>
-
-        {/* Action Button */}
-        <motion.div
-          variants={itemVariants}
-          className="flex flex-col sm:flex-row gap-4 justify-center"
-        >
-          <motion.button
-            whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(189, 8, 26, 0.6)' }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => {
-              onEnter?.()
-              document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })
-            }}
-            className="px-8 py-3 bg-red-700 hover:bg-red-800 text-amber-100 font-cinzel font-bold tracking-widest border-2 border-red-600 transition-all duration-300 shadow-lg hover:shadow-red-700/50"
-          >
-            ENTER THE FRONTIER
-          </motion.button>
-
-          <motion.a
-            href="#contact"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="px-8 py-3 bg-amber-700/30 hover:bg-amber-700/50 text-amber-300 font-cinzel font-bold tracking-widest border-2 border-amber-600 transition-all duration-300"
-          >
-            SEND TELEGRAPH
-          </motion.a>
-        </motion.div>
-
-        {/* Decorative Elements */}
-        <motion.div
-          className="absolute top-20 left-10 text-4xl opacity-20"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-        >
-          ⭐
-        </motion.div>
-        <motion.div
-          className="absolute bottom-20 right-10 text-4xl opacity-20"
-          animate={{ rotate: -360 }}
-          transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-        >
-          ⭐
         </motion.div>
       </motion.div>
 
       {/* Scroll Indicator */}
       <motion.div
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
+        animate={{ y: [0, 12, 0] }}
+        transition={{ duration: 2.5, repeat: Infinity }}
       >
-        <div className="text-amber-400 text-center">
-          <p className="text-sm font-cinzel mb-2">SCROLL TO CONTINUE</p>
+        <div className="text-center">
+          <p className="text-xs sm:text-sm font-cinzel text-amber-700/70 mb-2 tracking-widest">SCROLL TO CONTINUE</p>
           <motion.div
-            animate={{ opacity: [0.3, 1, 0.3] }}
+            animate={{ opacity: [0.4, 1, 0.4] }}
             transition={{ duration: 1.5, repeat: Infinity }}
-            className="text-2xl"
+            className="text-2xl text-amber-700/70"
           >
-            ⬇
+            ↓
           </motion.div>
         </div>
       </motion.div>
