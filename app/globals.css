@@ -86,6 +86,9 @@
   .font-typewriter {
     font-family: var(--font-typewriter), 'Courier New', monospace;
   }
+  .font-rdr-logo {
+    font-family: var(--font-rdr-logo), Impact, 'Arial Black', sans-serif;
+  }
   .rdr-grain {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   }
@@ -105,9 +108,47 @@
   }
   .rdr-cinematic-bars::before {
     top: 0;
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% 88%,
+      95% 94%,
+      88% 90%,
+      82% 96%,
+      74% 91%,
+      67% 97%,
+      60% 92%,
+      52% 98%,
+      44% 93%,
+      37% 99%,
+      30% 92%,
+      23% 97%,
+      15% 91%,
+      8% 96%,
+      0 90%
+    );
   }
   .rdr-cinematic-bars::after {
     bottom: 0;
+    clip-path: polygon(
+      0 10%,
+      7% 4%,
+      14% 9%,
+      22% 3%,
+      29% 8%,
+      36% 2%,
+      43% 7%,
+      50% 1%,
+      58% 8%,
+      66% 2%,
+      73% 9%,
+      81% 4%,
+      89% 10%,
+      96% 5%,
+      100% 12%,
+      100% 100%,
+      0 100%
+    );
   }
   .text-rdr-blood {
     color: #bb0000;
