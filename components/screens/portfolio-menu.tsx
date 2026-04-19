@@ -3,8 +3,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
+export type PortfolioInitialSection = 'portfolio' | 'about' | 'contact'
+
 interface PortfolioMenuProps {
   onBack: () => void
+  /** Desde el menú principal: abre la pestaña coherente */
+  initialSection?: PortfolioInitialSection
 }
 
 const categories = [
@@ -17,79 +21,96 @@ const categories = [
 
 const profileData = {
   nombre: 'Yeison Fajardo',
-  titulo: 'Desarrollador Full Stack',
+  titulo: 'Desarrollador Web · Full Stack',
   experiencia: '3 años',
-  ubicacion: 'Disponible remoto',
-  descripcion: 'Especializado en crear aplicaciones web escalables y de alto rendimiento. Apasionado por el código limpio y las arquitecturas bien diseñadas.',
+  ubicacion: 'Buenos Aires · Disponible para trabajar',
+  descripcion:
+    'Desarrollador web con experiencia profesional creando aplicaciones avanzadas: interfaces claras, código mantenible y foco en la experiencia de usuario.',
 }
 
 const projectsData = [
-  { 
-    name: 'Sistema de Gestión Empresarial', 
-    tech: 'Next.js, TypeScript, PostgreSQL',
+  {
+    name: 'RoadEra',
+    tech: 'TypeScript · JavaScript · CSS',
     status: 'Completado',
-    year: '2024'
+    year: '2024',
+    blurb:
+      'Alquiler de coches de lujo: registro, panel admin, reservas en tiempo real y pagos con Stripe; gestión de flota y reservas con buen rendimiento en móvil.',
   },
-  { 
-    name: 'Plataforma E-commerce', 
-    tech: 'React, Node.js, MongoDB',
+  {
+    name: 'Tesla Clone',
+    tech: 'JavaScript · HTML · CSS',
     status: 'Completado',
-    year: '2024'
+    year: '2023',
+    blurb:
+      'Clon del sitio oficial de Tesla: animaciones, header dinámico, transiciones de color y scroll; un desafío para acercar el comportamiento al original.',
   },
-  { 
-    name: 'Dashboard Analytics', 
-    tech: 'Vue.js, Python, AWS',
-    status: 'En desarrollo',
-    year: '2024'
-  },
-  { 
-    name: 'API REST Microservicios', 
-    tech: 'Go, Docker, Kubernetes',
+  {
+    name: 'X (Twitter) Clone',
+    tech: 'JavaScript · Node.js · MongoDB',
     status: 'Completado',
-    year: '2023'
+    year: '2023',
+    blurb:
+      'Red social tipo X: registro e inicio de sesión, sesiones, cierre de sesión y publicaciones con comentarios sobre una base de datos funcional.',
   },
 ]
 
 const skillsData = {
-  frontend: ['React', 'Next.js', 'Vue.js', 'TypeScript', 'Tailwind CSS'],
-  backend: ['Node.js', 'Python', 'Go', 'PostgreSQL', 'MongoDB'],
-  devops: ['Docker', 'AWS', 'CI/CD', 'Linux', 'Git'],
+  frontend: ['React', 'Next.js', 'TypeScript', 'JavaScript', 'Tailwind CSS'],
+  backend: ['Node.js', 'Express', 'Go', 'PostgreSQL', 'MongoDB', 'Prisma'],
+  devops: ['Docker', 'AWS', 'Git', 'Linux', 'CI/CD'],
 }
 
 const experienceData = [
   {
-    puesto: 'Desarrollador Full Stack Senior',
-    empresa: 'Tech Solutions',
-    periodo: '2023 - Presente',
-    descripcion: 'Liderazgo técnico en proyectos de alta complejidad'
+    puesto: 'Tecnicatura en Desarrollo de Software',
+    empresa: 'Universidad Provincial de Ezeiza',
+    periodo: '2025 — Actualidad',
+    descripcion:
+      'Formación en backend, APIs con Node.js y Express, bases de datos con Prisma, JWT/OAuth2, Docker y despliegues en la nube.',
   },
   {
-    puesto: 'Desarrollador Full Stack',
-    empresa: 'Digital Agency',
-    periodo: '2022 - 2023',
-    descripcion: 'Desarrollo de aplicaciones web empresariales'
+    puesto: 'Big O, algoritmos y estructuras de datos',
+    empresa: 'Udemy',
+    periodo: 'Enero 2025',
+    descripcion:
+      'Optimización con Big O, estructuras como listas y grafos, y preparación para entrevistas técnicas.',
   },
   {
-    puesto: 'Desarrollador Frontend',
-    empresa: 'Startup Inc',
-    periodo: '2021 - 2022',
-    descripcion: 'Creación de interfaces de usuario modernas'
+    puesto: 'Python · Desarrollo Web 4 · Desarrollo Web 3',
+    empresa: 'Aprende Programando',
+    periodo: '2022 — 2024',
+    descripcion:
+      'Fundamentos de Python; backend avanzado con APIs REST, PostgreSQL, MongoDB, JWT y React para interfaces dinámicas.',
   },
 ]
 
 const contactData = {
-  email: 'yeison@email.com',
-  github: 'github.com/yeisonfajardo',
+  email: 'andresfajardo1606@gmail.com',
+  github: 'github.com/yeisonfjrd',
   linkedin: 'linkedin.com/in/yeisonfajardo',
-  disponibilidad: 'Disponible para nuevos proyectos',
+  disponibilidad: 'Disponible para trabajar',
+  social: '@yeisonfajardo',
 }
 
-export default function PortfolioMenu({ onBack }: PortfolioMenuProps) {
-  const [selectedCategory, setSelectedCategory] = useState(0)
+const SECTION_TO_INDEX: Record<PortfolioInitialSection, number> = {
+  portfolio: 1,
+  about: 0,
+  contact: 4,
+}
+
+export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuProps) {
+  const [selectedCategory, setSelectedCategory] = useState(1)
   const [hoveredCategory, setHoveredCategory] = useState<number | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
   const activeCategory = hoveredCategory !== null ? hoveredCategory : selectedCategory
+
+  useEffect(() => {
+    if (!initialSection) return
+    const idx = SECTION_TO_INDEX[initialSection]
+    if (idx !== undefined) setSelectedCategory(idx)
+  }, [initialSection])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -136,50 +157,53 @@ export default function PortfolioMenu({ onBack }: PortfolioMenuProps) {
       case 'perfil':
         return (
           <div className="space-y-6">
-            <div className="border-b border-[#2a2721] pb-4">
-              <h3 className="text-[#c4a882] text-2xl mb-2" style={{ fontFamily: 'Georgia, serif' }}>
+            <div className="rdr-divider border-b pb-4">
+              <h3 className="font-chinese-rocks text-rdr-parchment text-2xl md:text-3xl mb-2 tracking-[0.08em]">
                 {profileData.nombre}
               </h3>
-              <p className="text-[#8b8070] text-lg">{profileData.titulo}</p>
+              <p className="text-[#c8b28d] text-lg font-sans">{profileData.titulo}</p>
             </div>
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <p className="text-[#5a554d] text-xs tracking-wider uppercase mb-1">Experiencia</p>
-                <p className="text-[#a09080]">{profileData.experiencia}</p>
+                <p className="text-rdr-ink text-xs tracking-wider uppercase mb-1 opacity-90">Experiencia</p>
+                <p className="text-rdr-cream">{profileData.experiencia}</p>
               </div>
               <div>
-                <p className="text-[#5a554d] text-xs tracking-wider uppercase mb-1">Ubicación</p>
-                <p className="text-[#a09080]">{profileData.ubicacion}</p>
+                <p className="text-rdr-ink text-xs tracking-wider uppercase mb-1 opacity-90">Ubicación</p>
+                <p className="text-rdr-cream">{profileData.ubicacion}</p>
               </div>
             </div>
             <div>
-              <p className="text-[#5a554d] text-xs tracking-wider uppercase mb-2">Sobre mí</p>
-              <p className="text-[#8b8070] leading-relaxed">{profileData.descripcion}</p>
+              <p className="text-rdr-ink text-xs tracking-wider uppercase mb-2 opacity-90">Sobre mí</p>
+              <p className="text-[#ddd0aa] leading-relaxed font-sans">{profileData.descripcion}</p>
             </div>
           </div>
         )
 
       case 'proyectos':
         return (
-          <div className="space-y-4">
+          <div className="space-y-5">
             {projectsData.map((project, index) => (
               <motion.div
                 key={project.name}
-                className="border-b border-[#2a2721] pb-4"
+                className="rdr-divider border-b pb-5 last:border-0"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <div className="flex justify-between items-start mb-2">
-                  <h4 className="text-[#c4a882]" style={{ fontFamily: 'Georgia, serif' }}>
+                <div className="flex justify-between items-start gap-4 mb-2">
+                  <h4 className="font-chinese-rocks text-rdr-parchment text-lg tracking-[0.06em]">
                     {project.name}
                   </h4>
-                  <span className="text-[#5a554d] text-sm">{project.year}</span>
+                  <span className="text-rdr-pencil text-sm shrink-0">{project.year}</span>
                 </div>
-                <p className="text-[#6b635a] text-sm mb-1">{project.tech}</p>
-                <span className={`text-xs tracking-wider ${
-                  project.status === 'Completado' ? 'text-[#4a7c4a]' : 'text-[#7c7c4a]'
-                }`}>
+                <p className="text-rdr-gold/90 text-sm mb-2 font-typewriter">{project.tech}</p>
+                <p className="text-[#c4b59a] text-sm leading-relaxed mb-2 font-sans">{project.blurb}</p>
+                <span
+                  className={`text-xs tracking-wider font-typewriter ${
+                    project.status === 'Completado' ? 'text-[#6a9a6a]' : 'text-rdr-gold/80'
+                  }`}
+                >
                   {project.status.toUpperCase()}
                 </span>
               </motion.div>
@@ -189,32 +213,32 @@ export default function PortfolioMenu({ onBack }: PortfolioMenuProps) {
 
       case 'habilidades':
         return (
-          <div className="space-y-6">
+          <div className="space-y-8">
             <div>
-              <h4 className="text-[#5a554d] text-xs tracking-wider uppercase mb-3">Frontend</h4>
+              <h4 className="text-rdr-ink text-xs tracking-[0.2em] uppercase mb-3 opacity-90">Frontend</h4>
               <div className="flex flex-wrap gap-2">
                 {skillsData.frontend.map((skill) => (
-                  <span key={skill} className="text-[#a09080] bg-[#1a1815] px-3 py-1 text-sm">
+                  <span key={skill} className="rdr-tag px-3 py-1.5 text-sm font-sans">
                     {skill}
                   </span>
                 ))}
               </div>
             </div>
             <div>
-              <h4 className="text-[#5a554d] text-xs tracking-wider uppercase mb-3">Backend</h4>
+              <h4 className="text-rdr-ink text-xs tracking-[0.2em] uppercase mb-3 opacity-90">Backend</h4>
               <div className="flex flex-wrap gap-2">
                 {skillsData.backend.map((skill) => (
-                  <span key={skill} className="text-[#a09080] bg-[#1a1815] px-3 py-1 text-sm">
+                  <span key={skill} className="rdr-tag px-3 py-1.5 text-sm font-sans">
                     {skill}
                   </span>
                 ))}
               </div>
             </div>
             <div>
-              <h4 className="text-[#5a554d] text-xs tracking-wider uppercase mb-3">DevOps</h4>
+              <h4 className="text-rdr-ink text-xs tracking-[0.2em] uppercase mb-3 opacity-90">DevOps</h4>
               <div className="flex flex-wrap gap-2">
                 {skillsData.devops.map((skill) => (
-                  <span key={skill} className="text-[#a09080] bg-[#1a1815] px-3 py-1 text-sm">
+                  <span key={skill} className="rdr-tag px-3 py-1.5 text-sm font-sans">
                     {skill}
                   </span>
                 ))}
@@ -229,17 +253,17 @@ export default function PortfolioMenu({ onBack }: PortfolioMenuProps) {
             {experienceData.map((exp, index) => (
               <motion.div
                 key={exp.puesto}
-                className="border-l-2 border-[#2a2721] pl-4"
+                className="border-l-2 border-[#bd081a]/55 pl-4"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.15 }}
               >
-                <p className="text-[#5a554d] text-xs tracking-wider mb-1">{exp.periodo}</p>
-                <h4 className="text-[#c4a882] mb-1" style={{ fontFamily: 'Georgia, serif' }}>
+                <p className="text-rdr-pencil text-xs tracking-wider mb-1 font-typewriter">{exp.periodo}</p>
+                <h4 className="font-chinese-rocks text-rdr-parchment text-base md:text-lg tracking-[0.05em] mb-1">
                   {exp.puesto}
                 </h4>
-                <p className="text-[#8b8070] text-sm mb-2">{exp.empresa}</p>
-                <p className="text-[#6b635a] text-sm">{exp.descripcion}</p>
+                <p className="text-[#c8b28d] text-sm mb-2 font-sans">{exp.empresa}</p>
+                <p className="text-[#b8a990] text-sm leading-relaxed font-sans">{exp.descripcion}</p>
               </motion.div>
             ))}
           </div>
@@ -248,22 +272,26 @@ export default function PortfolioMenu({ onBack }: PortfolioMenuProps) {
       case 'contacto':
         return (
           <div className="space-y-6">
-            <div className="bg-[#1a1815] p-4">
-              <p className="text-[#5a554d] text-xs tracking-wider uppercase mb-2">Estado</p>
-              <p className="text-[#4a7c4a]">{contactData.disponibilidad}</p>
+            <div className="rdr-panel p-4">
+              <p className="text-rdr-ink text-xs tracking-[0.2em] uppercase mb-2 opacity-90">Estado</p>
+              <p className="text-[#7faa7f] font-chinese-rocks tracking-[0.08em]">{contactData.disponibilidad}</p>
             </div>
             <div className="space-y-4">
               <div>
-                <p className="text-[#5a554d] text-xs tracking-wider uppercase mb-1">Email</p>
-                <p className="text-[#a09080]">{contactData.email}</p>
+                <p className="text-rdr-ink text-xs tracking-[0.2em] uppercase mb-1 opacity-90">Red social</p>
+                <p className="text-rdr-cream font-sans">{contactData.social}</p>
               </div>
               <div>
-                <p className="text-[#5a554d] text-xs tracking-wider uppercase mb-1">GitHub</p>
-                <p className="text-[#a09080]">{contactData.github}</p>
+                <p className="text-rdr-ink text-xs tracking-[0.2em] uppercase mb-1 opacity-90">Email</p>
+                <p className="text-rdr-cream font-sans">{contactData.email}</p>
               </div>
               <div>
-                <p className="text-[#5a554d] text-xs tracking-wider uppercase mb-1">LinkedIn</p>
-                <p className="text-[#a09080]">{contactData.linkedin}</p>
+                <p className="text-rdr-ink text-xs tracking-[0.2em] uppercase mb-1 opacity-90">GitHub</p>
+                <p className="text-rdr-cream font-sans">{contactData.github}</p>
+              </div>
+              <div>
+                <p className="text-rdr-ink text-xs tracking-[0.2em] uppercase mb-1 opacity-90">LinkedIn</p>
+                <p className="text-rdr-cream font-sans">{contactData.linkedin}</p>
               </div>
             </div>
           </div>
@@ -277,7 +305,7 @@ export default function PortfolioMenu({ onBack }: PortfolioMenuProps) {
   return (
     <div ref={containerRef} className="rdr-cinematic-bars relative w-full h-full overflow-hidden">
       <video
-        className="absolute inset-0 h-full w-full object-cover opacity-20"
+        className="absolute inset-0 h-full w-full object-cover opacity-[0.22]"
         autoPlay
         muted
         loop
@@ -288,34 +316,39 @@ export default function PortfolioMenu({ onBack }: PortfolioMenuProps) {
           type="video/mp4"
         />
       </video>
-      <div className="absolute inset-0 bg-[linear-gradient(135deg,#0f0e0c_0%,#1a1815_50%,#0f0e0c_100%)]" />
+      <div className="absolute inset-0 bg-western" />
+      <div className="absolute inset-0 rdr-golden-hour opacity-50" aria-hidden />
 
-      <motion.div 
+      <motion.div
         className="rdr-grain absolute inset-0 pointer-events-none"
-        animate={{ opacity: [0.02, 0.05, 0.02] }}
+        animate={{ opacity: [0.03, 0.06, 0.03] }}
         transition={{ duration: 3, repeat: Infinity }}
       />
 
-      <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/35 to-black/70" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/58 via-black/38 to-black/72" />
       <div className="rdr-vignette absolute inset-0 pointer-events-none" />
 
       <div className="relative z-10 h-full flex">
-        <div className="w-64 flex-shrink-0 border-r border-[#2a2721] flex flex-col">
-          <div className="p-6 border-b border-[#2a2721]">
+        <div className="w-64 md:w-72 flex-shrink-0 rdr-sidebar-edge flex flex-col">
+          <div className="p-5 md:p-6 rdr-divider border-b">
+            <p className="font-typewriter text-[#5a5348] text-[10px] tracking-[0.28em] uppercase mb-3">
+              Compendio
+            </p>
             <button
+              type="button"
               onClick={onBack}
-              className="text-[#6b635a] hover:text-[#a09080] text-sm tracking-wider transition-colors"
-              style={{ fontFamily: 'var(--font-typewriter), Courier New, monospace' }}
+              className="font-typewriter text-[#8a8070] hover:text-rdr-parchment text-xs tracking-wider transition-colors"
             >
               ← VOLVER
             </button>
           </div>
 
-          <nav className="flex-1 py-4">
+          <nav className="flex-1 py-3">
             {categories.map((category, index) => (
               <motion.button
                 key={category.id}
-                className="w-full text-left py-3 px-6 relative"
+                type="button"
+                className="w-full text-left py-3 px-5 md:px-6 relative"
                 onMouseEnter={() => setHoveredCategory(index)}
                 onMouseLeave={() => setHoveredCategory(null)}
                 onClick={() => setSelectedCategory(index)}
@@ -325,19 +358,16 @@ export default function PortfolioMenu({ onBack }: PortfolioMenuProps) {
               >
                 {activeCategory === index && (
                   <motion.div
-                    className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-[#cc0000]"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-7 bg-[#bd081a] shadow-[0_0_10px_rgba(189,8,26,0.4)]"
                     layoutId="categoryIndicator"
                     transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                   />
                 )}
-                
-                <span 
-                  className={`text-sm tracking-[0.15em] transition-colors duration-200 ${
-                    activeCategory === index 
-                      ? 'text-[#e8dcc8]' 
-                      : 'text-[#5a554d]'
+
+                <span
+                  className={`font-chinese-rocks uppercase text-sm tracking-[0.1em] transition-colors duration-200 ${
+                    activeCategory === index ? 'text-[#e8dfc0] rdr-text-glow' : 'text-[#4d453c]'
                   }`}
-                  style={{ fontFamily: 'var(--font-western), Georgia, serif' }}
                 >
                   {category.label}
                 </span>
@@ -345,42 +375,37 @@ export default function PortfolioMenu({ onBack }: PortfolioMenuProps) {
             ))}
           </nav>
 
-          <div className="p-6 border-t border-[#2a2721]">
-            <p className="text-[#3d3a35] text-xs tracking-wider" style={{ fontFamily: 'var(--font-typewriter), Courier New, monospace' }}>
-              SCROLL PARA NAVEGAR
+          <div className="p-5 md:p-6 rdr-divider border-t">
+            <p className="font-typewriter text-[#4a4338] text-[10px] tracking-[0.2em] uppercase">
+              Scroll para navegar
             </p>
-            <p className="text-[#3d3a35] text-xs tracking-wider mt-1" style={{ fontFamily: 'var(--font-typewriter), Courier New, monospace' }}>
-              ESC PARA VOLVER
+            <p className="font-typewriter text-[#4a4338] text-[10px] tracking-[0.2em] uppercase mt-1">
+              Esc para volver
             </p>
           </div>
         </div>
 
-        <div className="flex-1 p-8 md:p-12 overflow-y-auto">
-          <motion.div
-            className="mb-8"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <h2 
-              className="text-3xl text-[#c4a882] mb-2"
-              style={{ fontFamily: 'var(--font-western), Georgia, serif', letterSpacing: '0.1em' }}
-            >
-              {categories[activeCategory].label}
-            </h2>
-            <div className="h-[1px] w-16 bg-[#cc0000]" />
-          </motion.div>
-
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={categories[activeCategory].id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              {renderContent()}
+        <div className="flex-1 p-6 md:p-10 lg:p-12 overflow-y-auto min-h-0">
+          <div className="rdr-panel rdr-panel-print rdr-tintype-soft rounded-sm p-6 md:p-8 min-h-[min(100%,480px)]">
+            <motion.div className="mb-8" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <h2 className="font-chinese-rocks text-2xl md:text-3xl text-rdr-parchment mb-2 tracking-[0.12em]">
+                {categories[activeCategory].label}
+              </h2>
+              <div className="h-[2px] w-20 bg-gradient-to-r from-[#bd081a] to-[#feac01]/50 rounded-full" />
             </motion.div>
-          </AnimatePresence>
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={categories[activeCategory].id}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.3 }}
+              >
+                {renderContent()}
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </div>

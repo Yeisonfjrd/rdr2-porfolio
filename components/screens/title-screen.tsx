@@ -31,20 +31,6 @@ export default function TitleScreen({ isTransitioning }: TitleScreenProps) {
 
   return (
     <>
-      <style>{`
-        @font-face {
-          font-family: 'ChineseRocks';
-          src: url('/fonts/chinese-rocks.woff2') format('woff2'),
-               url('/fonts/chinese-rocks.ttf') format('truetype');
-          font-weight: normal;
-          font-style: normal;
-          font-display: swap;
-        }
-        .font-chinese-rocks {
-          font-family: 'ChineseRocks', 'Georgia', serif;
-        }
-      `}</style>
-
       <div className="relative w-full h-full overflow-hidden bg-black">
 
         <img
@@ -71,7 +57,13 @@ export default function TitleScreen({ isTransitioning }: TitleScreenProps) {
 
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ zIndex: 3, background: 'rgba(55,30,5,0.48)' }}
+          style={{ zIndex: 3, background: 'rgba(55,30,5,0.42)' }}
+        />
+
+        <div
+          className="absolute inset-0 rdr-golden-hour"
+          style={{ zIndex: 3 }}
+          aria-hidden
         />
 
         <div
@@ -79,7 +71,7 @@ export default function TitleScreen({ isTransitioning }: TitleScreenProps) {
           style={{
             zIndex: 4,
             background:
-              'radial-gradient(ellipse 85% 80% at 50% 50%, transparent 28%, rgba(0,0,0,0.94) 100%)',
+              'radial-gradient(ellipse 85% 80% at 50% 50%, transparent 28%, rgba(2,0,2,0.92) 100%)',
           }}
         />
 
@@ -92,7 +84,7 @@ export default function TitleScreen({ isTransitioning }: TitleScreenProps) {
             <feTurbulence
               type="fractalNoise"
               baseFrequency="0.72"
-              numOctaves="4"
+              numOctaves="3"
               stitchTiles="stitch"
             />
             <feColorMatrix type="saturate" values="0" />
@@ -201,35 +193,17 @@ export default function TitleScreen({ isTransitioning }: TitleScreenProps) {
           </div>
 
           <span
-            className="font-chinese-rocks text-[#c01010]"
+            className="font-chinese-rocks text-[#bd081a]"
             style={{
               fontSize: 'clamp(2.8rem, 9.5vw, 7.2rem)',
               lineHeight: 0.82,
               alignSelf: 'center',
-              textShadow: '3px 3px 0 #5a0000, 5px 5px 0 #3a0000, 0 0 20px rgba(160,0,0,0.55)',
-              WebkitTextStroke: '1px #7a0000',
+              textShadow:
+                '3px 3px 0 #5a0000, 5px 5px 0 #3a0000, 0 0 20px rgba(185,3,3,0.45)',
+              WebkitTextStroke: '1px #b90303',
             }}
           >
             II
-          </span>
-        </motion.div>
-
-        <motion.div
-          className="absolute inset-0 flex items-center justify-center pointer-events-none"
-          style={{ zIndex: 20 }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.2, delay: 0.4 }}
-        >
-          <span
-            className="font-chinese-rocks uppercase text-[#e8dfc0]"
-            style={{
-              fontSize: 'clamp(0.9rem, 2.6vw, 1.7rem)',
-              letterSpacing: '0.3em',
-              textShadow: '2px 2px 0 rgba(0,0,0,0.95), 0 0 14px rgba(0,0,0,0.8)',
-            }}
-          >
-            Portfolio
           </span>
         </motion.div>
 
@@ -267,7 +241,7 @@ export default function TitleScreen({ isTransitioning }: TitleScreenProps) {
             className="font-chinese-rocks uppercase text-[#c8b68a]/70"
             style={{ fontSize: 'clamp(0.35rem, 0.8vw, 0.5rem)', letterSpacing: '0.18em' }}
           >
-            2025
+            2026
           </span>
         </div>
 

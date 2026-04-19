@@ -69,7 +69,7 @@ export default function Home() {
   }
 
   return (
-    <div className="fixed inset-0 bg-[#0a0908] overflow-hidden">
+    <div className="fixed inset-0 bg-rdr-deep overflow-hidden">
       <AnimatePresence mode="wait">
         {currentScreen === 'title' && (
           <motion.div
@@ -87,10 +87,10 @@ export default function Home() {
         {currentScreen === 'main' && (
           <motion.div
             key="main"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
+            initial={{ opacity: 0, clipPath: 'circle(0% at 50% 50%)' }}
+            animate={{ opacity: 1, clipPath: 'circle(150% at 50% 50%)' }}
+            exit={{ opacity: 0, clipPath: 'circle(40% at 50% 50%)' }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
             className="absolute inset-0"
           >
             <MainMenu 
@@ -103,13 +103,13 @@ export default function Home() {
         {currentScreen === 'portfolio' && (
           <motion.div
             key="portfolio"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
+            initial={{ opacity: 0, clipPath: 'circle(0% at 50% 50%)' }}
+            animate={{ opacity: 1, clipPath: 'circle(150% at 50% 50%)' }}
+            exit={{ opacity: 0, clipPath: 'circle(35% at 50% 50%)' }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
             className="absolute inset-0"
           >
-            <PortfolioMenu onBack={handleBack} />
+            <PortfolioMenu onBack={handleBack} initialSection={initialSection} />
           </motion.div>
         )}
       </AnimatePresence>

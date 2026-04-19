@@ -4,14 +4,36 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --rdr-blood: #bb0000;
+  /* Promo / portada RDR2 */
+  --rdr-crimson: #bd081a;
+  --rdr-dark-red: #b90303;
+  --rdr-gold: #feac01;
+  --rdr-ink-black: #020002;
+  --rdr-off-white: #fffeff;
+
+  /* Mapa / atlas (UI in-game) */
+  --rdr-canvas: #dec29b;
+  --rdr-map-ink: #40423d;
+  --rdr-map-water: #9e9985;
+  --rdr-contours: #c8b28d;
+  --rdr-pencil: #716454;
+
+  /* Base del sitio (sombras profundas + pergamino) */
+  --rdr-blood: #bd081a;
+  --rdr-blood-muted: #b90303;
   --rdr-cream: #dcc09a;
+  --rdr-parchment: #e0c38f;
+  --rdr-parchment-soft: #ddd0aa;
   --rdr-brown-dark: #1e1b14;
+  --rdr-deep: #191910;
   --rdr-brown-mid: #28251c;
   --rdr-brown-light: #3a3529;
   --rdr-olive: #353631;
   --rdr-gray: #7a7d77;
-  
+  /* Tierra / marco UI (referencia estilo western) */
+  --rdr-western-brown: #7d4c2c;
+  --rdr-white-warm: #e8dfc0;
+
   --background: 43 22% 12%;
   --foreground: 38 43% 73%;
   --card: 43 18% 15%;
@@ -69,17 +91,28 @@
   }
   html {
     scroll-behavior: smooth;
-    background: #1e1b14;
+    background: var(--rdr-deep);
+    /* Serif / UI occidental: misma familia que el cuerpo (Crimson Text) */
+    --font-western: var(--font-body), Georgia, 'Times New Roman', serif;
+    --font-typewriter: 'Courier New', Courier, monospace;
+    --font-rdr-logo: var(--font-chinese-rocks), Impact, 'Arial Black', sans-serif;
   }
   body {
-    background: #1e1b14;
-    color: #dcc09a;
+    background: var(--rdr-deep);
+    color: var(--rdr-cream);
     min-height: 100vh;
-    font-family: var(--font-body), -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: var(--font-body), Georgia, 'Times New Roman', serif;
+    letter-spacing: 0.02em;
   }
 }
 
 @layer utilities {
+  .font-chinese {
+    font-family: var(--font-chinese-rocks), Impact, 'Arial Black', sans-serif;
+  }
+  .font-chinese-rocks {
+    font-family: var(--font-chinese-rocks), Impact, 'Arial Black', sans-serif;
+  }
   .font-western {
     font-family: var(--font-western), Georgia, serif;
   }
@@ -89,11 +122,26 @@
   .font-rdr-logo {
     font-family: var(--font-rdr-logo), Impact, 'Arial Black', sans-serif;
   }
+  /* numOctaves 3: equilibrio calidad / GPU (feTurbulence costoso con scroll) */
   .rdr-grain {
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   }
   .rdr-vignette {
     box-shadow: inset 0 0 180px 100px rgba(0, 0, 0, 0.68);
+  }
+  /* Luz dorada tipo “golden hour” (overlay suave) */
+  .rdr-golden-hour {
+    background: radial-gradient(
+      ellipse 120% 80% at 50% 0%,
+      rgba(255, 180, 50, 0.28),
+      transparent 72%
+    );
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+  /* Filtro cinematográfico opcional (aplicar a un contenedor, no a toda la UI si hay problemas de contraste) */
+  .rdr-film-look {
+    filter: sepia(12%) contrast(1.08) brightness(0.96) saturate(1.08);
   }
   .rdr-cinematic-bars::before,
   .rdr-cinematic-bars::after {
@@ -151,10 +199,22 @@
     );
   }
   .text-rdr-blood {
-    color: #bb0000;
+    color: var(--rdr-crimson);
   }
   .text-rdr-cream {
-    color: #dcc09a;
+    color: var(--rdr-cream);
+  }
+  .text-rdr-parchment {
+    color: var(--rdr-parchment);
+  }
+  .bg-rdr-deep {
+    background-color: var(--rdr-deep);
+  }
+  .text-rdr-gold {
+    color: var(--rdr-gold);
+  }
+  .text-rdr-ink {
+    color: var(--rdr-map-ink);
   }
   .text-rdr-muted {
     color: #7a7d77;
@@ -172,6 +232,93 @@
     border-color: #3a3529;
   }
   .border-rdr-blood {
-    border-color: #bb0000;
+    border-color: var(--rdr-crimson);
+  }
+  .border-rdr-gold {
+    border-color: color-mix(in srgb, var(--rdr-gold) 45%, transparent);
+  }
+  /* Fondo tipo menú RDR: sepia sobre imagen/vídeo */
+  .bg-western {
+    background:
+      linear-gradient(to bottom, rgba(55, 30, 5, 0.35), rgba(30, 18, 10, 0.82)),
+      linear-gradient(135deg, #0f0e0c 0%, #1a1510 45%, #0c0a08 100%);
+    color: var(--rdr-white-warm);
+  }
+  /* Título menú principal (Chinese Rocks + sombra dura) */
+  .rdr-text-glow {
+    color: var(--rdr-white-warm);
+    text-shadow:
+      2px 2px 0 #000,
+      -1px -1px 0 rgba(0, 0, 0, 0.7),
+      4px 4px 8px rgba(0, 0, 0, 0.95);
+  }
+  .rdr-menu-heading {
+    font-family: var(--font-chinese-rocks), Impact, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  /* Panel tipo carta / compendio (pergamino sobre oscuro) */
+  .rdr-panel {
+    position: relative;
+    isolation: isolate;
+    background: linear-gradient(
+      165deg,
+      rgba(222, 194, 155, 0.07) 0%,
+      rgba(30, 27, 20, 0.92) 48%,
+      rgba(25, 22, 16, 0.96) 100%
+    );
+    border: 1px solid color-mix(in srgb, var(--rdr-contours) 35%, transparent);
+    box-shadow:
+      inset 0 1px 0 rgba(254, 172, 1, 0.12),
+      0 12px 40px rgba(2, 0, 2, 0.45);
+  }
+  /* Fibra + tinta “impresa” (multiply), estilo papel de mapa / diario */
+  .rdr-panel-print::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0.14;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+    z-index: 0;
+  }
+  .rdr-panel-print > * {
+    position: relative;
+    z-index: 1;
+  }
+  /* Bordes suaves tipo placa tintipo (máscara alfa; -webkit- para Safari/Chromium) */
+  .rdr-tintype-soft {
+    -webkit-mask-image: radial-gradient(
+      ellipse 99% 98% at 50% 50%,
+      #000 78%,
+      rgba(0, 0, 0, 0.65) 92%,
+      transparent 100%
+    );
+    mask-image: radial-gradient(
+      ellipse 99% 98% at 50% 50%,
+      #000 78%,
+      rgba(0, 0, 0, 0.65) 92%,
+      transparent 100%
+    );
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+  }
+  .rdr-sidebar-edge {
+    background: linear-gradient(90deg, rgba(2, 0, 2, 0.5) 0%, transparent 100%);
+    border-right: 1px solid color-mix(in srgb, var(--rdr-pencil) 40%, transparent);
+  }
+  .rdr-tag {
+    color: var(--rdr-parchment-soft);
+    background: rgba(26, 24, 21, 0.9);
+    border: 1px solid color-mix(in srgb, var(--rdr-gold) 22%, transparent);
+  }
+  .rdr-divider {
+    border-color: color-mix(in srgb, var(--rdr-map-ink) 55%, transparent);
   }
 }
