@@ -46,20 +46,24 @@ export default function MainMenu({ onNavigate, onBack }: MainMenuProps) {
         />
       </video>
 
-      <div className="absolute inset-0 bg-[linear-gradient(135deg,#0f0e0c_0%,#19150f_50%,#0e0c09_100%)]" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/45 to-black/75" />
+      <div className="absolute inset-0 bg-western" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/42 to-black/76" />
+      <div className="absolute inset-0 rdr-golden-hour opacity-[0.65]" aria-hidden />
 
-      <motion.div 
+      <motion.div
         className="rdr-grain absolute inset-0 pointer-events-none"
-        animate={{ opacity: [0.02, 0.05, 0.02] }}
+        animate={{ opacity: [0.03, 0.06, 0.03] }}
         transition={{ duration: 3, repeat: Infinity }}
       />
 
       <div className="rdr-vignette absolute inset-0 pointer-events-none" />
 
       <div className="relative z-10 h-full flex">
-        <div className="w-full max-w-md pl-12 md:pl-24 flex flex-col justify-center">
-          <nav className="space-y-1">
+        <div className="w-full max-w-md pl-8 md:pl-[10vw] flex flex-col justify-center">
+          <p className="font-typewriter text-[#5a5348] text-[10px] md:text-xs tracking-[0.35em] uppercase mb-6">
+            Menú principal
+          </p>
+          <nav className="space-y-1 border-l border-[#feac01]/25 pl-3">
             {menuItems.map((item, index) => (
               <motion.button
                 key={item.id}
@@ -76,19 +80,18 @@ export default function MainMenu({ onNavigate, onBack }: MainMenuProps) {
               >
                 {activeIndex === index && (
                   <motion.div
-                    className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#cc0000]"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-9 bg-[#bd081a] shadow-[0_0_12px_rgba(189,8,26,0.45)]"
                     layoutId="menuIndicator"
                     transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                   />
                 )}
-                
-                <span 
-                  className={`text-xl md:text-2xl tracking-[0.15em] transition-colors duration-200 ${
-                    activeIndex === index 
-                      ? 'text-[#e8dcc8]' 
-                      : 'text-[#6b635a]'
+
+                <span
+                  className={`font-chinese-rocks uppercase text-xl md:text-2xl tracking-[0.12em] transition-colors duration-200 ${
+                    activeIndex === index
+                      ? 'text-[#e8dfc0] rdr-text-glow'
+                      : 'text-[#5c5348]'
                   }`}
-                  style={{ fontFamily: 'var(--font-western), Georgia, serif' }}
                 >
                   {item.label}
                 </span>
@@ -102,9 +105,7 @@ export default function MainMenu({ onNavigate, onBack }: MainMenuProps) {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
           >
-            <p className="text-[#4a453d] text-sm tracking-wider"
-              style={{ fontFamily: 'var(--font-typewriter), Courier New, monospace' }}
-            >
+            <p className="text-[#716454] text-sm tracking-wide font-sans leading-relaxed max-w-sm">
               {menuItems[activeIndex].description}
             </p>
           </motion.div>
@@ -117,15 +118,11 @@ export default function MainMenu({ onNavigate, onBack }: MainMenuProps) {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8 }}
           >
-            <p className="text-[#3d3a35] text-xs tracking-[0.2em] uppercase"
-              style={{ fontFamily: 'var(--font-typewriter), Courier New, monospace' }}
-            >
+            <p className="font-typewriter text-[#4a4338] text-xs tracking-[0.2em] uppercase">
               Navega con el cursor
             </p>
-            <p className="text-[#3d3a35] text-xs tracking-[0.2em] uppercase mt-1"
-              style={{ fontFamily: 'var(--font-typewriter), Courier New, monospace' }}
-            >
-              Click para seleccionar
+            <p className="font-typewriter text-[#4a4338] text-xs tracking-[0.2em] uppercase mt-1">
+              Clic para seleccionar
             </p>
           </motion.div>
         </div>

@@ -1,12 +1,19 @@
 import type { Metadata, Viewport } from 'next'
 import localFont from 'next/font/local'
+import { Crimson_Text } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
-// SOLO ESTA FUENTE
 const chineseRocks = localFont({
   src: './fonts/chinese rocks rg.otf',
   variable: '--font-chinese-rocks',
+  display: 'swap',
+})
+
+const crimsonText = Crimson_Text({
+  subsets: ['latin'],
+  weight: ['400', '600', '700'],
+  variable: '--font-body',
   display: 'swap',
 })
 
@@ -17,7 +24,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#1e1b14',
+  themeColor: '#191910',
 }
 
 export default function RootLayout({
@@ -26,10 +33,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es" className={chineseRocks.variable}>
-      <body className="antialiased bg-[#1e1b14] text-[#dcc09a] min-h-screen font-chinese">
+    <html lang="es" className={`${chineseRocks.variable} ${crimsonText.variable}`}>
+      <body className="antialiased bg-rdr-deep text-rdr-cream min-h-screen font-sans">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
   )
+}
