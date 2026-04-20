@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 
 interface TitleScreenProps {
@@ -31,53 +31,48 @@ export default function TitleScreen({ isTransitioning }: TitleScreenProps) {
 
   return (
     <>
-      <div className="relative w-full h-full overflow-hidden bg-black">
-
-        <img
-          src={GIFS[currentIdx]}
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{
-            zIndex: 1,
-            opacity: fading ? 0 : 1,
-            transition: 'opacity 1.8s ease',
-          }}
-        />
-
-        <img
-          src={GIFS[nextIdx]}
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{
-            zIndex: 2,
-            opacity: fading ? 1 : 0,
-            transition: 'opacity 1.8s ease',
-          }}
-        />
-
+      <div className="absolute inset-0 overflow-hidden bg-[#020002]">
+        {/* Fondo siempre visible (vídeo remoto / GIF lento / máscara) */}
         <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ zIndex: 3, background: 'rgba(55,30,5,0.42)' }}
-        />
-
-        <div
-          className="absolute inset-0 rdr-golden-hour"
-          style={{ zIndex: 3 }}
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(254,172,1,0.08),transparent_55%),linear-gradient(to_bottom,rgba(0,0,0,0.2),rgba(0,0,0,0.78))]"
           aria-hidden
         />
+        {/* Capa base: GIFs con máscara orgánica (pipeline tipo promo RDR2) */}
+        <div className="rdr-title-media-stack">
+          <img
+            src={GIFS[currentIdx]}
+            alt=""
+            className="absolute inset-0 z-[1] h-full w-full object-cover rdr-title-gif-film"
+            style={{
+              opacity: fading ? 0 : 1,
+              transition: 'opacity 1.8s ease',
+            }}
+          />
+          <img
+            src={GIFS[nextIdx]}
+            alt=""
+            className="absolute inset-0 z-[2] h-full w-full object-cover rdr-title-gif-film"
+            style={{
+              opacity: fading ? 1 : 0,
+              transition: 'opacity 1.8s ease',
+            }}
+          />
+        </div>
 
         <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            zIndex: 4,
-            background:
-              'radial-gradient(ellipse 85% 80% at 50% 50%, transparent 28%, rgba(2,0,2,0.92) 100%)',
-          }}
+          className="rdr-title-sepia-plate absolute inset-0 pointer-events-none"
+          style={{ zIndex: 3, background: 'rgba(55,30,5,0.48)' }}
         />
+
+        <div className="absolute inset-0 rdr-golden-hour" style={{ zIndex: 4 }} aria-hidden />
+
+        <div className="rdr-paint-texture-multiply" style={{ zIndex: 5 }} aria-hidden />
+
+        <div className="rdr-vignette absolute inset-0 pointer-events-none" style={{ zIndex: 6 }} />
 
         <svg
           className="absolute inset-0 pointer-events-none"
-          style={{ zIndex: 5, opacity: 0.06, width: '100%', height: '100%' }}
+          style={{ zIndex: 7, opacity: 0.06, width: '100%', height: '100%' }}
           xmlns="http://www.w3.org/2000/svg"
         >
           <filter id="grain-filter">
@@ -94,12 +89,12 @@ export default function TitleScreen({ isTransitioning }: TitleScreenProps) {
 
         <div
           className="absolute top-0 left-0 right-0"
-          style={{ height: '22%', background: '#000', zIndex: 10 }}
+          style={{ height: '22%', background: '#000', zIndex: 12 }}
         />
 
         <div
           className="absolute left-0 right-0 overflow-hidden pointer-events-none"
-          style={{ top: 'calc(22% - 20px)', height: '28px', zIndex: 11 }}
+          style={{ top: 'calc(22% - 20px)', height: '28px', zIndex: 13 }}
         >
           <svg
             viewBox="0 0 1000 28"
@@ -128,12 +123,12 @@ export default function TitleScreen({ isTransitioning }: TitleScreenProps) {
 
         <div
           className="absolute bottom-0 left-0 right-0"
-          style={{ height: '19%', background: '#000', zIndex: 10 }}
+          style={{ height: '19%', background: '#000', zIndex: 12 }}
         />
 
         <div
           className="absolute left-0 right-0 overflow-hidden pointer-events-none"
-          style={{ bottom: 'calc(19% - 20px)', height: '28px', zIndex: 11 }}
+          style={{ bottom: 'calc(19% - 20px)', height: '28px', zIndex: 13 }}
         >
           <svg
             viewBox="0 0 1000 28"
@@ -162,7 +157,7 @@ export default function TitleScreen({ isTransitioning }: TitleScreenProps) {
 
         <motion.div
           className="absolute top-0 left-0 right-0 flex items-center justify-center pointer-events-none"
-          style={{ height: '22%', zIndex: 20, gap: 'clamp(6px, 2vw, 20px)' }}
+          style={{ height: '22%', zIndex: 22, gap: 'clamp(6px, 2vw, 20px)' }}
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2 }}
@@ -209,7 +204,7 @@ export default function TitleScreen({ isTransitioning }: TitleScreenProps) {
 
         <motion.div
           className="absolute left-1/2 -translate-x-1/2 pointer-events-none"
-          style={{ bottom: '22%', zIndex: 20 }}
+          style={{ bottom: '22%', zIndex: 22 }}
           initial={{ opacity: 0 }}
           animate={{ opacity: isTransitioning ? 0 : [0.25, 0.85, 0.25] }}
           transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
@@ -229,7 +224,7 @@ export default function TitleScreen({ isTransitioning }: TitleScreenProps) {
 
         <div
           className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-4"
-          style={{ height: '19%', zIndex: 20, paddingBottom: '0.4%' }}
+          style={{ height: '19%', zIndex: 22, paddingBottom: '0.4%' }}
         >
           <span
             className="font-chinese-rocks uppercase text-[#c8b68a]/70"
