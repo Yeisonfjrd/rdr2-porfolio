@@ -34,7 +34,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className={`${chineseRocks.variable} ${crimsonText.variable}`}>
-      <body className="antialiased bg-rdr-deep text-rdr-cream min-h-screen font-sans">
+      <body className="antialiased min-h-full h-full bg-[#020002] text-rdr-cream font-sans">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

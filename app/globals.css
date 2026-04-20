@@ -90,17 +90,20 @@
     @apply border-border;
   }
   html {
+    height: 100%;
     scroll-behavior: smooth;
-    background: var(--rdr-deep);
+    background: var(--rdr-ink-black);
+    overflow-x: hidden;
     /* Serif / UI occidental: misma familia que el cuerpo (Crimson Text) */
     --font-western: var(--font-body), Georgia, 'Times New Roman', serif;
     --font-typewriter: 'Courier New', Courier, monospace;
     --font-rdr-logo: var(--font-chinese-rocks), Impact, 'Arial Black', sans-serif;
   }
   body {
-    background: var(--rdr-deep);
+    height: 100%;
+    min-height: 100%;
+    background: var(--rdr-ink-black);
     color: var(--rdr-cream);
-    min-height: 100vh;
     font-family: var(--font-body), Georgia, 'Times New Roman', serif;
     letter-spacing: 0.02em;
   }
@@ -122,21 +125,30 @@
   .font-rdr-logo {
     font-family: var(--font-rdr-logo), Impact, 'Arial Black', sans-serif;
   }
-  /* numOctaves 3: equilibrio calidad / GPU (feTurbulence costoso con scroll) */
+  /* Grano ligero sin SVG (evita coste GPU en scroll); animación de opacidad sigue funcionando */
   .rdr-grain {
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 3px 3px;
+    pointer-events: none;
   }
   .rdr-vignette {
-    box-shadow: inset 0 0 180px 100px rgba(0, 0, 0, 0.68);
+    background: radial-gradient(
+      ellipse at center,
+      transparent 35%,
+      rgba(2, 0, 2, 0.92) 100%
+    );
+    pointer-events: none;
   }
-  /* Luz dorada tipo “golden hour” (overlay suave) */
+  /* Luz dorada — screen integra mejor con fondos oscuros */
   .rdr-golden-hour {
     background: radial-gradient(
-      ellipse 120% 80% at 50% 0%,
-      rgba(255, 180, 50, 0.28),
-      transparent 72%
+      circle at 50% 30%,
+      rgba(254, 172, 1, 0.16),
+      transparent 55%
     );
-    mix-blend-mode: overlay;
+    mix-blend-mode: screen;
     pointer-events: none;
   }
   /* Filtro cinematográfico opcional (aplicar a un contenedor, no a toda la UI si hay problemas de contraste) */
@@ -320,5 +332,180 @@
   }
   .rdr-divider {
     border-color: color-mix(in srgb, var(--rdr-map-ink) 55%, transparent);
+  }
+
+  /* ── RDR2 promo: máscara orgánica + textura multiply (sitio Rockstar) ── */
+  .rdr-title-media-stack {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    isolation: isolate;
+    /* Si la máscara falla al cargar, el color evita “pantalla vacía” */
+    background-color: #120a05;
+    -webkit-mask-image: url('/masks/rdr-fullframe-brush.svg');
+    mask-image: url('/masks/rdr-fullframe-brush.svg');
+    -webkit-mask-size: cover;
+    mask-size: cover;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-mode: luminance;
+    mask-mode: luminance;
+  }
+  .rdr-title-gif-film {
+    filter: sepia(0.32) contrast(1.09) brightness(0.88) saturate(0.86);
+  }
+  .rdr-title-sepia-plate {
+    mix-blend-mode: multiply;
+  }
+  .rdr-paint-texture-multiply {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 4;
+    /* Sin PNG externo: SVG del repo + degradados de respaldo */
+    background-image:
+      url('/textures/rdr-paint-vignette.svg'),
+      linear-gradient(180deg, rgba(40, 22, 10, 0.25), transparent 40%, transparent 60%, rgba(20, 10, 5, 0.35));
+    background-size: cover, cover;
+    background-position: center, center;
+    background-repeat: no-repeat, no-repeat;
+    mix-blend-mode: multiply;
+    opacity: 0.42;
+  }
+
+  /* Compendio: miniaturas con máscara de pincel + trazo dorado */
+  .rdr-compendium-grid {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 640px) {
+    .rdr-compendium-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 1024px) {
+    .rdr-compendium-grid {
+      grid-template-columns: 1.65fr 1fr 1fr;
+      grid-template-rows: auto auto;
+    }
+    .rdr-photo-card--featured {
+      grid-row: 1 / span 2;
+    }
+  }
+  .rdr-photo-card {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    border: none;
+    background: transparent;
+    padding: 0;
+    text-align: left;
+    outline: none;
+  }
+  .rdr-photo-card:focus-visible {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--rdr-gold) 55%, transparent);
+  }
+  .rdr-photo-card-inner {
+    position: relative;
+    width: 100%;
+    height: 130px;
+  }
+  .rdr-photo-card--featured .rdr-photo-card-inner {
+    height: min(270px, 38vh);
+  }
+  .rdr-card-photo-bg {
+    position: absolute;
+    inset: 0;
+    background-color: #1a1008;
+    background-size: cover;
+    background-position: center;
+    filter: sepia(0.72) contrast(1.1) brightness(0.72);
+    transition:
+      filter 0.35s ease,
+      transform 0.35s ease;
+    -webkit-mask-image: url('/masks/rdr-card-brush.svg');
+    mask-image: url('/masks/rdr-card-brush.svg');
+    -webkit-mask-size: cover;
+    mask-size: cover;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-mode: luminance;
+    mask-mode: luminance;
+  }
+  .rdr-photo-card--featured .rdr-card-photo-bg {
+    -webkit-mask-image: url('/masks/rdr-card-brush-tall.svg');
+    mask-image: url('/masks/rdr-card-brush-tall.svg');
+  }
+  .rdr-photo-card:hover .rdr-card-photo-bg {
+    filter: sepia(0.4) contrast(1.12) brightness(0.88);
+    transform: scale(1.03);
+  }
+  .rdr-photo-card--active .rdr-card-photo-bg {
+    filter: sepia(0.15) contrast(1.15) brightness(0.92);
+  }
+  .rdr-card-paint-stroke {
+    position: absolute;
+    inset: -1px;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .rdr-card-paint-stroke path {
+    fill: none;
+    stroke: rgba(180, 140, 60, 0.38);
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+  }
+  .rdr-card-active-outline {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 3;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    border: 3px solid var(--rdr-blood);
+    clip-path: polygon(
+      0% 1%,
+      2% 0%,
+      98% 0.5%,
+      100% 0%,
+      99.5% 2%,
+      100% 98%,
+      99% 100%,
+      2% 99.5%,
+      0.5% 100%,
+      0% 98%
+    );
+  }
+  .rdr-photo-card--active .rdr-card-active-outline {
+    opacity: 1;
+  }
+  .rdr-compendium-card-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 32px 10px 9px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.78) 0%, transparent 100%);
+    z-index: 4;
+  }
+  .rdr-compendium-card-label span {
+    font-family: var(--font-chinese-rocks), Impact, sans-serif;
+    font-size: 8.5px;
+    letter-spacing: 3.5px;
+    color: #c8a84b;
+    text-transform: uppercase;
+    font-weight: 400;
+    transition: color 0.25s;
+  }
+  .rdr-photo-card:hover .rdr-compendium-card-label span {
+    color: #e0c878;
+  }
+  .rdr-photo-card--active .rdr-compendium-card-label span {
+    color: #fff;
   }
 }

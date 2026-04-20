@@ -5,13 +5,14 @@ import { motion, AnimatePresence } from 'framer-motion'
 import TitleScreen from '@/components/screens/title-screen'
 import MainMenu from '@/components/screens/main-menu'
 import PortfolioMenu from '@/components/screens/portfolio-menu'
+import type { PortfolioInitialSection } from '@/components/screens/portfolio-menu'
 
 type GameScreen = 'title' | 'main' | 'portfolio'
 
 export default function Home() {
   const [currentScreen, setCurrentScreen] = useState<GameScreen>('title')
   const [isTransitioning, setIsTransitioning] = useState(false)
-  const [initialSection, setInitialSection] = useState<string | undefined>(undefined)
+  const [initialSection, setInitialSection] = useState<PortfolioInitialSection | undefined>(undefined)
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -45,7 +46,7 @@ export default function Home() {
     }
   }, [currentScreen, isTransitioning])
 
-  const handleNavigate = (screen: GameScreen, section?: string) => {
+  const handleNavigate = (screen: GameScreen, section?: PortfolioInitialSection) => {
     if (isTransitioning) return
     setIsTransitioning(true)
     setInitialSection(section)
@@ -69,7 +70,7 @@ export default function Home() {
   }
 
   return (
-    <div className="fixed inset-0 bg-rdr-deep overflow-hidden">
+    <div className="fixed inset-0 bg-[#020002] overflow-hidden">
       <AnimatePresence mode="wait">
         {currentScreen === 'title' && (
           <motion.div

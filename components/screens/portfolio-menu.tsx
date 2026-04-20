@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { cn } from '@/lib/utils'
 
 export type PortfolioInitialSection = 'portfolio' | 'about' | 'contact'
 
@@ -18,6 +19,22 @@ const categories = [
   { id: 'experiencia', label: 'EXPERIENCIA' },
   { id: 'contacto', label: 'CONTACTO' },
 ]
+
+/** Miniaturas estilo menú RDR2 (máscara + trazo en globals.css) */
+const COMPENDIUM_IMAGES = [
+  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=700&q=80',
+  'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=500&q=80',
+  'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=500&q=80',
+  'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=500&q=80',
+  'https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=500&q=80',
+] as const
+
+/** Trazos SVG calcados del layout tipo “paint edge” (borde orgánico) */
+const PAINT_EDGE_TALL =
+  'M4,4 C10,2 22,4 34,3 C46,4 58,2 70,3 C82,4 94,2 106,3 C118,4 130,2 142,3 C154,4 166,2 178,3 C190,4 196,3 198,4 L198,12 C199,28 197,44 198,60 C199,76 197,92 198,108 C199,124 197,140 198,156 C199,172 197,188 198,204 C199,220 197,236 198,252 L198,266 C190,269 178,266 166,268 C154,269 142,266 130,268 C118,269 106,266 94,268 C82,269 70,266 58,268 C46,269 34,266 22,268 C12,269 5,267 2,266 L2,12 C1,28 3,44 2,60 C1,76 3,92 2,108 C1,124 3,140 2,156 C1,172 3,188 2,204 C1,220 3,236 2,252 Z'
+
+const PAINT_EDGE_SHORT =
+  'M4,3 C12,1 24,3 36,2 C48,3 60,1 72,2 C84,3 96,1 108,2 C120,3 132,1 144,2 C156,3 168,1 180,2 C190,3 196,2 198,3 L198,10 C199,24 197,38 198,52 C199,66 197,80 198,94 C199,108 197,120 198,127 C190,129 178,127 166,128 C154,129 142,127 130,128 C118,129 106,127 94,128 C82,129 70,127 58,128 C46,129 34,127 22,128 C12,129 5,128 2,127 L2,10 C1,24 3,38 2,52 C1,66 3,80 2,94 C1,108 3,120 2,127 Z'
 
 const profileData = {
   nombre: 'Yeison Fajardo',
@@ -303,19 +320,15 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
   }
 
   return (
-    <div ref={containerRef} className="rdr-cinematic-bars relative w-full h-full overflow-hidden">
-      <video
-        className="absolute inset-0 h-full w-full object-cover opacity-[0.22]"
-        autoPlay
-        muted
-        loop
-        playsInline
-      >
-        <source
-          src="https://cdn.coverr.co/videos/coverr-horses-in-a-field-1560/1080p.mp4"
-          type="video/mp4"
-        />
-      </video>
+    <div
+      ref={containerRef}
+      className="rdr-cinematic-bars absolute inset-0 min-h-0 overflow-hidden bg-[#020002]"
+    >
+      <div className="absolute inset-0 bg-[#100d08]" aria-hidden />
+      <div
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(254,172,1,0.08),transparent_55%),linear-gradient(to_bottom,rgba(0,0,0,0.25),rgba(0,0,0,0.88))]"
+        aria-hidden
+      />
       <div className="absolute inset-0 bg-western" />
       <div className="absolute inset-0 rdr-golden-hour opacity-50" aria-hidden />
 
@@ -385,8 +398,64 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
           </div>
         </div>
 
-        <div className="flex-1 p-6 md:p-10 lg:p-12 overflow-y-auto min-h-0">
-          <div className="rdr-panel rdr-panel-print rdr-tintype-soft rounded-sm p-6 md:p-8 min-h-[min(100%,480px)]">
+        <div className="flex-1 flex flex-col gap-6 p-6 md:p-10 lg:p-12 overflow-y-auto min-h-0">
+          <div className="shrink-0">
+            <div className="flex items-center justify-between pb-2 mb-3 rdr-divider border-b">
+              <p className="font-typewriter text-[#5a5348] text-[10px] tracking-[0.28em] uppercase">
+                Secciones
+              </p>
+              <div className="flex items-center gap-2" aria-hidden>
+                <div className="h-px w-8 bg-[rgba(180,140,60,0.35)]" />
+                <div className="size-1.5 rotate-45 bg-[#c8a84b]/60" />
+                <div className="h-px w-8 bg-[rgba(180,140,60,0.35)]" />
+              </div>
+            </div>
+            <div className="rdr-compendium-grid">
+              {categories.map((category, index) => {
+                const isFeatured = index === 0
+                const isActive = selectedCategory === index
+                return (
+                  <button
+                    key={category.id}
+                    type="button"
+                    aria-label={`Abrir sección ${category.label}`}
+                    className={cn(
+                      'rdr-photo-card',
+                      isFeatured && 'rdr-photo-card--featured',
+                      isActive && 'rdr-photo-card--active'
+                    )}
+                    onClick={() => setSelectedCategory(index)}
+                    onMouseEnter={() => setHoveredCategory(index)}
+                    onMouseLeave={() => setHoveredCategory(null)}
+                  >
+                    <div className="rdr-photo-card-inner">
+                      <div
+                        className="rdr-card-photo-bg"
+                        style={{
+                          backgroundImage: `url(${COMPENDIUM_IMAGES[index]})`,
+                        }}
+                      />
+                      <svg
+                        className="rdr-card-paint-stroke"
+                        viewBox={isFeatured ? '0 0 200 270' : '0 0 200 130'}
+                        preserveAspectRatio="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden
+                      >
+                        <path d={isFeatured ? PAINT_EDGE_TALL : PAINT_EDGE_SHORT} />
+                      </svg>
+                      <div className="rdr-card-active-outline" aria-hidden />
+                      <div className="rdr-compendium-card-label">
+                        <span>{category.label}</span>
+                      </div>
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          <div className="rdr-panel rdr-panel-print rdr-tintype-soft rounded-sm p-6 md:p-8 min-h-[min(100%,480px)] flex-1 min-h-0">
             <motion.div className="mb-8" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
               <h2 className="font-chinese-rocks text-2xl md:text-3xl text-rdr-parchment mb-2 tracking-[0.12em]">
                 {categories[activeCategory].label}
