@@ -33,16 +33,9 @@ export default function MainMenu({ onNavigate, onBack }: MainMenuProps) {
 
   return (
     <div className="rdr-cinematic-bars absolute inset-0 min-h-0 overflow-hidden bg-[#020002]">
-      {/* Coverr y similares suelen bloquearse por CORS (OpaqueResponseBlocking); fondo estático estable */}
-      <div className="absolute inset-0 bg-[#100d08]" aria-hidden />
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(254,172,1,0.08),transparent_55%),linear-gradient(to_bottom,rgba(0,0,0,0.25),rgba(0,0,0,0.88))]"
-        aria-hidden
-      />
-
-      <div className="absolute inset-0 bg-western" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/42 to-black/76" />
-      <div className="absolute inset-0 rdr-golden-hour opacity-[0.65]" aria-hidden />
+      <div className="absolute inset-0 bg-[#12100d]" aria-hidden />
+      <div className="rdr-menu-atmosphere" aria-hidden />
+      <div className="absolute inset-0 rdr-golden-hour opacity-[0.38]" aria-hidden />
 
       <motion.div
         className="rdr-grain absolute inset-0 pointer-events-none"

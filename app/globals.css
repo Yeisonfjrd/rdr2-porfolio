@@ -3,102 +3,101 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ─────────────────────────────────────────────
+   VARIABLES
+───────────────────────────────────────────── */
 :root {
-  /* Promo / portada RDR2 */
-  --rdr-crimson: #bd081a;
-  --rdr-dark-red: #b90303;
-  --rdr-gold: #feac01;
-  --rdr-ink-black: #020002;
-  --rdr-off-white: #fffeff;
-
-  /* Mapa / atlas (UI in-game) */
-  --rdr-canvas: #dec29b;
-  --rdr-map-ink: #40423d;
-  --rdr-map-water: #9e9985;
-  --rdr-contours: #c8b28d;
-  --rdr-pencil: #716454;
-
-  /* Base del sitio (sombras profundas + pergamino) */
-  --rdr-blood: #bd081a;
-  --rdr-blood-muted: #b90303;
-  --rdr-cream: #dcc09a;
-  --rdr-parchment: #e0c38f;
-  --rdr-parchment-soft: #ddd0aa;
-  --rdr-brown-dark: #1e1b14;
-  --rdr-deep: #191910;
-  --rdr-brown-mid: #28251c;
-  --rdr-brown-light: #3a3529;
-  --rdr-olive: #353631;
-  --rdr-gray: #7a7d77;
-  /* Tierra / marco UI (referencia estilo western) */
+  --rdr-crimson:       #bd081a;
+  --rdr-dark-red:      #b90303;
+  --rdr-gold:          #feac01;
+  --rdr-ink-black:     #020002;
+  --rdr-off-white:     #fffeff;
+  --rdr-canvas:        #dec29b;
+  --rdr-map-ink:       #40423d;
+  --rdr-map-water:     #9e9985;
+  --rdr-contours:      #c8b28d;
+  --rdr-pencil:        #716454;
+  --rdr-blood:         #bd081a;
+  --rdr-blood-muted:   #b90303;
+  --rdr-cream:         #dcc09a;
+  --rdr-parchment:     #e0c38f;
+  --rdr-parchment-soft:#ddd0aa;
+  --rdr-brown-dark:    #1e1b14;
+  --rdr-deep:          #191910;
+  --rdr-brown-mid:     #28251c;
+  --rdr-brown-light:   #3a3529;
+  --rdr-olive:         #353631;
+  --rdr-gray:          #7a7d77;
   --rdr-western-brown: #7d4c2c;
-  --rdr-white-warm: #e8dfc0;
+  --rdr-white-warm:    #e8dfc0;
 
-  --background: 43 22% 12%;
-  --foreground: 38 43% 73%;
-  --card: 43 18% 15%;
-  --card-foreground: 38 43% 73%;
-  --popover: 43 18% 15%;
-  --popover-foreground: 38 43% 73%;
-  --primary: 0 100% 37%;
-  --primary-foreground: 38 43% 90%;
-  --secondary: 38 43% 73%;
-  --secondary-foreground: 43 22% 12%;
-  --muted: 43 15% 25%;
-  --muted-foreground: 38 20% 55%;
-  --accent: 0 100% 37%;
-  --accent-foreground: 38 43% 90%;
-  --destructive: 0 100% 37%;
+  --background:          43 22% 12%;
+  --foreground:          38 43% 73%;
+  --card:                43 18% 15%;
+  --card-foreground:     38 43% 73%;
+  --popover:             43 18% 15%;
+  --popover-foreground:  38 43% 73%;
+  --primary:             0 100% 37%;
+  --primary-foreground:  38 43% 90%;
+  --secondary:           38 43% 73%;
+  --secondary-foreground:43 22% 12%;
+  --muted:               43 15% 25%;
+  --muted-foreground:    38 20% 55%;
+  --accent:              0 100% 37%;
+  --accent-foreground:   38 43% 90%;
+  --destructive:         0 100% 37%;
   --destructive-foreground: 38 43% 90%;
-  --border: 43 20% 22%;
-  --input: 43 18% 18%;
-  --ring: 0 100% 37%;
-  --radius: 0px;
+  --border:              43 20% 22%;
+  --input:               43 18% 18%;
+  --ring:                0 100% 37%;
+  --radius:              0px;
 }
 
 @theme inline {
-  --font-sans: var(--font-body), -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans:  var(--font-body), -apple-system, BlinkMacSystemFont, sans-serif;
   --font-serif: var(--font-western), Georgia, serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
+  --font-mono:  'JetBrains Mono', monospace;
+  --color-background:            var(--background);
+  --color-foreground:            var(--foreground);
+  --color-card:                  var(--card);
+  --color-card-foreground:       var(--card-foreground);
+  --color-popover:               var(--popover);
+  --color-popover-foreground:    var(--popover-foreground);
+  --color-primary:               var(--primary);
+  --color-primary-foreground:    var(--primary-foreground);
+  --color-secondary:             var(--secondary);
+  --color-secondary-foreground:  var(--secondary-foreground);
+  --color-muted:                 var(--muted);
+  --color-muted-foreground:      var(--muted-foreground);
+  --color-accent:                var(--accent);
+  --color-accent-foreground:     var(--accent-foreground);
+  --color-destructive:           var(--destructive);
+  --color-destructive-foreground:var(--destructive-foreground);
+  --color-border:                var(--border);
+  --color-input:                 var(--input);
+  --color-ring:                  var(--ring);
   --radius-sm: 0px;
   --radius-md: 0px;
   --radius-lg: 0px;
   --radius-xl: 0px;
 }
 
+/* ─────────────────────────────────────────────
+   BASE
+───────────────────────────────────────────── */
 @layer base {
-  * {
-    @apply border-border;
-  }
+  * { @apply border-border; }
+
   html {
     height: 100%;
     scroll-behavior: smooth;
     background: var(--rdr-ink-black);
     overflow-x: hidden;
-    /* Serif / UI occidental: misma familia que el cuerpo (Crimson Text) */
-    --font-western: var(--font-body), Georgia, 'Times New Roman', serif;
-    --font-typewriter: 'Courier New', Courier, monospace;
-    --font-rdr-logo: var(--font-chinese-rocks), Impact, 'Arial Black', sans-serif;
+    --font-western:   var(--font-body), Georgia, 'Times New Roman', serif;
+    --font-typewriter:'Courier New', Courier, monospace;
+    --font-rdr-logo:  var(--font-chinese-rocks), Impact, 'Arial Black', sans-serif;
   }
+
   body {
     height: 100%;
     min-height: 100%;
@@ -107,60 +106,61 @@
     font-family: var(--font-body), Georgia, 'Times New Roman', serif;
     letter-spacing: 0.02em;
   }
+  #__next {
+    height: 100%;
+    background: #020002;
+  }
 }
 
+/* ─────────────────────────────────────────────
+   UTILITIES
+───────────────────────────────────────────── */
 @layer utilities {
-  .font-chinese {
-    font-family: var(--font-chinese-rocks), Impact, 'Arial Black', sans-serif;
-  }
-  .font-chinese-rocks {
-    font-family: var(--font-chinese-rocks), Impact, 'Arial Black', sans-serif;
-  }
-  .font-western {
-    font-family: var(--font-western), Georgia, serif;
-  }
-  .font-typewriter {
-    font-family: var(--font-typewriter), 'Courier New', monospace;
-  }
-  .font-rdr-logo {
-    font-family: var(--font-rdr-logo), Impact, 'Arial Black', sans-serif;
-  }
-  /* Grano ligero sin SVG (evita coste GPU en scroll); animación de opacidad sigue funcionando */
+
+  /* ── Fuentes ── */
+  .font-chinese       { font-family: var(--font-chinese-rocks), Impact, 'Arial Black', sans-serif; }
+  .font-chinese-rocks { font-family: var(--font-chinese-rocks), Impact, 'Arial Black', sans-serif; }
+  .font-western       { font-family: var(--font-western), Georgia, serif; }
+  .font-typewriter    { font-family: var(--font-typewriter), 'Courier New', monospace; }
+  .font-rdr-logo      { font-family: var(--font-rdr-logo), Impact, 'Arial Black', sans-serif; }
+
+  /* ── Grain / textura ── */
   .rdr-grain {
     background-image:
-      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
     background-size: 3px 3px;
     pointer-events: none;
   }
+
+  /* ── Viñeta (menos negra en los bordes; antes 0.92 aplastaba el fondo) ── */
   .rdr-vignette {
-    background: radial-gradient(
-      ellipse at center,
-      transparent 35%,
-      rgba(2, 0, 2, 0.92) 100%
-    );
+    background: radial-gradient(ellipse at center, transparent 42%, rgba(2,0,2,0.68) 100%);
     pointer-events: none;
   }
-  /* Luz dorada — screen integra mejor con fondos oscuros */
+
+  /* ── Luz dorada ── */
   .rdr-golden-hour {
-    background: radial-gradient(
-      circle at 50% 30%,
-      rgba(254, 172, 1, 0.16),
-      transparent 55%
-    );
+    background: radial-gradient(circle at 50% 30%, rgba(254,172,1,0.16), transparent 55%);
     mix-blend-mode: screen;
     pointer-events: none;
   }
-  /* Filtro cinematográfico opcional (aplicar a un contenedor, no a toda la UI si hay problemas de contraste) */
+
+  /* ── Film look ── */
   .rdr-film-look {
     filter: sepia(12%) contrast(1.08) brightness(0.96) saturate(1.08);
   }
+
+  /* ── Barras cinematográficas ──
+     Usan clip-path con muchos puntos para el efecto jagged base.
+     El borde más orgánico (pintura real) se logra con los elementos
+     .rdr-bar-paint-edge en title-screen.tsx usando filter: url(#rdr-paint-bar)
+  */
   .rdr-cinematic-bars::before,
   .rdr-cinematic-bars::after {
     content: '';
     position: absolute;
-    left: 0;
-    right: 0;
+    left: 0; right: 0;
     height: 12%;
     background: #000;
     z-index: 20;
@@ -169,122 +169,98 @@
   .rdr-cinematic-bars::before {
     top: 0;
     clip-path: polygon(
-      0 0,
-      100% 0,
-      100% 88%,
-      95% 94%,
-      88% 90%,
-      82% 96%,
-      74% 91%,
-      67% 97%,
-      60% 92%,
-      52% 98%,
-      44% 93%,
-      37% 99%,
-      30% 92%,
-      23% 97%,
-      15% 91%,
-      8% 96%,
-      0 90%
+      0 0, 100% 0, 100% 85%,
+      97% 90%, 93% 86%, 89% 92%, 85% 87%, 81% 93%, 77% 88%,
+      73% 94%, 69% 89%, 65% 95%, 61% 90%, 57% 96%, 53% 91%,
+      49% 97%, 45% 92%, 41% 98%, 37% 93%, 33% 99%, 29% 93%,
+      25% 97%, 21% 91%, 17% 96%, 13% 90%, 9% 95%, 5% 89%,
+      2% 93%, 0 88%
     );
   }
   .rdr-cinematic-bars::after {
     bottom: 0;
     clip-path: polygon(
-      0 10%,
-      7% 4%,
-      14% 9%,
-      22% 3%,
-      29% 8%,
-      36% 2%,
-      43% 7%,
-      50% 1%,
-      58% 8%,
-      66% 2%,
-      73% 9%,
-      81% 4%,
-      89% 10%,
-      96% 5%,
-      100% 12%,
-      100% 100%,
-      0 100%
+      0 12%, 3% 7%, 7% 11%, 11% 5%, 15% 10%, 19% 4%,
+      23% 9%, 27% 3%, 31% 8%, 35% 2%, 39% 7%, 43% 1%,
+      47% 6%, 51% 0%, 55% 5%, 59% 1%, 63% 6%, 67% 0%,
+      71% 7%, 75% 2%, 79% 8%, 83% 3%, 87% 9%, 91% 4%,
+      95% 10%, 98% 5%, 100% 10%,
+      100% 100%, 0 100%
     );
   }
-  .text-rdr-blood {
-    color: var(--rdr-crimson);
-  }
-  .text-rdr-cream {
-    color: var(--rdr-cream);
-  }
-  .text-rdr-parchment {
-    color: var(--rdr-parchment);
-  }
-  .bg-rdr-deep {
-    background-color: var(--rdr-deep);
-  }
-  .text-rdr-gold {
-    color: var(--rdr-gold);
-  }
-  .text-rdr-ink {
-    color: var(--rdr-map-ink);
-  }
-  .text-rdr-muted {
-    color: #7a7d77;
-  }
-  .bg-rdr-dark {
-    background-color: #1e1b14;
-  }
-  .bg-rdr-card {
-    background-color: #28251c;
-  }
-  .bg-rdr-light {
-    background-color: #3a3529;
-  }
-  .border-rdr {
-    border-color: #3a3529;
-  }
-  .border-rdr-blood {
-    border-color: var(--rdr-crimson);
-  }
-  .border-rdr-gold {
-    border-color: color-mix(in srgb, var(--rdr-gold) 45%, transparent);
-  }
-  /* Fondo tipo menú RDR: sepia sobre imagen/vídeo */
+
+  /* ── Colores de texto / fondo (definidos aquí para no depender de utilidades Tailwind inexistentes) ── */
+  .text-rdr-blood    { color: var(--rdr-crimson); }
+  .text-rdr-cream    { color: var(--rdr-cream); }
+  .text-rdr-parchment{ color: var(--rdr-parchment); }
+  .text-rdr-gold     { color: var(--rdr-gold); }
+  .text-rdr-gold-soft  { color: color-mix(in srgb, var(--rdr-gold) 90%, transparent); }
+  .text-rdr-gold-muted { color: color-mix(in srgb, var(--rdr-gold) 80%, transparent); }
+  .text-rdr-ink      { color: var(--rdr-map-ink); }
+  .text-rdr-pencil   { color: var(--rdr-pencil); }
+  .text-rdr-muted    { color: #7a7d77; }
+  .bg-rdr-deep       { background-color: var(--rdr-deep); }
+  .bg-rdr-dark       { background-color: #1e1b14; }
+  .bg-rdr-card       { background-color: #28251c; }
+  .bg-rdr-light      { background-color: #3a3529; }
+  .border-rdr        { border-color: #3a3529; }
+  .border-rdr-blood  { border-color: var(--rdr-crimson); }
+  .border-rdr-gold   { border-color: color-mix(in srgb, var(--rdr-gold) 45%, transparent); }
+
+  /* ── Fondo western ── */
   .bg-western {
     background:
-      linear-gradient(to bottom, rgba(55, 30, 5, 0.35), rgba(30, 18, 10, 0.82)),
+      linear-gradient(to bottom, rgba(55,30,5,0.28), rgba(30,18,10,0.58)),
       linear-gradient(135deg, #0f0e0c 0%, #1a1510 45%, #0c0a08 100%);
     color: var(--rdr-white-warm);
   }
-  /* Título menú principal (Chinese Rocks + sombra dura) */
+
+  /*
+    Una sola capa de atmósfera para menú / portfolio (sustituye varios divs oscuros encadenados).
+  */
+  .rdr-menu-atmosphere {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 50% 32%, rgba(254,172,1,0.08), transparent 52%),
+      linear-gradient(to bottom, rgba(0,0,0,0.14) 0%, rgba(0,0,0,0.38) 100%),
+      linear-gradient(to right, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.16) 45%, rgba(0,0,0,0.44) 100%),
+      linear-gradient(to bottom, rgba(55,30,5,0.22), rgba(24,18,14,0.55)),
+      linear-gradient(135deg, #12100d 0%, #1c1812 48%, #0f0d0a 100%);
+  }
+
+  /* Título: una sola capa cálida en lugar de sepia + golden + textura por separado */
+  .rdr-title-warm-wash {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 50% 28%, rgba(254,172,1,0.12), transparent 50%),
+      linear-gradient(180deg, rgba(55,30,5,0.22) 0%, rgba(25,14,8,0.12) 45%, rgba(20,10,5,0.2) 100%);
+    mix-blend-mode: multiply;
+    opacity: 0.85;
+  }
+
+  /* ── Texto glow ── */
   .rdr-text-glow {
     color: var(--rdr-white-warm);
-    text-shadow:
-      2px 2px 0 #000,
-      -1px -1px 0 rgba(0, 0, 0, 0.7),
-      4px 4px 8px rgba(0, 0, 0, 0.95);
+    text-shadow: 2px 2px 0 #000, -1px -1px 0 rgba(0,0,0,0.7), 4px 4px 8px rgba(0,0,0,0.95);
   }
   .rdr-menu-heading {
     font-family: var(--font-chinese-rocks), Impact, sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.12em;
   }
-  /* Panel tipo carta / compendio (pergamino sobre oscuro) */
+
+  /* ── Panel pergamino ── */
   .rdr-panel {
     position: relative;
     isolation: isolate;
-    background: linear-gradient(
-      165deg,
-      rgba(222, 194, 155, 0.07) 0%,
-      rgba(30, 27, 20, 0.92) 48%,
-      rgba(25, 22, 16, 0.96) 100%
-    );
+    background: linear-gradient(165deg, rgba(222,194,155,0.07) 0%, rgba(30,27,20,0.92) 48%, rgba(25,22,16,0.96) 100%);
     border: 1px solid color-mix(in srgb, var(--rdr-contours) 35%, transparent);
-    box-shadow:
-      inset 0 1px 0 rgba(254, 172, 1, 0.12),
-      0 12px 40px rgba(2, 0, 2, 0.45);
+    box-shadow: inset 0 1px 0 rgba(254,172,1,0.12), 0 12px 40px rgba(2,0,2,0.45);
   }
-  /* Fibra + tinta “impresa” (multiply), estilo papel de mapa / diario */
   .rdr-panel-print::after {
     content: '';
     position: absolute;
@@ -296,105 +272,99 @@
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
     z-index: 0;
   }
-  .rdr-panel-print > * {
-    position: relative;
-    z-index: 1;
-  }
-  /* Bordes suaves tipo placa tintipo (máscara alfa; -webkit- para Safari/Chromium) */
+  .rdr-panel-print > * { position: relative; z-index: 1; }
+
+  /* ── Tintype: máscara suave (panel de contenido) ── */
   .rdr-tintype-soft {
-    -webkit-mask-image: radial-gradient(
-      ellipse 99% 98% at 50% 50%,
-      #000 78%,
-      rgba(0, 0, 0, 0.65) 92%,
-      transparent 100%
-    );
-    mask-image: radial-gradient(
-      ellipse 99% 98% at 50% 50%,
-      #000 78%,
-      rgba(0, 0, 0, 0.65) 92%,
-      transparent 100%
-    );
-    -webkit-mask-size: 100% 100%;
-    mask-size: 100% 100%;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
+    -webkit-mask-image: radial-gradient(ellipse 99% 98% at 50% 50%, #000 78%, rgba(0,0,0,0.65) 92%, transparent 100%);
+    mask-image:         radial-gradient(ellipse 99% 98% at 50% 50%, #000 78%, rgba(0,0,0,0.65) 92%, transparent 100%);
+    -webkit-mask-size:     100% 100%;
+    mask-size:             100% 100%;
+    -webkit-mask-repeat:   no-repeat;
+    mask-repeat:           no-repeat;
     -webkit-mask-position: center;
-    mask-position: center;
+    mask-position:         center;
   }
+
+  /* ── Sidebar ── */
   .rdr-sidebar-edge {
-    background: linear-gradient(90deg, rgba(2, 0, 2, 0.5) 0%, transparent 100%);
+    background: linear-gradient(90deg, rgba(2,0,2,0.5) 0%, transparent 100%);
     border-right: 1px solid color-mix(in srgb, var(--rdr-pencil) 40%, transparent);
   }
+
+  /* ── Tags / dividers ── */
   .rdr-tag {
     color: var(--rdr-parchment-soft);
-    background: rgba(26, 24, 21, 0.9);
+    background: rgba(26,24,21,0.9);
     border: 1px solid color-mix(in srgb, var(--rdr-gold) 22%, transparent);
   }
   .rdr-divider {
     border-color: color-mix(in srgb, var(--rdr-map-ink) 55%, transparent);
   }
 
-  /* ── RDR2 promo: máscara orgánica + textura multiply (sitio Rockstar) ── */
+  /* ── Title screen: GIF stack con máscara orgánica ── */
   .rdr-title-media-stack {
     position: absolute;
     inset: 0;
     z-index: 1;
     isolation: isolate;
-    /* Si la máscara falla al cargar, el color evita “pantalla vacía” */
     background-color: #120a05;
+    /*
+      Técnica real RDR2: mask-image con PNG de pincelada.
+      El SVG generado es una aproximación; si tenés el PNG real de Rockstar, usalo acá.
+    */
     -webkit-mask-image: url('/masks/rdr-fullframe-brush.svg');
-    mask-image: url('/masks/rdr-fullframe-brush.svg');
-    -webkit-mask-size: cover;
-    mask-size: cover;
+    mask-image:         url('/masks/rdr-fullframe-brush.svg');
+    -webkit-mask-size:     cover;
+    mask-size:             cover;
     -webkit-mask-position: center;
-    mask-position: center;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    -webkit-mask-mode: luminance;
-    mask-mode: luminance;
+    mask-position:         center;
+    -webkit-mask-repeat:   no-repeat;
+    mask-repeat:           no-repeat;
+    -webkit-mask-mode:     luminance;
+    mask-mode:             luminance;
+  }
+  /* Si GIF/video remoto falla, el fondo no queda negro puro */
+  .rdr-title-media-stack--static-fallback {
+    background-image: linear-gradient(165deg, #221409 0%, #3d2618 42%, #1a100a 100%);
   }
   .rdr-title-gif-film {
     filter: sepia(0.32) contrast(1.09) brightness(0.88) saturate(0.86);
   }
-  .rdr-title-sepia-plate {
-    mix-blend-mode: multiply;
-  }
+  .rdr-title-sepia-plate { mix-blend-mode: multiply; }
   .rdr-paint-texture-multiply {
     position: absolute;
     inset: 0;
     pointer-events: none;
     z-index: 4;
-    /* Sin PNG externo: SVG del repo + degradados de respaldo */
     background-image:
       url('/textures/rdr-paint-vignette.svg'),
-      linear-gradient(180deg, rgba(40, 22, 10, 0.25), transparent 40%, transparent 60%, rgba(20, 10, 5, 0.35));
+      linear-gradient(180deg, rgba(40,22,10,0.25), transparent 40%, transparent 60%, rgba(20,10,5,0.35));
     background-size: cover, cover;
-    background-position: center, center;
-    background-repeat: no-repeat, no-repeat;
+    background-position: center;
+    background-repeat: no-repeat;
     mix-blend-mode: multiply;
     opacity: 0.42;
   }
 
-  /* Compendio: miniaturas con máscara de pincel + trazo dorado */
+  /* ── Compendium grid ── */
   .rdr-compendium-grid {
     display: grid;
     gap: 10px;
     grid-template-columns: 1fr;
   }
   @media (min-width: 640px) {
-    .rdr-compendium-grid {
-      grid-template-columns: 1fr 1fr;
-    }
+    .rdr-compendium-grid { grid-template-columns: 1fr 1fr; }
   }
   @media (min-width: 1024px) {
     .rdr-compendium-grid {
       grid-template-columns: 1.65fr 1fr 1fr;
       grid-template-rows: auto auto;
     }
-    .rdr-photo-card--featured {
-      grid-row: 1 / span 2;
-    }
+    .rdr-photo-card--featured { grid-row: 1 / span 2; }
   }
+
+  /* ── Photo cards ── */
   .rdr-photo-card {
     position: relative;
     cursor: pointer;
@@ -416,30 +386,68 @@
   .rdr-photo-card--featured .rdr-photo-card-inner {
     height: min(270px, 38vh);
   }
+
+  /*
+    ── BORDES TIPO PINTURA (técnica real) ──
+
+    Cómo funciona:
+    1. .rdr-paint-wrapper-* tiene filter: url(#rdr-paint-sm/lg)
+       → feDisplacementMap (definido en <RdrFilters />) distorsiona todo lo que contiene
+    2. .rdr-card-photo-bg tiene mask-image con radial-gradient
+       → bordes suaves (elipse que se desvanece)
+    3. El displacement distorsiona esos bordes suaves → bordes orgánicos/irregulares
+       = mismo principio que Rockstar: mask PNG con bordes irregulares
+
+    Sin archivos externos, todo en CSS + SVG filter inline.
+  */
+  .rdr-paint-wrapper-sm {
+    position: absolute;
+    inset: 0;
+    filter: url(#rdr-paint-sm);
+  }
+  .rdr-paint-wrapper-lg {
+    position: absolute;
+    inset: 0;
+    filter: url(#rdr-paint-lg);
+  }
+
+  /* UNA sola definición de .rdr-card-photo-bg — sin duplicados */
   .rdr-card-photo-bg {
     position: absolute;
     inset: 0;
-    background-color: #1a1008;
+    background-color: #2a1a12;
     background-size: cover;
     background-position: center;
     filter: sepia(0.72) contrast(1.1) brightness(0.72);
-    transition:
-      filter 0.35s ease,
-      transform 0.35s ease;
-    -webkit-mask-image: url('/masks/rdr-card-brush.svg');
-    mask-image: url('/masks/rdr-card-brush.svg');
-    -webkit-mask-size: cover;
-    mask-size: cover;
+    transition: filter 0.35s ease, transform 0.35s ease;
+    /* Gradient mask: elipse con bordes suaves que el displacement vuelve orgánicos */
+    -webkit-mask-image: radial-gradient(
+      ellipse 88% 85% at 50% 50%,
+      black 15%,
+      rgba(0,0,0,0.9) 48%,
+      rgba(0,0,0,0.5) 70%,
+      transparent 100%
+    );
+    mask-image: radial-gradient(
+      ellipse 88% 85% at 50% 50%,
+      black 15%,
+      rgba(0,0,0,0.9) 48%,
+      rgba(0,0,0,0.5) 70%,
+      transparent 100%
+    );
+    -webkit-mask-size:     100% 100%;
+    mask-size:             100% 100%;
+    -webkit-mask-repeat:   no-repeat;
+    mask-repeat:           no-repeat;
     -webkit-mask-position: center;
-    mask-position: center;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    -webkit-mask-mode: luminance;
-    mask-mode: luminance;
+    mask-position:         center;
   }
-  .rdr-photo-card--featured .rdr-card-photo-bg {
-    -webkit-mask-image: url('/masks/rdr-card-brush-tall.svg');
-    mask-image: url('/masks/rdr-card-brush-tall.svg');
+  .rdr-card-photo-bg > img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   .rdr-photo-card:hover .rdr-card-photo-bg {
     filter: sepia(0.4) contrast(1.12) brightness(0.88);
@@ -448,6 +456,8 @@
   .rdr-photo-card--active .rdr-card-photo-bg {
     filter: sepia(0.15) contrast(1.15) brightness(0.92);
   }
+
+  /* Trazo dorado de borde (SVG encima del wrapper) */
   .rdr-card-paint-stroke {
     position: absolute;
     inset: -1px;
@@ -456,10 +466,12 @@
   }
   .rdr-card-paint-stroke path {
     fill: none;
-    stroke: rgba(180, 140, 60, 0.38);
+    stroke: rgba(180,140,60,0.38);
     stroke-width: 1.5;
     vector-effect: non-scaling-stroke;
   }
+
+  /* Borde rojo activo */
   .rdr-card-active-outline {
     position: absolute;
     inset: 0;
@@ -468,29 +480,16 @@
     opacity: 0;
     transition: opacity 0.25s ease;
     border: 3px solid var(--rdr-blood);
-    clip-path: polygon(
-      0% 1%,
-      2% 0%,
-      98% 0.5%,
-      100% 0%,
-      99.5% 2%,
-      100% 98%,
-      99% 100%,
-      2% 99.5%,
-      0.5% 100%,
-      0% 98%
-    );
+    clip-path: polygon(0% 1%, 2% 0%, 98% 0.5%, 100% 0%, 99.5% 2%, 100% 98%, 99% 100%, 2% 99.5%, 0.5% 100%, 0% 98%);
   }
-  .rdr-photo-card--active .rdr-card-active-outline {
-    opacity: 1;
-  }
+  .rdr-photo-card--active .rdr-card-active-outline { opacity: 1; }
+
+  /* Label de cada card */
   .rdr-compendium-card-label {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: 0; left: 0; right: 0;
     padding: 32px 10px 9px;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.78) 0%, transparent 100%);
+    background: linear-gradient(to top, rgba(0,0,0,0.78) 0%, transparent 100%);
     z-index: 4;
   }
   .rdr-compendium-card-label span {
@@ -502,10 +501,34 @@
     font-weight: 400;
     transition: color 0.25s;
   }
-  .rdr-photo-card:hover .rdr-compendium-card-label span {
-    color: #e0c878;
+  .rdr-photo-card:hover .rdr-compendium-card-label span { color: #e0c878; }
+  .rdr-photo-card--active .rdr-compendium-card-label span { color: #fff; }
+
+  /*
+    ── Bordes de pintura para barras del title screen ──
+    Usá .rdr-bar-paint-edge-top y .rdr-bar-paint-edge-bottom
+    en title-screen.tsx (ver ese archivo).
+    El filter: url(#rdr-paint-bar) hace el trabajo.
+  */
+  .rdr-bar-paint-edge-top {
+    position: absolute;
+    left: 0; right: 0;
+    /* Se superpone con el borde inferior de la barra top */
+    height: 55px;
+    /* Gradiente negro → transparente: la zona negra se mezcla con la barra,
+       la zona transparente queda desplazada por el filter → borde de pintura */
+    background: linear-gradient(to bottom, #000 35%, transparent 100%);
+    filter: url(#rdr-paint-bar);
+    pointer-events: none;
+    z-index: 21;
   }
-  .rdr-photo-card--active .rdr-compendium-card-label span {
-    color: #fff;
+  .rdr-bar-paint-edge-bottom {
+    position: absolute;
+    left: 0; right: 0;
+    height: 55px;
+    background: linear-gradient(to top, #000 35%, transparent 100%);
+    filter: url(#rdr-paint-bar-bottom);
+    pointer-events: none;
+    z-index: 21;
   }
 }
