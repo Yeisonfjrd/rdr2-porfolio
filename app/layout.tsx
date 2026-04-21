@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next'
 import localFont from 'next/font/local'
 import { Crimson_Text } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import RdrFilters from '@/components/screens/rdr-filters'
+
 import './globals.css'
 
 const chineseRocks = localFont({
@@ -35,7 +37,10 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${chineseRocks.variable} ${crimsonText.variable}`}>
       <body className="antialiased min-h-full h-full bg-[#020002] text-rdr-cream font-sans">
+      <RdrFilters />
+      <div className="relative z-10">
         {children}
+      </div>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
