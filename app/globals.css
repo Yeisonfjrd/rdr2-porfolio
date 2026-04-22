@@ -101,8 +101,8 @@
   body {
     height: 100%;
     min-height: 100%;
-    background: var(--rdr-ink-black);
-    color: var(--rdr-cream);
+    background: #0d0b08;
+    color: #dcc09a;
     font-family: var(--font-body), Georgia, 'Times New Roman', serif;
     letter-spacing: 0.02em;
   }
@@ -135,7 +135,7 @@
 
   /* ── Viñeta (menos negra en los bordes; antes 0.92 aplastaba el fondo) ── */
   .rdr-vignette {
-    background: radial-gradient(ellipse at center, transparent 42%, rgba(2,0,2,0.68) 100%);
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(2,0,2,0.55) 100%);
     pointer-events: none;
   }
 
@@ -223,13 +223,12 @@
     inset: 0;
     pointer-events: none;
     background:
-      radial-gradient(circle at 50% 32%, rgba(254,172,1,0.08), transparent 52%),
-      linear-gradient(to bottom, rgba(0,0,0,0.14) 0%, rgba(0,0,0,0.38) 100%),
-      linear-gradient(to right, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.16) 45%, rgba(0,0,0,0.44) 100%),
-      linear-gradient(to bottom, rgba(55,30,5,0.22), rgba(24,18,14,0.55)),
-      linear-gradient(135deg, #12100d 0%, #1c1812 48%, #0f0d0a 100%);
+      radial-gradient(circle at 50% 28%, rgba(232, 217, 167, 0.06), transparent 60%),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.06) 0%, rgba(0, 0, 0, 0.20) 100%),
+      linear-gradient(to right, rgba(0, 0, 0, 0.16) 0%, rgba(0, 0, 0, 0.08) 45%, rgba(0, 0, 0, 0.16) 100%),
+      linear-gradient(to bottom, rgba(55, 30, 5, 0.12), rgba(24, 18, 14, 0.24)),
+      linear-gradient(135deg, #15120d 0%, #1a1611 48%, #0f0d0a 100%);
   }
-
   /* Título: una sola capa cálida en lugar de sepia + golden + textura por separado */
   .rdr-title-warm-wash {
     position: absolute;
