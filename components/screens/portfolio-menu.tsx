@@ -1,5 +1,4 @@
 'use client'
-
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
@@ -12,11 +11,11 @@ interface PortfolioMenuProps {
 }
 
 const categories = [
-  { id: 'perfil',      label: 'PERFIL' },
-  { id: 'proyectos',   label: 'PROYECTOS' },
-  { id: 'habilidades', label: 'HABILIDADES' },
-  { id: 'experiencia', label: 'EXPERIENCIA' },
-  { id: 'contacto',    label: 'CONTACTO' },
+  { id: 'perfil',     label: 'PERFIL' },
+  { id: 'proyectos',  label: 'PROYECTOS' },
+  { id: 'habilidades',label: 'HABILIDADES' },
+  { id: 'experiencia',label: 'EXPERIENCIA' },
+  { id: 'contacto',   label: 'CONTACTO' },
 ]
 
 const COMPENDIUM_IMAGES = [
@@ -31,10 +30,12 @@ function compendiumFallbackSrc(index: number) {
   return `https://picsum.photos/seed/rdr-compendium-${index}/700/520`
 }
 
+// === NUEVOS PATHS DE BORDES MÁS FIDELOS AL ESTILO RDR2 (más irregulares y "pintados a mano") ===
 const PAINT_EDGE_TALL =
-  'M4,4 C10,2 22,4 34,3 C46,4 58,2 70,3 C82,4 94,2 106,3 C118,4 130,2 142,3 C154,4 166,2 178,3 C190,4 196,3 198,4 L198,12 C199,28 197,44 198,60 C199,76 197,92 198,108 C199,124 197,140 198,156 C199,172 197,188 198,204 C199,220 197,236 198,252 L198,266 C190,269 178,266 166,268 C154,269 142,266 130,268 C118,269 106,266 94,268 C82,269 70,266 58,268 C46,269 34,266 22,268 C12,269 5,267 2,266 L2,12 C1,28 3,44 2,60 C1,76 3,92 2,108 C1,124 3,140 2,156 C1,172 3,188 2,204 C1,220 3,236 2,252 Z'
+  'M4,4 C8,1 18,6 34,2 C48,5 60,1 74,4 C88,2 102,6 118,3 C132,5 146,2 162,4 C176,3 188,6 198,4 L198,12 C199,28 197,44 198,60 C199,76 197,92 198,108 C199,124 197,140 198,156 C199,172 197,188 198,204 C199,220 197,236 198,252 L198,266 C190,270 178,265 166,268 C154,270 142,265 130,268 C118,270 106,265 94,268 C82,270 70,265 58,268 C46,270 34,265 22,268 C12,270 6,267 2,266 L2,12 C1,28 3,44 2,60 C1,76 3,92 2,108 C1,124 3,140 2,156 C1,172 3,188 2,204 C1,220 3,236 2,252 Z'
+
 const PAINT_EDGE_SHORT =
-  'M4,3 C12,1 24,3 36,2 C48,3 60,1 72,2 C84,3 96,1 108,2 C120,3 132,1 144,2 C156,3 168,1 180,2 C190,3 196,2 198,3 L198,10 C199,24 197,38 198,52 C199,66 197,80 198,94 C199,108 197,120 198,127 C190,129 178,127 166,128 C154,129 142,127 130,128 C118,129 106,127 94,128 C82,129 70,127 58,128 C46,129 34,127 22,128 C12,129 5,128 2,127 L2,10 C1,24 3,38 2,52 C1,66 3,80 2,94 C1,108 3,120 2,127 Z'
+  'M4,3 C9,1 19,5 36,2 C50,4 62,1 78,3 C92,2 104,5 120,3 C134,4 146,2 162,3 C176,2 188,5 198,3 L198,10 C199,24 197,38 198,52 C199,66 197,80 198,94 C199,108 197,120 198,127 C190,130 178,126 166,128 C154,130 142,126 130,128 C118,130 106,126 94,128 C82,130 70,126 58,128 C46,130 34,126 22,128 C12,130 6,128 2,127 L2,10 C1,24 3,38 2,52 C1,66 3,80 2,94 C1,108 3,120 2,127 Z'
 
 const profileData = {
   nombre: 'Yeison Fajardo',
@@ -43,21 +44,25 @@ const profileData = {
   ubicacion: 'Buenos Aires · Disponible para trabajar',
   descripcion: 'Desarrollador web con experiencia profesional creando aplicaciones avanzadas: interfaces claras, código mantenible y foco en la experiencia de usuario.',
 }
+
 const projectsData = [
   { name: 'RoadEra',           tech: 'TypeScript · JavaScript · CSS',  status: 'Completado', year: '2024', blurb: 'Alquiler de coches de lujo: registro, panel admin, reservas en tiempo real y pagos con Stripe; gestión de flota y reservas con buen rendimiento en móvil.' },
   { name: 'Tesla Clone',       tech: 'JavaScript · HTML · CSS',         status: 'Completado', year: '2023', blurb: 'Clon del sitio oficial de Tesla: animaciones, header dinámico, transiciones de color y scroll; un desafío para acercar el comportamiento al original.' },
   { name: 'X (Twitter) Clone', tech: 'JavaScript · Node.js · MongoDB', status: 'Completado', year: '2023', blurb: 'Red social tipo X: registro e inicio de sesión, sesiones, cierre de sesión y publicaciones con comentarios sobre una base de datos funcional.' },
 ]
+
 const skillsData = {
   frontend: ['React', 'Next.js', 'TypeScript', 'JavaScript', 'Tailwind CSS'],
   backend:  ['Node.js', 'Express', 'Go', 'PostgreSQL', 'MongoDB', 'Prisma'],
   devops:   ['Docker', 'AWS', 'Git', 'Linux', 'CI/CD'],
 }
+
 const experienceData = [
   { puesto: 'Tecnicatura en Desarrollo de Software', empresa: 'Universidad Provincial de Ezeiza', periodo: '2025 — Actualidad', descripcion: 'Formación en backend, APIs con Node.js y Express, bases de datos con Prisma, JWT/OAuth2, Docker y despliegues en la nube.' },
   { puesto: 'Big O, algoritmos y estructuras de datos', empresa: 'Udemy', periodo: 'Enero 2025', descripcion: 'Optimización con Big O, estructuras como listas y grafos, y preparación para entrevistas técnicas.' },
   { puesto: 'Python · Desarrollo Web 4 · Desarrollo Web 3', empresa: 'Aprende Programando', periodo: '2022 — 2024', descripcion: 'Fundamentos de Python; backend avanzado con APIs REST, PostgreSQL, MongoDB, JWT y React para interfaces dinámicas.' },
 ]
+
 const contactData = {
   email: 'andresfajardo1606@gmail.com',
   github: 'github.com/yeisonfjrd',
@@ -76,7 +81,6 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
   const [imgTier, setImgTier] = useState<Record<number, number>>({})
   const containerRef    = useRef<HTMLDivElement>(null)
   const contentPanelRef = useRef<HTMLDivElement>(null)
-
   const activeCategory = hoveredCategory !== null ? hoveredCategory : selectedCategory
 
   useEffect(() => {
@@ -218,35 +222,39 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
   }
 
   return (
-      <div
-        ref={containerRef}
-        className="rdr-cinematic-bars fixed inset-0 overflow-hidden"
-        style={{ background: '#0d0b08' }}
-      >
-
-      {/* Viñeta lateral izquierda (como RDR2 que oscurece más a la izquierda) */}
+    <div
+    ref={containerRef}
+    className="rdr-cinematic-bars fixed inset-0 overflow-hidden"
+    style={{
+      background:
+        'radial-gradient(ellipse at center, rgba(232, 217, 167, 0.05) 0%, rgba(13, 11, 8, 0.92) 48%, rgba(9, 7, 5, 1) 100%)',
+    }}
+  >
+      {/* Viñeta lateral izquierda + grain (igual que antes) */}
       <div className="absolute inset-0 pointer-events-none" style={{
         background: `
           radial-gradient(ellipse 50% 70% at 0% 50%, rgba(0,0,0,0.45) 0%, transparent 100%),
           radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.4) 100%)
         `
       }} aria-hidden />
-
       <motion.div className="rdr-grain absolute inset-0 pointer-events-none"
         animate={{ opacity: [0.03, 0.055, 0.03] }}
         transition={{ duration: 4, repeat: Infinity }} />
 
-      {/* Paint bars */}
+      {/* Paint bars superiores/inferiores (mismo estilo RDR2) */}
       <div className="rdr-bar-paint-edge-top"    style={{ top:    'calc(12% - 10px)' }} aria-hidden />
       <div className="rdr-bar-paint-edge-bottom" style={{ bottom: 'calc(12% - 10px)' }} aria-hidden />
 
-      {/* Layout principal — z-30 */}
       <div className="relative flex h-full" style={{ zIndex: 30 }}>
-
-        {/* ── SIDEBAR ── */}
-        <div className="w-64 md:w-72 flex-shrink-0 flex flex-col"
-          style={{ background: 'rgba(0,0,0,0.3)', borderRight: '1px solid rgba(180,140,60,0.15)' }}>
-
+        {/* SIDEBAR (sin cambios) */}
+          <div
+            className="w-64 md:w-72 flex-shrink-0 flex flex-col rdr-help-divider"
+            style={{
+              background:
+                'linear-gradient(90deg, rgba(0,0,0,0.30) 0%, rgba(0,0,0,0.18) 60%, rgba(0,0,0,0.28) 100%)',
+              borderRight: '1px solid rgba(200,184,152,0.14)',
+            }}
+          >
           <div className="p-5 md:p-6" style={{ borderBottom: '1px solid rgba(180,140,60,0.15)' }}>
             <p className="font-typewriter text-[10px] tracking-[0.28em] uppercase mb-3"
               style={{ color: '#4a4030' }}>Compendio</p>
@@ -258,7 +266,6 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
               ← VOLVER
             </button>
           </div>
-
           <nav className="flex-1 py-3">
             {categories.map((cat, index) => (
               <motion.button key={cat.id} type="button"
@@ -285,24 +292,22 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
               </motion.button>
             ))}
           </nav>
-
           <div className="p-5 md:p-6" style={{ borderTop: '1px solid rgba(180,140,60,0.12)' }}>
             <p className="font-typewriter text-[10px] tracking-[0.2em] uppercase" style={{ color: '#3a3028' }}>Scroll para navegar</p>
             <p className="font-typewriter text-[10px] tracking-[0.2em] uppercase mt-1" style={{ color: '#3a3028' }}>Esc para volver</p>
           </div>
         </div>
 
-        {/* ── ÁREA PRINCIPAL ── */}
-          <div
-            ref={contentPanelRef}
-            className="relative z-40 flex-1 flex flex-col gap-6 p-6 md:p-8 lg:p-10 overflow-y-auto min-h-0"
-            style={{
-              background: 'linear-gradient(165deg, rgba(30,24,16,0.96) 0%, rgba(18,14,10,0.99) 100%)',
-              border: '1px solid rgba(180,140,60,0.18)',
-              boxShadow: 'inset 0 1px 0 rgba(254,172,1,0.08)',
-            }}
-          >
-
+        {/* ÁREA PRINCIPAL — ESTÉTICA ACTUALIZADA */}
+        <div
+          ref={contentPanelRef}
+          className="relative z-40 flex-1 flex flex-col gap-6 p-6 md:p-8 lg:p-10 overflow-y-auto min-h-0"
+          style={{
+            background: 'linear-gradient(165deg, rgba(30,24,16,0.96) 0%, rgba(18,14,10,0.99) 100%)',
+            border: '1px solid rgba(180,140,60,0.18)',
+            boxShadow: 'inset 1px 0 0 rgba(255,255,255,0.02), inset 0 1px 0 rgba(254,172,1,0.08)',
+          }}
+        >
           {/* Header + grid cards */}
           <div className="shrink-0">
             <div className="flex items-center justify-between pb-2 mb-3"
@@ -321,31 +326,81 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
                 const isActive   = selectedCategory === index
                 const tier       = imgTier[index] ?? 0
                 const src        = tier === 0 ? COMPENDIUM_IMAGES[index] : tier === 1 ? compendiumFallbackSrc(index) : null
+
                 return (
-                  <button key={cat.id} type="button"
+                  <button
+                    key={cat.id}
+                    type="button"
                     aria-label={`Abrir sección ${cat.label}`}
-                    className={cn('rdr-photo-card', isFeatured && 'rdr-photo-card--featured', isActive && 'rdr-photo-card--active')}
+                    className={cn(
+                      'rdr-photo-card relative',
+                      isFeatured && 'rdr-photo-card--featured',
+                      isActive && 'rdr-photo-card--active'
+                    )}
                     onClick={() => setSelectedCategory(index)}
                     onMouseEnter={() => setHoveredCategory(index)}
                     onMouseLeave={() => setHoveredCategory(null)}
                   >
+                    {/* BORDE ROJO EXACTO AL DE RDR2 (solo cuando está seleccionada) */}
+                    {isActive && (
+                      <div
+                        className="absolute -inset-[6px] pointer-events-none z-20 border-4 border-[#bd081a] rounded-none"
+                        style={{
+                          boxShadow: '0 0 0 8px rgba(189, 8, 26, 0.25), inset 0 0 0 2px rgba(189, 8, 26, 0.15)',
+                        }}
+                      />
+                    )}
+
                     <div className="rdr-photo-card-inner">
-                      <div className={isFeatured ? 'rdr-paint-wrapper-lg' : 'rdr-paint-wrapper-sm'}
-                        style={{ position: 'absolute', inset: 0 }}>
+                      {/* Contenedor de la foto con wrapper de pintura */}
+                      <div
+                        className={isFeatured ? 'rdr-paint-wrapper-lg' : 'rdr-paint-wrapper-sm'}
+                        style={{ position: 'absolute', inset: 0 }}
+                      >
                         <div className="rdr-card-photo-bg">
                           {src && (
-                            <img src={src} alt="" loading="lazy" decoding="async"
-                              onError={() => setImgTier(prev => ({ ...prev, [index]: (prev[index] ?? 0) + 1 }))} />
+                            <img
+                              src={src}
+                              alt=""
+                              loading="lazy"
+                              decoding="async"
+                              onError={() => setImgTier(prev => ({ ...prev, [index]: (prev[index] ?? 0) + 1 }))}
+                              style={{
+                                filter: 'sepia(65%) contrast(115%) brightness(88%) saturate(75%)',
+                                objectFit: 'cover',
+                                width: '100%',
+                                height: '100%',
+                                borderRadius: 'inherit',
+                              }}
+                            />
                           )}
                         </div>
                       </div>
-                      <svg className="rdr-card-paint-stroke"
+
+                      {/* Borde pintado a mano (más fiel al RDR2) */}
+                      <svg
+                        className="rdr-card-paint-stroke"
                         viewBox={isFeatured ? '0 0 200 270' : '0 0 200 130'}
-                        preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                        preserveAspectRatio="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden
+                        style={{
+                          stroke: '#2c2118',
+                          strokeWidth: isFeatured ? '9' : '7',
+                          fill: 'transparent',
+                          filter: 'drop-shadow(3px 3px 6px rgba(0,0,0,0.85))',
+                        }}
+                      >
                         <path d={isFeatured ? PAINT_EDGE_TALL : PAINT_EDGE_SHORT} />
                       </svg>
+
+                      {/* Outline activo (se combina con el borde rojo de arriba) */}
                       <div className="rdr-card-active-outline" aria-hidden />
-                      <div className="rdr-compendium-card-label"><span>{cat.label}</span></div>
+
+                      {/* Label inferior estilo RDR2 */}
+                      <div className="rdr-compendium-card-label">
+                        <span>{cat.label}</span>
+                      </div>
                     </div>
                   </button>
                 )
@@ -353,29 +408,32 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
             </div>
           </div>
 
-          {/* Panel de contenido */}
-          <div className="flex-1 p-6 md:p-8 overflow-y-auto"
+          {/* Panel de contenido (sin cambios estructurales) */}
+          <div
+            className="flex-1 p-6 md:p-8 overflow-y-auto"
             style={{
               background: 'linear-gradient(165deg, rgba(30,24,16,0.95) 0%, rgba(18,14,10,0.98) 100%)',
               border: '1px solid rgba(180,140,60,0.18)',
               boxShadow: 'inset 0 1px 0 rgba(254,172,1,0.08)',
               minHeight: 'min(100%, 420px)',
-            }}>
-
+            }}
+          >
             <motion.div className="mb-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-              {/* Título de sección — como RDR2: texto claro sobre fondo oscuro */}
               <h2 className="font-chinese-rocks tracking-[0.12em] mb-2"
                 style={{ color: '#e0c38f', fontSize: 'clamp(1.4rem, 2.8vw, 2rem)' }}>
                 {categories[activeCategory].label}
               </h2>
-              {/* Línea decorativa rojo → dorado */}
               <div style={{ height: 2, width: 80, background: 'linear-gradient(to right, #bd081a, rgba(254,172,1,0.4))' }} />
             </motion.div>
 
             <AnimatePresence mode="wait">
-              <motion.div key={categories[activeCategory].id}
-                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.3 }}>
+              <motion.div
+                key={categories[activeCategory].id}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.3 }}
+              >
                 {renderContent()}
               </motion.div>
             </AnimatePresence>
