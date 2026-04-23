@@ -2,11 +2,13 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { PortfolioInitialSection } from './portfolio-menu'
 
 type GameScreen = 'title' | 'main' | 'portfolio'
 
 interface MainMenuProps {
-  onNavigate: (screen: GameScreen, section?: string) => void
+  // Aquí es donde TypeScript se quejaba: cambiamos string por el tipo real
+  onNavigate: (screen: GameScreen, section?: PortfolioInitialSection) => void
   onBack: () => void
 }
 
@@ -29,7 +31,7 @@ export default function MainMenu({ onNavigate, onBack }: MainMenuProps) {
   const activeIndex = hoveredIndex !== null ? hoveredIndex : selectedIndex
 
   return (
-    <div className="rdr-cinematic-bars fixed inset-0 overflow-hidden" style={{ background: '#0d0b08' }}>
+    <div className="rdr-cinematic-bars absolute inset-0 overflow-hidden" style={{ background: '#0d0b08' }}>
 
       {/* Capa de atmósfera única — sutil, no apila oscuridad */}
       <div className="absolute inset-0 pointer-events-none" style={{

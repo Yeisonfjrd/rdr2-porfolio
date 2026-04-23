@@ -102,7 +102,7 @@
     height: 100%;
     min-height: 100%;
     background: #0d0b08;
-    color: #dcc09a;
+    color: #c8b898;
     font-family: var(--font-body), Georgia, 'Times New Roman', serif;
     letter-spacing: 0.02em;
   }
@@ -378,9 +378,10 @@
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--rdr-gold) 55%, transparent);
   }
   .rdr-photo-card-inner {
-    position: relative;
-    width: 100%;
-    height: 130px;
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.02),
+      inset 0 0 0 2px rgba(189, 8, 26, 0.00),
+      0 8px 24px rgba(0, 0, 0, 0.35);
   }
   .rdr-photo-card--featured .rdr-photo-card-inner {
     height: min(270px, 38vh);
@@ -485,11 +486,9 @@
 
   /* Label de cada card */
   .rdr-compendium-card-label {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    padding: 32px 10px 9px;
-    background: linear-gradient(to top, rgba(0,0,0,0.78) 0%, transparent 100%);
-    z-index: 4;
+    background:
+      linear-gradient(to top, rgba(0, 0, 0, 0.86) 0%, transparent 100%);
+  }
   }
   .rdr-compendium-card-label span {
     font-family: var(--font-chinese-rocks), Impact, sans-serif;
@@ -530,4 +529,69 @@
     pointer-events: none;
     z-index: 21;
   }
+  .rdr-help-divider {
+    position: relative;
+  }
+  
+  .rdr-help-divider::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -1px;
+    bottom: 0;
+    width: 1px;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      rgba(232, 217, 167, 0.18) 0%,
+      rgba(200, 168, 75, 0.12) 45%,
+      rgba(0, 0, 0, 0.34) 100%
+    );
+    box-shadow:
+      1px 0 0 rgba(255, 255, 255, 0.03),
+      -1px 0 0 rgba(0, 0, 0, 0.32);
+    opacity: 0.95;
+  }
+.rdr-help-background {
+  background:
+    radial-gradient(circle at 18% 35%, rgba(232, 217, 167, 0.08), transparent 22%),
+    radial-gradient(circle at 78% 22%, rgba(189, 8, 26, 0.05), transparent 18%),
+    radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.10), transparent 55%),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.02) 0%,
+      rgba(255, 255, 255, 0.00) 18%,
+      rgba(0, 0, 0, 0.08) 50%,
+      rgba(255, 255, 255, 0.00) 82%,
+      rgba(255, 255, 255, 0.02) 100%
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.015), transparent 18%, transparent 82%, rgba(0, 0, 0, 0.2)),
+    linear-gradient(135deg, #14100c 0%, #17130f 40%, #0f0d0a 100%);
+  opacity: 0.98;
+}
+
+.rdr-help-background::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 15%, rgba(254, 172, 1, 0.05), transparent 24%),
+    radial-gradient(circle at 50% 85%, rgba(0, 0, 0, 0.22), transparent 28%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.16), transparent 18%, transparent 82%, rgba(0, 0, 0, 0.16));
+  mix-blend-mode: multiply;
+  opacity: 0.85;
+}
+
+.rdr-help-background::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.08;
+  mix-blend-mode: multiply;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 3px 3px;
 }
