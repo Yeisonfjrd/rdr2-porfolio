@@ -30,10 +30,6 @@ function compendiumFallbackSrc(index: number) {
   return `https://picsum.photos/seed/rdr-compendium-${index}/700/520`
 }
 
-/*
-  SVG paths para el borde pintado a mano (más irregular = más fiel a RDR2).
-  Se usan como MÁSCARA sobre la imagen para dar el efecto de fotografía antigua.
-*/
 const PAINT_EDGE_TALL =
   'M4,4 C8,1 18,6 34,2 C48,5 60,1 74,4 C88,2 102,6 118,3 C132,5 146,2 162,4 C176,3 188,6 198,4 L198,12 C199,28 197,44 198,60 C199,76 197,92 198,108 C199,124 197,140 198,156 C199,172 197,188 198,204 C199,220 197,236 198,252 L198,266 C190,270 178,265 166,268 C154,270 142,265 130,268 C118,270 106,265 94,268 C82,270 70,265 58,268 C46,270 34,265 22,268 C12,270 6,267 2,266 L2,12 C1,28 3,44 2,60 C1,76 3,92 2,108 C1,124 3,140 2,156 C1,172 3,188 2,204 C1,220 3,236 2,252 Z'
 
@@ -226,13 +222,8 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
       {/* Paint bars */}
       <div className="rdr-bar-paint-edge-top"    style={{ top:    'calc(12% - 10px)', zIndex: 22 }} aria-hidden />
       <div className="rdr-bar-paint-edge-bottom" style={{ bottom: 'calc(12% - 10px)', zIndex: 22 }} aria-hidden />
-
-      {/* ═══════════════════════════════════════════
-          LAYOUT PRINCIPAL
-          ═══════════════════════════════════════════ */}
       <div className="relative flex h-full" style={{ zIndex: 30 }}>
 
-        {/* ── SIDEBAR izquierdo — como el panel de categorías de RDR2 ── */}
         <div
           className="flex-shrink-0 flex flex-col"
           style={{
@@ -241,7 +232,6 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
             borderRight: '1px solid rgba(200,180,130,0.1)',
           }}
         >
-          {/* Header del sidebar */}
           <div style={{ padding: '20px 22px 16px', borderBottom: '1px solid rgba(200,180,130,0.1)' }}>
             <p style={{ fontFamily: 'Courier New, monospace', fontSize: '0.6rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: '#3d3428', marginBottom: 10 }}>
               Compendio
@@ -257,7 +247,6 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
             </button>
           </div>
 
-          {/* Nav de categorías */}
           <nav style={{ flex: 1, paddingTop: 8, paddingBottom: 8 }}>
             {categories.map((cat, index) => {
               const isActive = activeCategory === index
@@ -279,7 +268,6 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.25, delay: index * 0.05 }}
                 >
-                  {/* Indicador rojo lateral */}
                   {isActive && (
                     <motion.div
                       layoutId="categoryIndicator"

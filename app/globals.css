@@ -301,29 +301,14 @@
     border-color: color-mix(in srgb, var(--rdr-map-ink) 55%, transparent);
   }
 
-  /* ── Title screen: GIF stack con máscara orgánica ── */
   .rdr-title-media-stack {
     position: absolute;
     inset: 0;
     z-index: 1;
     isolation: isolate;
     background-color: #120a05;
-    /*
-      Técnica real RDR2: mask-image con PNG de pincelada.
-      El SVG generado es una aproximación; si tenés el PNG real de Rockstar, usalo acá.
-    */
-    -webkit-mask-image: url('/masks/rdr-fullframe-brush.svg');
-    mask-image:         url('/masks/rdr-fullframe-brush.svg');
-    -webkit-mask-size:     cover;
-    mask-size:             cover;
-    -webkit-mask-position: center;
-    mask-position:         center;
-    -webkit-mask-repeat:   no-repeat;
-    mask-repeat:           no-repeat;
-    -webkit-mask-mode:     luminance;
-    mask-mode:             luminance;
   }
-  /* Si GIF/video remoto falla, el fondo no queda negro puro */
+  
   .rdr-title-media-stack--static-fallback {
     background-image: linear-gradient(165deg, #221409 0%, #3d2618 42%, #1a100a 100%);
   }

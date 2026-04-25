@@ -3,110 +3,97 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import TitleScreen from '@/components/screens/title-screen'
-import MainMenu from '@/components/screens/main-menu'
+import MainMenu, { type GameScreen } from '@/components/screens/main-menu'
 import PortfolioMenu, {
   type PortfolioInitialSection,
 } from '@/components/screens/portfolio-menu'
-
-type GameScreen = 'title' | 'main' | 'portfolio'
 
 export default function Home() {
   const [currentScreen, setCurrentScreen] = useState<GameScreen>('title')
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [initialSection, setInitialSection] =
-    useState<PortfolioInitialSection | undefined>(undefined)
+  useState<PortfolioInitialSection | undefined>(undefined)
 
-  const transitionTimerRef = useRef<number | null>(null)
+  const timerRef = useRef<number | null>(null)
 
-  const clearTransitionTimer = () => {
-    if (transitionTimerRef.current !== null) {
-      window.clearTimeout(transitionTimerRef.current)
-      transitionTimerRef.current = null
+  const clearTimer = () => {
+    if (timerRef.current !== null) {
+      window.clearTimeout(timerRef.current)
+      timerRef.current = null
     }
   }
 
-  const goToScreen = (
-    screen: GameScreen,
-    section?: PortfolioInitialSection
-  ) => {
+  const goToScreen = (screen: GameScreen, section?: PortfolioInitialSection) => {
     if (isTransitioning) return
-
-    clearTransitionTimer()
+    clearTimer()
     setIsTransitioning(true)
     setInitialSection(section)
 
-    transitionTimerRef.current = window.setTimeout(() => {
+    timerRef.current = window.setTimeout(() => {
       setCurrentScreen(screen)
       setIsTransitioning(false)
-      transitionTimerRef.current = null
-    }, 320)
+      timerRef.current = null
+    }, 300)
+  }
+
+  const goToMain = () => {
+    if (isTransitioning) return
+    clearTimer()
+    setIsTransitioning(true)
+
+    timerRef.current = window.setTimeout(() => {
+      setCurrentScreen('main')
+      setIsTransitioning(false)
+      timerRef.current = null
+    }, 220)
+  }
+
+  const goToTitle = () => {
+    if (isTransitioning) return
+    clearTimer()
+    setIsTransitioning(true)
+
+    timerRef.current = window.setTimeout(() => {
+      setCurrentScreen('title')
+      setIsTransitioning(false)
+      timerRef.current = null
+    }, 220)
   }
 
   useEffect(() => {
-    const handleKeyPress = () => {
-      if (currentScreen === 'title' && !isTransitioning) {
-        goToScreen('main')
-      }
+    const advance = () => {
+      if (currentScreen !== 'title' || isTransitioning) return
+      goToMain()
     }
 
-    const handleClick = () => {
-      if (currentScreen === 'title' && !isTransitioning) {
-        goToScreen('main')
-      }
-    }
-
-    if (currentScreen === 'title') {
-      window.addEventListener('keydown', handleKeyPress)
-      window.addEventListener('click', handleClick)
-    }
+    window.addEventListener('keydown', advance)
+    window.addEventListener('click', advance)
 
     return () => {
-      window.removeEventListener('keydown', handleKeyPress)
-      window.removeEventListener('click', handleClick)
+      window.removeEventListener('keydown', advance)
+      window.removeEventListener('click', advance)
     }
   }, [currentScreen, isTransitioning])
 
   useEffect(() => {
-    return () => {
-      clearTransitionTimer()
-    }
+    return () => clearTimer()
   }, [])
 
-  const handleNavigate = (
-    screen: GameScreen,
-    section?: PortfolioInitialSection
-  ) => {
+  const handleNavigate = (screen: GameScreen, section?: PortfolioInitialSection) => {
     goToScreen(screen, section)
   }
 
-  const handleBack = () => {
-    if (isTransitioning) return
-
-    clearTransitionTimer()
-    setIsTransitioning(true)
-
-    transitionTimerRef.current = window.setTimeout(() => {
-      if (currentScreen === 'portfolio') {
-        setCurrentScreen('main')
-      } else if (currentScreen === 'main') {
-        setCurrentScreen('title')
-      }
-      setIsTransitioning(false)
-      transitionTimerRef.current = null
-    }, 240)
-  }
-
   return (
-    <div className="fixed inset-0 overflow-hidden bg-[#020002]">
+    <div className="fixed inset-0 bg-[#0c0a07] overflow-hidden">
       <AnimatePresence mode="wait" initial={false}>
         {currentScreen === 'title' && (
           <motion.div
             key="title"
+            className="absolute inset-0"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.35, ease: 'easeOut' }}
-            className="absolute inset-0"
+            transition={{ duration: 0.35 }}
           >
             <TitleScreen isTransitioning={isTransitioning} />
           </motion.div>
@@ -115,27 +102,30 @@ export default function Home() {
         {currentScreen === 'main' && (
           <motion.div
             key="main"
-            initial={{ opacity: 0, scale: 0.99 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.01 }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
             className="absolute inset-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
           >
-            <MainMenu onNavigate={handleNavigate} onBack={handleBack} />
+            <MainMenu
+              onNavigate={handleNavigate}
+              onBack={goToTitle}
+            />
           </motion.div>
         )}
 
         {currentScreen === 'portfolio' && (
           <motion.div
             key="portfolio"
-            initial={{ opacity: 0, scale: 0.99 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.01 }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
             className="absolute inset-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
           >
             <PortfolioMenu
-              onBack={handleBack}
+              onBack={goToMain}
               initialSection={initialSection}
             />
           </motion.div>
