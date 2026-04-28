@@ -125,19 +125,59 @@
   .font-rdr-logo      { font-family: var(--font-rdr-logo), Impact, 'Arial Black', sans-serif; }
 
   /* ── Grain / textura ── */
-  .rdr-grain {
-    background-image:
-      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-    background-size: 3px 3px;
-    pointer-events: none;
-  }
+ /* 1. Borde de pintura para el Menú y Cards */
+ .rdr-paint-border {
+  filter: url(#rdr-paint-container);
+}
 
-  /* ── Viñeta (menos negra en los bordes; antes 0.92 aplastaba el fondo) ── */
-  .rdr-vignette {
-    background: radial-gradient(ellipse at center, transparent 55%, rgba(2,0,2,0.55) 100%);
-    pointer-events: none;
-  }
+.rdr-paint-border-active {
+  filter: url(#rdr-paint-container-active);
+}
+
+/* 2. Efecto Grano de Película */
+.rdr-grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 999;
+}
+
+/* 3. Estilo Tipográfico RDR2 */
+.text-rdr-title {
+  font-family: var(--font-chinese-rocks), Impact, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+/* 4. Viñeta Cinemática */
+.rdr-vignette {
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.6) 100%);
+  pointer-events: none;
+}
+
+/* 5. Barras de Pintura (para Loading y Title) */
+.rdr-bar-paint-edge-top {
+  position: absolute;
+  left: 0; right: 0;
+  height: 40px;
+  background: linear-gradient(to bottom, #000 20%, transparent 100%);
+  filter: url(#rdr-paint-bar);
+  z-index: 21;
+}
+
+.rdr-bar-paint-edge-bottom {
+  position: absolute;
+  left: 0; right: 0;
+  height: 40px;
+  background: linear-gradient(to top, #000 20%, transparent 100%);
+  filter: url(#rdr-paint-bar-bottom);
+  z-index: 21;
+}
 
   /* ── Luz dorada ── */
   .rdr-golden-hour {
@@ -579,4 +619,23 @@
     linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
   background-size: 3px 3px;
+}
+/* Aplicación del Paint Border */
+.rdr-menu-card {
+  transition: all 0.2s ease;
+  outline: 2px solid transparent;
+  outline-offset: 4px;
+}
+
+/* El truco: El filter deforma el outline y el shadow, haciendo que el borde
+   cuadrado de la imagen se vea "pintado" e irregular */
+.rdr-menu-card-active {
+  filter: url(#rdr-paint-container-active);
+  outline: 2px solid var(--rdr-crimson);
+  box-shadow: 0 0 25px rgba(189, 8, 26, 0.4);
+  transform: scale(1.02);
+}
+
+.rdr-menu-card-idle {
+  filter: url(#rdr-paint-container);
 }
