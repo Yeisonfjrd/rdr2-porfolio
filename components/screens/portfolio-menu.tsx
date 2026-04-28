@@ -36,7 +36,6 @@ const PAINT_EDGE_TALL =
 const PAINT_EDGE_SHORT =
   'M4,3 C9,1 19,5 36,2 C50,4 62,1 78,3 C92,2 104,5 120,3 C134,4 146,2 162,3 C176,2 188,5 198,3 L198,10 C199,24 197,38 198,52 C199,66 197,80 198,94 C199,108 197,120 198,127 C190,130 178,126 166,128 C154,130 142,126 130,128 C118,130 106,126 94,128 C82,130 70,126 58,128 C46,130 34,126 22,128 C12,130 6,128 2,127 L2,10 C1,24 3,38 2,52 C1,66 3,80 2,94 C1,108 3,120 2,127 Z'
 
-/* ── Datos (sin tocar) ── */
 const profileData = {
   nombre: 'Yeison Fajardo',
   titulo: 'Desarrollador Web · Full Stack',
@@ -71,7 +70,6 @@ const SECTION_TO_INDEX: Record<PortfolioInitialSection, number> = {
 }
 
 export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuProps) {
-  /* ── Estado y lógica (sin tocar) ── */
   const [selectedCategory, setSelectedCategory] = useState(1)
   const [hoveredCategory,  setHoveredCategory]  = useState<number | null>(null)
   const [imgTier, setImgTier] = useState<Record<number, number>>({})
@@ -111,7 +109,6 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
     return () => container.removeEventListener('wheel', handleWheel)
   }, [])
 
-  /* ── Contenido del panel derecho ── */
   const renderContent = () => {
     switch (categories[activeCategory].id) {
       case 'perfil': return (
@@ -199,31 +196,25 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
   }
 
   return (
-    /*
-      Raíz: fondo marrón muy oscuro (#0c0a07) — igual que RDR2.
-      rdr-cinematic-bars agrega las barras negras con pseudo-elements (z-20).
-      Todo el contenido va en z-30.
-    */
     <div
       ref={containerRef}
       className="rdr-cinematic-bars fixed inset-0 overflow-hidden"
       style={{ background: '#0c0a07' }}
     >
-      {/* Viñeta perimetral sutil — solo oscurece los bordes, no el centro */}
       <div className="absolute inset-0 pointer-events-none" style={{
         background: 'radial-gradient(ellipse 90% 85% at 50% 50%, transparent 55%, rgba(0,0,0,0.6) 100%)',
         zIndex: 1,
       }} aria-hidden />
 
-      {/* Grain sutil */}
       <motion.div className="rdr-grain absolute inset-0 pointer-events-none" style={{ zIndex: 2 }}
         animate={{ opacity: [0.025, 0.05, 0.025] }} transition={{ duration: 4, repeat: Infinity }} />
 
-      {/* Paint bars */}
       <div className="rdr-bar-paint-edge-top"    style={{ top:    'calc(12% - 10px)', zIndex: 22 }} aria-hidden />
       <div className="rdr-bar-paint-edge-bottom" style={{ bottom: 'calc(12% - 10px)', zIndex: 22 }} aria-hidden />
+
       <div className="relative flex h-full" style={{ zIndex: 30 }}>
 
+        {/* ── SIDEBAR ── */}
         <div
           className="flex-shrink-0 flex flex-col"
           style={{
@@ -291,7 +282,6 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
             })}
           </nav>
 
-          {/* Footer del sidebar */}
           <div style={{ padding: '14px 22px', borderTop: '1px solid rgba(200,180,130,0.08)' }}>
             {['Scroll para navegar', 'Esc para volver'].map(t => (
               <p key={t} style={{ fontFamily: 'Courier New, monospace', fontSize: '0.6rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#2a2218', marginBottom: 3 }}>{t}</p>
@@ -299,14 +289,12 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
           </div>
         </div>
 
-        {/* ── ÁREA PRINCIPAL derecha ── */}
+        {/* ── ÁREA PRINCIPAL ── */}
         <div
           ref={contentPanelRef}
           className="flex-1 flex flex-col overflow-y-auto min-h-0"
           style={{ padding: 'clamp(14px, 2vw, 28px)' }}
         >
-
-          {/* ── TÍTULO DE SECCIÓN — como "HELP" / "ACTIVITIES" en RDR2 ── */}
           <div style={{ marginBottom: 14 }}>
             <h1 style={{
               fontFamily: 'var(--font-chinese-rocks), Impact, sans-serif',
@@ -318,16 +306,10 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
             }}>
               {categories[selectedCategory].label}
             </h1>
-            {/* Línea separadora fina — idéntica a RDR2 */}
             <div style={{ height: 1, background: 'rgba(200,180,130,0.2)', marginBottom: 16 }} />
           </div>
 
-          {/* ── GRID DE CARDS — estructura fiel al RDR2 ──
-              CSS Grid manual:
-              - columna 0: card featured (tall) → row-span 2
-              - columnas 1-2: 2 cards arriba + 2 cards abajo
-              Mismo layout que "HELP": General grande + Combat/Crime/Horse/Activities
-          */}
+          {/* ── GRID DE CARDS ── */}
           <div
             className="shrink-0"
             style={{
@@ -360,40 +342,41 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
                     border: 'none',
                     padding: 0,
                     outline: 'none',
-                    /* Altura de las cards: featured es alta, el resto cortas */
                     height: isFeatured ? 'clamp(200px, 32vh, 320px)' : 'clamp(90px, 13vh, 145px)',
                   }}
                 >
                   {/*
-                    ── MARCO ROJO ACTIVO — replica exacta de RDR2 ──
-                    Dos capas:
-                    1. Sombra interna oscura (gap entre foto y marco)
-                    2. Borde rojo vibrante exterior
+                    ── MARCO ROJO ACTIVO con paint edge ──
+
+                    CAMBIO: en vez de `border` CSS (que queda recto),
+                    usamos `outline` + `filter: url(#rdr-paint-container-active)`.
+                    El displacement filter deforma el outline → borde orgánico tipo pintura.
+                    box-shadow inset da el "gap" oscuro entre foto y marco rojo.
                   */}
                   {isActive && (
                     <div
                       className="absolute pointer-events-none"
                       style={{
                         inset: -5,
-                        border: '3px solid #bd081a',
-                        boxShadow: 'inset 0 0 0 2px rgba(0,0,0,0.8), 0 0 14px rgba(189,8,26,0.35)',
+                        outline: '3px solid #bd081a',
+                        outlineOffset: '0px',
+                        boxShadow: 'inset 0 0 0 2px rgba(0,0,0,0.8), 0 0 16px rgba(189,8,26,0.4)',
                         zIndex: 10,
+                        /* Paint edge: deforma el outline con feTurbulence → look de pincelada */
+                        filter: 'url(#rdr-paint-container-active)',
                       }}
                       aria-hidden
                     />
                   )}
 
-                  {/* ── FOTO con filtro RDR2 + máscara de borde pintado ── */}
+                  {/* ── FOTO + máscara de borde pintado ── */}
                   <div
                     className={isFeatured ? 'rdr-paint-wrapper-lg' : 'rdr-paint-wrapper-sm'}
                     style={{ position: 'absolute', inset: 0 }}
                   >
                     <div
                       className="rdr-card-photo-bg"
-                      style={{
-                        /* Fondo oscuro mientras carga */
-                        background: '#1a1410',
-                      }}
+                      style={{ background: '#1a1410' }}
                     >
                       {src && (
                         <img
@@ -406,11 +389,6 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
                             position: 'absolute', inset: 0,
                             width: '100%', height: '100%',
                             objectFit: 'cover',
-                            /*
-                              Filtro RDR2 agresivo:
-                              sepia alto + contraste alto + poco brillo + desaturado
-                              = fotografía daguerrotipo / periodística 1900s
-                            */
                             filter: 'sepia(75%) contrast(120%) brightness(82%) grayscale(25%) saturate(70%)',
                           }}
                         />
@@ -418,11 +396,7 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
                     </div>
                   </div>
 
-                  {/*
-                    ── BORDE PINTADO A MANO (SVG como stroke) ──
-                    El SVG dibuja un trazo oscuro irregular sobre los bordes de la foto.
-                    stroke muy oscuro (#1a1208) + ancho grueso = sensación de pintura/tinta.
-                  */}
+                  {/* ── SVG borde pintado a mano ── */}
                   <svg
                     viewBox={isFeatured ? '0 0 200 270' : '0 0 200 130'}
                     preserveAspectRatio="none"
@@ -447,11 +421,7 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
                     />
                   </svg>
 
-                  {/*
-                    ── LABEL inferior — "GENERAL", "COMBAT", etc. ──
-                    Idéntico al juego: texto blanco/hueso en esquina inferior izquierda
-                    con gradient negro debajo para legibilidad.
-                  */}
+                  {/* ── Label inferior ── */}
                   <div
                     style={{
                       position: 'absolute',
@@ -491,9 +461,7 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
             })}
           </div>
 
-          {/* ── PANEL DE CONTENIDO inferior — descripción de la sección activa ──
-              Similar al texto "General information and tips..." en RDR2
-          */}
+          {/* ── PANEL DE CONTENIDO ── */}
           <div
             className="flex-1 overflow-y-auto"
             style={{
@@ -504,7 +472,6 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
               minHeight: 120,
             }}
           >
-            {/* Título de sección dentro del panel — con línea roja → dorada */}
             <div style={{ marginBottom: 16 }}>
               <h2 style={{
                 fontFamily: 'var(--font-chinese-rocks), Impact, sans-serif',

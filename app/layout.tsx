@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#191910',
+  themeColor: '#0d0b08', // Cambiado a un tono más cercano al menú
 }
 
 export default function RootLayout({
@@ -38,11 +38,18 @@ export default function RootLayout({
       lang="es"
       className={`${chineseRocks.variable} ${crimsonText.variable}`}
     >
-      <body className="relative min-h-screen overflow-x-hidden bg-[#020002] text-rdr-cream font-sans antialiased">
-        <RdrFilters />
+      <body className="relative min-h-screen overflow-x-hidden bg-[#0d0b08] text-[#e8dfc0] font-sans antialiased">
+        
+        {/* Contenedor de filtros SVG: Siempre presente pero invisible */}
+        <div className="sr-only" aria-hidden="true">
+          <RdrFilters />
+        </div>
+
+        {/* El contenido principal */}
         <div className="relative z-10 min-h-screen">
           {children}
         </div>
+
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
