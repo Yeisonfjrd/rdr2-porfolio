@@ -37,6 +37,10 @@ export default function RevolverLoader({
   const stepRef = useRef(0)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
+  // 180° rotation cycle: 0° → 60° → 120° → 180° → reset to 0°
+  const STEPS_PER_CYCLE = 3 // 3 steps of 60° = 180°
+  const PAUSE_BETWEEN_STEPS_MS = 300 // Pause for mechanical "click" feel
+
   useEffect(() => {
     isMountedRef.current = true
 
@@ -44,25 +48,45 @@ export default function RevolverLoader({
       if (!isMountedRef.current) return
 
       stepRef.current += 1
+      const currentStep = stepRef.current % (STEPS_PER_CYCLE + 1)
       
+      // Reset rotation after completing 180° cycle
+      const targetRotation = currentStep === 0 ? 0 : currentStep * 60
+
       try {
-        await controls.start({
-          rotate: stepRef.current * 60,
-          transition: {
-            type: 'spring',
-            stiffness: 300,
-            damping: 20,
-            mass: 0.8,
-          },
-        })
+        // If resetting to 0, do a quick snap back
+        if (currentStep === 0) {
+          await controls.start({
+            rotate: 0,
+            transition: {
+              duration: 0.1,
+              ease: 'linear',
+            },
+          })
+        } else {
+          await controls.start({
+            rotate: targetRotation,
+            transition: {
+              type: 'spring',
+              stiffness: 300,
+              damping: 20,
+              mass: 0.8,
+            },
+          })
+        }
       } catch {
         return
       }
 
       if (isMountedRef.current) {
+        // Add pause between steps for mechanical feel
+        const pauseTime = currentStep === STEPS_PER_CYCLE 
+          ? stepDuration * 1000 // Longer pause after completing 180°
+          : PAUSE_BETWEEN_STEPS_MS
+        
         timeoutRef.current = setTimeout(() => {
           animate()
-        }, stepDuration * 1000 - 200)
+        }, pauseTime)
       }
     }
 

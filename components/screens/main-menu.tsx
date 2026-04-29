@@ -1,7 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { useRDR2Navigation } from '@/hooks/useRDR2Navigation'
+import RDR2ControlPrompts from '@/components/ui/rdr2-control-prompts'
 
 export type GameScreen = 'title' | 'main' | 'portfolio'
 export type PortfolioInitialSection = 'portfolio' | 'activities' | 'audio'
@@ -41,26 +43,21 @@ const menuItems = [
 export default function MainMenu({ onNavigate, onBack }: MainMenuProps) {
   const [selectedIndex, setSelectedIndex] = useState(0)
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight') {
-        setSelectedIndex(prev => (prev + 1) % menuItems.length)
-      } else if (e.key === 'ArrowLeft') {
-        setSelectedIndex(prev => (prev - 1 + menuItems.length) % menuItems.length)
-      } else if (e.key === 'Enter') {
-        const selected = menuItems[selectedIndex].id
-        if (selected === 'exit') {
-          onBack()
-        } else {
-          onNavigate('portfolio', selected as PortfolioInitialSection)
-        }
-      } else if (e.key === 'Escape') {
-        onBack()
-      }
+  const handleSelect = () => {
+    const selected = menuItems[selectedIndex].id
+    if (selected === 'exit') {
+      onBack()
+    } else {
+      onNavigate('portfolio', selected as PortfolioInitialSection)
     }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [selectedIndex, onNavigate, onBack])
+  }
+
+  useRDR2Navigation({
+    onBack,
+    onSelect: handleSelect,
+    onArrowRight: () => setSelectedIndex(prev => (prev + 1) % menuItems.length),
+    onArrowLeft: () => setSelectedIndex(prev => (prev - 1 + menuItems.length) % menuItems.length),
+  })
 
   return (
     <div className="rdr-cinematic-bars absolute inset-0 overflow-hidden" style={{ background: '#0d0b08' }}>
@@ -146,21 +143,19 @@ export default function MainMenu({ onNavigate, onBack }: MainMenuProps) {
           })}
         </div>
 
-        {/* Footer con controles */}
+        {/* Footer separator */}
         <div className="mt-auto pt-6 w-full">
-          <div className="w-full h-[1px] mb-4 bg-[#4a3e32] opacity-40" />
-          <div className="flex justify-end gap-8">
-            <div className="flex items-center gap-2">
-               <span className="w-5 h-5 flex items-center justify-center bg-[#e8dfc0] text-[#0d0b08] rounded-sm font-bold text-[10px]">A</span>
-               <span className="font-typewriter text-[10px] tracking-[0.2em] uppercase text-[#8a7d6b]">SELECCIONAR</span>
-            </div>
-            <div className="flex items-center gap-2">
-               <span className="w-5 h-5 flex items-center justify-center bg-[#e8dfc0] text-[#0d0b08] rounded-sm font-bold text-[10px]">B</span>
-               <span className="font-typewriter text-[10px] tracking-[0.2em] uppercase text-[#8a7d6b]">VOLVER</span>
-            </div>
-          </div>
+          <div className="w-full h-[1px] bg-[#4a3e32] opacity-40" />
         </div>
       </div>
+
+      {/* Control prompts */}
+      <RDR2ControlPrompts
+        prompts={[
+          { key: 'ESC', label: 'VOLVER', icon: 'circle' },
+          { key: 'Enter', label: 'SELECCIONAR', icon: 'cross' },
+        ]}
+      />
     </div>
   )
 }
