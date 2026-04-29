@@ -14,8 +14,7 @@ interface RevolverLoaderProps {
  * Revolver cylinder loader with realistic stepped rotation.
  * 
  * Features:
- * - 6 chambers arranged in a circle
- * - 6 cylinder notches on the outer edge (like real revolver)
+ * - 6 chambers arranged in a circle with flower-like wavy outline
  * - Stepped 60° rotation with spring easing for mechanical feel
  * - Click sound simulation via animation timing
  * 
@@ -42,7 +41,6 @@ export default function RevolverLoader({
     isMountedRef.current = true
 
     const animate = async () => {
-      // Only run animation loop if component is still mounted
       if (!isMountedRef.current) return
 
       stepRef.current += 1
@@ -57,12 +55,10 @@ export default function RevolverLoader({
             mass: 0.8,
           },
         })
-      } catch (error) {
-        // Component unmounted during animation
+      } catch {
         return
       }
 
-      // Schedule next step with pause for mechanical feel
       if (isMountedRef.current) {
         timeoutRef.current = setTimeout(() => {
           animate()
@@ -70,10 +66,8 @@ export default function RevolverLoader({
       }
     }
 
-    // Start animation on mount
     animate()
 
-    // Cleanup on unmount
     return () => {
       isMountedRef.current = false
       if (timeoutRef.current) {
@@ -82,24 +76,65 @@ export default function RevolverLoader({
     }
   }, [controls, stepDuration])
 
-  // Calculate positions for 6 cylinder notches on outer edge
-  const notchPositions = Array.from({ length: 6 }).map((_, i) => {
-    const angleDeg = i * 60 - 90 // Start from top
-    const angleRad = (angleDeg * Math.PI) / 180
-    // Position on outer edge of cylinder
-    const cx = 50 + 42 * Math.cos(angleRad)
-    const cy = 50 + 42 * Math.sin(angleRad)
-    return { cx, cy, angle: angleDeg + 90 }
-  })
-
   // Calculate positions for 6 chambers
   const chamberPositions = Array.from({ length: 6 }).map((_, i) => {
-    const angleDeg = i * 60 - 90 // Start from top
+    const angleDeg = i * 60 - 90
     const angleRad = (angleDeg * Math.PI) / 180
     const cx = 50 + 26 * Math.cos(angleRad)
     const cy = 50 + 26 * Math.sin(angleRad)
     return { cx, cy }
   })
+
+  // Generate flower-like wavy path for outer edge
+  // This creates the characteristic revolver cylinder shape where
+  // the outline bulges outward around each chamber
+  const generateFlowerPath = () => {
+    const centerX = 50
+    const centerY = 50
+    const chamberRadius = 14 // radius of each chamber bulge
+    const chamberDistance = 26 // distance from center to chamber center
+    const numChambers = 6
+    
+    let path = ''
+    
+    for (let i = 0; i < numChambers; i++) {
+      const angle1 = (i * 60 - 90) * (Math.PI / 180)
+      const angle2 = ((i + 1) * 60 - 90) * (Math.PI / 180)
+      
+      // Outer point of current chamber bulge
+      const outerX = centerX + (chamberDistance + chamberRadius) * Math.cos(angle1)
+      const outerY = centerY + (chamberDistance + chamberRadius) * Math.sin(angle1)
+      
+      // Inner point between chambers (the "waist" of the flower)
+      const midAngle = (angle1 + angle2) / 2
+      const innerRadius = chamberDistance - 2 // How deep the curve goes inward
+      const innerX = centerX + innerRadius * Math.cos(midAngle)
+      const innerY = centerY + innerRadius * Math.sin(midAngle)
+      
+      if (i === 0) {
+        path += `M ${outerX} ${outerY} `
+      }
+      
+      // Bezier curve to inner point
+      const ctrl1X = centerX + (chamberDistance + chamberRadius * 0.5) * Math.cos(angle1 + 0.3)
+      const ctrl1Y = centerY + (chamberDistance + chamberRadius * 0.5) * Math.sin(angle1 + 0.3)
+      
+      path += `Q ${ctrl1X} ${ctrl1Y} ${innerX} ${innerY} `
+      
+      // Next outer point
+      const nextOuterX = centerX + (chamberDistance + chamberRadius) * Math.cos(angle2)
+      const nextOuterY = centerY + (chamberDistance + chamberRadius) * Math.sin(angle2)
+      
+      // Bezier curve to next outer point
+      const ctrl2X = centerX + (chamberDistance + chamberRadius * 0.5) * Math.cos(angle2 - 0.3)
+      const ctrl2Y = centerY + (chamberDistance + chamberRadius * 0.5) * Math.sin(angle2 - 0.3)
+      
+      path += `Q ${ctrl2X} ${ctrl2Y} ${nextOuterX} ${nextOuterY} `
+    }
+    
+    path += 'Z'
+    return path
+  }
 
   return (
     <div
@@ -144,38 +179,13 @@ export default function RevolverLoader({
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
         >
-          {/* Outer drum ring */}
-          <circle
-            cx="50"
-            cy="50"
-            r="46"
+          {/* Flower-like outer edge - wavy cylinder shape */}
+          <path
+            d={generateFlowerPath()}
             stroke={color}
-            strokeWidth="6"
+            strokeWidth="4"
             fill="none"
-          />
-
-          {/* 6 Cylinder notches on outer edge - realistic revolver detail */}
-          {notchPositions.map((pos, i) => (
-            <rect
-              key={`notch-${i}`}
-              x={pos.cx - 3}
-              y={pos.cy - 6}
-              width="6"
-              height="8"
-              fill={color}
-              transform={`rotate(${pos.angle}, ${pos.cx}, ${pos.cy})`}
-              rx="1"
-            />
-          ))}
-
-          {/* Center chamber - ejector rod hole */}
-          <circle
-            cx="50"
-            cy="50"
-            r="10"
-            stroke={color}
-            strokeWidth="5"
-            fill="none"
+            strokeLinejoin="round"
           />
 
           {/* 6 outer chambers arranged in circle */}
@@ -184,22 +194,21 @@ export default function RevolverLoader({
               key={`chamber-${i}`}
               cx={pos.cx}
               cy={pos.cy}
-              r="9"
+              r="10"
               stroke={color}
-              strokeWidth="5"
+              strokeWidth="4"
               fill="none"
             />
           ))}
 
-          {/* Inner structural ring connecting chambers */}
+          {/* Center ejector rod hole */}
           <circle
             cx="50"
             cy="50"
-            r="17"
+            r="8"
             stroke={color}
-            strokeWidth="1.5"
+            strokeWidth="4"
             fill="none"
-            opacity="0.4"
           />
         </svg>
       </motion.div>
