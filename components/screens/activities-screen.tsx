@@ -2,12 +2,25 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { useRDR2Navigation } from '@/hooks/useRDR2Navigation'
+import RDR2ControlPrompts from '@/components/ui/rdr2-control-prompts'
 
-interface ActivityStat {
-  label: string
-  value: string | number
-  icon: string
-  category: 'commits' | 'language' | 'project'
+interface Activity {
+  id: string
+  title: string
+  description: string
+  image: string
+  stats?: {
+    label: string
+    value: string | number
+  }[]
+}
+
+interface GitHubStats {
+  commits: number
+  streak: number
+  languages: { name: string; percent: number }[]
+  recentRepos: string[]
 }
 
 interface ActivitiesScreenProps {
@@ -15,57 +28,98 @@ interface ActivitiesScreenProps {
 }
 
 /**
- * Activities Screen - GitHub integration mockup
- * Displays development statistics in RDR2 style grid with red selection borders
- * Prepared for real GitHub API integration
+ * Activities Screen - RDR2 style with horizontal card grid
+ * Displays development activities as activity cards with sepia images
+ * Red selection borders like the RDR2 Activities menu
  */
 export default function ActivitiesScreen({ onBack }: ActivitiesScreenProps) {
   const [selectedIndex, setSelectedIndex] = useState(0)
-  const [activities, setActivities] = useState<ActivityStat[]>([])
+  const [githubStats, setGithubStats] = useState<GitHubStats | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  // Mock data - replace with real GitHub API calls
-  const mockActivities: ActivityStat[] = [
-    // Commits (Stamina/Energy equivalent)
-    { label: 'Commits Today', value: 12, icon: '💻', category: 'commits' },
-    { label: 'Commits This Week', value: 68, icon: '📊', category: 'commits' },
-    { label: 'Commits This Month', value: 287, icon: '📈', category: 'commits' },
-    
-    // Languages (Skills equivalent)
-    { label: 'TypeScript', value: '45%', icon: '🔷', category: 'language' },
-    { label: 'JavaScript', value: '30%', icon: '💛', category: 'language' },
-    { label: 'Go', value: '15%', icon: '🐹', category: 'language' },
-    
-    // Projects (Missions equivalent)
-    { label: 'RoadEra', value: 'In Progress', icon: '🚗', category: 'project' },
-    { label: 'Portfolio RDR2', value: 'Active', icon: '🎮', category: 'project' },
-    { label: 'Open Source', value: '3 Repos', icon: '⭐', category: 'project' },
+  // Activities matching RDR2 style - large cards with images
+  const activities: Activity[] = [
+    {
+      id: 'github',
+      title: 'GitHub',
+      description: 'Actividad de desarrollo en tiempo real. Commits, pull requests y contribuciones a repositorios open source.',
+      image: 'https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=600&q=80',
+      stats: githubStats ? [
+        { label: 'Commits este mes', value: githubStats.commits },
+        { label: 'Racha actual', value: `${githubStats.streak} días` },
+      ] : undefined,
+    },
+    {
+      id: 'wakatime',
+      title: 'Coding',
+      description: 'Tiempo de programación rastreado con WakaTime. Lenguajes utilizados y proyectos activos.',
+      image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&q=80',
+      stats: [
+        { label: 'Horas esta semana', value: '32h' },
+        { label: 'Lenguaje principal', value: 'TypeScript' },
+      ],
+    },
+    {
+      id: 'projects',
+      title: 'Proyectos',
+      description: 'Portafolio de proyectos activos y completados. Arquitecturas full-stack y experiencias web.',
+      image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=80',
+      stats: [
+        { label: 'Proyectos activos', value: 4 },
+        { label: 'En producción', value: 3 },
+      ],
+    },
+    {
+      id: 'learning',
+      title: 'Aprendizaje',
+      description: 'Cursos completados, certificaciones obtenidas y tecnologías en estudio continuo.',
+      image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=600&q=80',
+      stats: [
+        { label: 'Certificaciones', value: 5 },
+        { label: 'En curso', value: 'AWS Solutions' },
+      ],
+    },
   ]
 
+  // Fetch GitHub stats (mock - replace with real API)
   useEffect(() => {
-    // Simulate loading delay for API call
-    const timer = setTimeout(() => {
-      setActivities(mockActivities)
-      setIsLoading(false)
-    }, 500)
-
-    return () => clearTimeout(timer)
-  }, [])
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight') {
-        setSelectedIndex(prev => (prev + 1) % activities.length)
-      } else if (e.key === 'ArrowLeft') {
-        setSelectedIndex(prev => (prev - 1 + activities.length) % activities.length)
-      } else if (e.key === 'Escape' || e.key === 'Backspace') {
-        onBack()
+    const fetchGitHubStats = async () => {
+      try {
+        // TODO: Replace with actual GitHub API call
+        // const res = await fetch('/api/github/stats')
+        // const data = await res.json()
+        
+        // Mock data for now
+        await new Promise(resolve => setTimeout(resolve, 500))
+        setGithubStats({
+          commits: 287,
+          streak: 14,
+          languages: [
+            { name: 'TypeScript', percent: 45 },
+            { name: 'JavaScript', percent: 30 },
+            { name: 'Go', percent: 15 },
+            { name: 'Python', percent: 10 },
+          ],
+          recentRepos: ['rdr2-portfolio', 'roadera', 'tesla-clone'],
+        })
+      } catch (error) {
+        console.error('Failed to fetch GitHub stats:', error)
+      } finally {
+        setIsLoading(false)
       }
     }
 
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [activities.length, onBack])
+    fetchGitHubStats()
+  }, [])
+
+  // Navigation with centralized hook
+  useRDR2Navigation({
+    onBack,
+    onArrowRight: () => setSelectedIndex(prev => (prev + 1) % activities.length),
+    onArrowLeft: () => setSelectedIndex(prev => (prev - 1 + activities.length) % activities.length),
+  })
+
+  const currentActivity = activities[selectedIndex]
 
   return (
     <div className="rdr-cinematic-bars absolute inset-0 overflow-hidden" style={{ background: '#0d0b08' }}>
@@ -77,83 +131,113 @@ export default function ActivitiesScreen({ onBack }: ActivitiesScreenProps) {
         `
       }} />
 
+      <motion.div className="rdr-grain absolute inset-0 pointer-events-none"
+        animate={{ opacity: [0.03, 0.055, 0.03] }}
+        transition={{ duration: 4, repeat: Infinity }} />
+
+      {/* Paint edges for cinematic bars */}
+      <div className="rdr-bar-paint-edge-top" style={{ top: 'calc(12% - 10px)' }} />
+      <div className="rdr-bar-paint-edge-bottom" style={{ bottom: 'calc(12% - 10px)' }} />
+
       <div className="relative flex flex-col h-full px-8 md:px-[8vw] py-[14vh]" style={{ zIndex: 30 }}>
         
         {/* Header */}
-        <div className="mb-8 w-full">
+        <div className="mb-6 w-full">
           <h1 className="font-chinese-rocks uppercase tracking-[0.1em] text-[#e8dfc0]"
-              style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
-            ACTIVITIES - Mi Desarrollo
+              style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)', textShadow: '2px 2px 4px rgba(0,0,0,0.8)' }}>
+            ACTIVITIES
           </h1>
           <div className="w-full h-[2px] mt-2 bg-[#4a3e32] opacity-60" />
-          <p className="text-sm text-[#a89a88] mt-3">Estadísticas en vivo de programación y proyectos</p>
         </div>
 
-        {/* Loading state */}
+        {/* Loading skeleton */}
         {isLoading ? (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
-              <p className="text-[#e8dfc0] font-chinese-rocks tracking-[0.1em] uppercase mb-4">Cargando estadísticas...</p>
+              <div className="w-8 h-8 border-2 border-[#e8dfc0] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+              <p className="text-[#8a7d6b] text-sm uppercase tracking-widest">Cargando actividades...</p>
             </div>
           </div>
         ) : (
           <>
-            {/* Activities Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 flex-1">
+            {/* Horizontal Activity Cards Grid - RDR2 Style */}
+            <div className="flex gap-4 overflow-x-auto pb-4 flex-1 items-start" style={{ scrollbarWidth: 'none' }}>
               {activities.map((activity, index) => {
                 const isSelected = index === selectedIndex
-                const categoryColor = {
-                  commits: '#c41e3a',   // Red for commits
-                  language: '#fead00',  // Gold for languages
-                  project: '#8b7d6b',   // Brown for projects
-                }[activity.category]
 
                 return (
                   <motion.button
-                    key={index}
+                    key={activity.id}
                     onClick={() => setSelectedIndex(index)}
                     onMouseEnter={() => setSelectedIndex(index)}
-                    className="relative text-left group focus:outline-none transition-all duration-200"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    className="relative flex-shrink-0 text-left focus:outline-none group"
+                    style={{ width: 'clamp(200px, 22vw, 280px)' }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: index * 0.1 }}
                   >
-                    {/* Activity Card with paint border */}
-                    <div className={`p-[2px] transition-all duration-300 ${
-                      isSelected 
-                        ? 'rdr-menu-card-active' 
-                        : 'rdr-menu-card-idle opacity-70'
-                    }`}>
-                      <div className="bg-[#1a1208] p-6 min-h-[140px] flex flex-col justify-between relative overflow-hidden">
+                    {/* Card Container with RED border when active */}
+                    <div className={`w-full transition-all duration-300 ${
+                      isSelected ? 'outline outline-2 outline-[#c41e3a] outline-offset-2' : ''
+                    }`}
+                      style={{
+                        backfaceVisibility: 'hidden',
+                        transform: isSelected ? 'scale(1.02)' : 'scale(1)',
+                      }}
+                    >
+                      {/* Image with sepia filter */}
+                      <div className="relative aspect-[4/3] overflow-hidden bg-[#110e0a]">
+                        <img
+                          src={activity.image}
+                          alt={activity.title}
+                          className={`w-full h-full object-cover transition-all duration-500 ${
+                            isSelected ? 'opacity-90 grayscale-[30%] sepia-[60%]' : 'opacity-50 grayscale-[70%] sepia-[40%]'
+                          }`}
+                        />
+                        {/* Inner shadow */}
+                        <div className="absolute inset-0 shadow-[inset_0_0_40px_rgba(0,0,0,0.9)] pointer-events-none" />
                         
-                        {/* Selection indicator border */}
+                        {/* Red selection glow */}
                         {isSelected && (
-                          <motion.div
-                            layoutId="selectedBorder"
-                            className="absolute inset-0 border-2 pointer-events-none"
-                            style={{ borderColor: categoryColor }}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 0.2 }}
-                          />
+                          <div className="absolute inset-0 shadow-[inset_0_0_20px_rgba(196,30,58,0.3)] pointer-events-none" />
                         )}
+                      </div>
 
-                        {/* Content */}
-                        <div className="relative z-10">
-                          <div className="text-3xl mb-2">{activity.icon}</div>
-                          <p className="text-xs uppercase tracking-[0.15em] text-[#8a7d6b] mb-2">
-                            {activity.category.replace('_', ' ')}
-                          </p>
-                          <h3 className="font-chinese-rocks uppercase tracking-[0.08em] text-[#e8dfc0] mb-3">
-                            {activity.label}
-                          </h3>
-                          <p className="text-xl font-bold" style={{ color: categoryColor }}>
-                            {activity.value}
-                          </p>
-                        </div>
+                      {/* Title and Description below image */}
+                      <div className="mt-3 px-1">
+                        <h2 className="font-chinese-rocks uppercase tracking-[0.08em] transition-colors duration-200"
+                          style={{
+                            fontSize: 'clamp(0.9rem, 1.4vw, 1.1rem)',
+                            color: isSelected ? '#e8dfc0' : '#8a7d6b',
+                            textShadow: isSelected ? '1px 1px 0 #000' : 'none',
+                          }}>
+                          {activity.title}
+                        </h2>
+                        <p className="mt-2 text-xs leading-relaxed font-sans" 
+                          style={{ 
+                            color: isSelected ? '#a89a88' : '#5a4a38',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 3,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                          }}>
+                          {activity.description}
+                        </p>
 
-                        {/* Hover effect overlay */}
-                        {isSelected && (
-                          <div className="absolute inset-0 shadow-[inset_0_0_30px_rgba(255,174,0,0.1)] pointer-events-none" />
+                        {/* Stats (only shown on hover/selected) */}
+                        {isSelected && activity.stats && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            className="mt-3 pt-3 border-t border-[#4a3e32]/40"
+                          >
+                            {activity.stats.map((stat, i) => (
+                              <div key={i} className="flex justify-between text-xs mb-1">
+                                <span className="text-[#8a7d6b]">{stat.label}</span>
+                                <span className="text-[#c41e3a] font-bold">{stat.value}</span>
+                              </div>
+                            ))}
+                          </motion.div>
                         )}
                       </div>
                     </div>
@@ -162,40 +246,57 @@ export default function ActivitiesScreen({ onBack }: ActivitiesScreenProps) {
               })}
             </div>
 
-            {/* Activity Details */}
-            {activities[selectedIndex] && (
+            {/* Selected Activity Details */}
+            {currentActivity && (
               <motion.div
-                className="mt-8 pt-6 border-t border-[#4a3e32]"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
+                key={currentActivity.id}
+                className="mt-4 pt-4 border-t border-[#4a3e32]/60"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 transition={{ duration: 0.3 }}
               >
-                <p className="text-sm text-[#a89a88]">
-                  <span className="text-[#e8dfc0] font-chinese-rocks">SELECCIONADO:</span> {activities[selectedIndex].label}
-                </p>
-                <p className="text-xs text-[#8a7d6b] mt-2">
-                  Esta sección está preparada para conectar con la API de GitHub para mostrar estadísticas en tiempo real de tu actividad de desarrollo.
-                </p>
+                <div className="flex items-start gap-6">
+                  {/* Activity info */}
+                  <div className="flex-1">
+                    <p className="text-xs uppercase tracking-[0.2em] text-[#8a7d6b] mb-2">Seleccionado</p>
+                    <h3 className="font-chinese-rocks uppercase text-[#e8dfc0] text-lg tracking-wide">
+                      {currentActivity.title}
+                    </h3>
+                  </div>
+
+                  {/* GitHub languages (if applicable) */}
+                  {currentActivity.id === 'github' && githubStats && (
+                    <div className="text-right">
+                      <p className="text-xs uppercase tracking-[0.2em] text-[#8a7d6b] mb-2">Lenguajes</p>
+                      <div className="flex gap-3">
+                        {githubStats.languages.slice(0, 3).map((lang, i) => (
+                          <div key={i} className="text-xs">
+                            <span className="text-[#e8dfc0]">{lang.name}</span>
+                            <span className="text-[#c41e3a] ml-1">{lang.percent}%</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </motion.div>
             )}
           </>
         )}
 
-        {/* Footer with controls */}
-        <div className="mt-auto pt-6 w-full">
-          <div className="w-full h-[1px] mb-4 bg-[#4a3e32] opacity-40" />
-          <div className="flex justify-end gap-8">
-            <div className="flex items-center gap-2">
-              <span className="w-5 h-5 flex items-center justify-center bg-[#e8dfc0] text-[#0d0b08] rounded-sm font-bold text-[10px]">←→</span>
-              <span className="font-typewriter text-[10px] tracking-[0.2em] uppercase text-[#8a7d6b]">NAVEGAR</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-5 h-5 flex items-center justify-center bg-[#e8dfc0] text-[#0d0b08] rounded-sm font-bold text-[10px]">B</span>
-              <span className="font-typewriter text-[10px] tracking-[0.2em] uppercase text-[#8a7d6b]">VOLVER</span>
-            </div>
-          </div>
+        {/* Footer separator */}
+        <div className="mt-auto pt-4 w-full">
+          <div className="w-full h-[1px] bg-[#4a3e32] opacity-40" />
         </div>
       </div>
+
+      {/* Control prompts */}
+      <RDR2ControlPrompts
+        prompts={[
+          { key: 'ESC', label: 'VOLVER', icon: 'circle' },
+          { key: '←→', label: 'NAVEGAR' },
+        ]}
+      />
 
       {/* Vignette overlay */}
       <div className="pointer-events-none absolute inset-0 z-[90] rdr-vignette opacity-60" />

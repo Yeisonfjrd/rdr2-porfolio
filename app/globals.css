@@ -625,6 +625,10 @@
   transition: all 0.2s ease;
   outline: 2px solid transparent;
   outline-offset: 4px;
+  /* Anti-distortion fixes for sub-pixel rendering */
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* El truco: El filter deforma el outline y el shadow, haciendo que el borde
@@ -633,9 +637,12 @@
   filter: url(#rdr-paint-container-active);
   outline: 2px solid var(--rdr-crimson);
   box-shadow: 0 0 25px rgba(189, 8, 26, 0.4);
-  transform: scale(1.02);
+  transform: scale(1.02) translateZ(0);
+  backface-visibility: hidden;
 }
 
 .rdr-menu-card-idle {
   filter: url(#rdr-paint-container);
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }

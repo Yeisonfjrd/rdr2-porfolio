@@ -193,7 +193,7 @@ export default function LoadingScreen({ onComplete, indefinite = false }: Loadin
       <div className="absolute bottom-0 left-0 right-0" style={{ height: '18%', background: '#000', zIndex: 10 }} />
       <div className="rdr-bar-paint-edge-bottom" style={{ bottom: 'calc(18% - 8px)', zIndex: 11 }} aria-hidden />
 
-      {/* ── Barra de progreso — estilo RDR2 ── */}
+      {/* ── Barra de progreso — estilo RDR2 (sin porcentaje) ── */}
       {!indefinite && (
         <div
           style={{
@@ -217,23 +217,11 @@ export default function LoadingScreen({ onComplete, indefinite = false }: Loadin
                 position: 'absolute',
                 left: 0, top: 0, bottom: 0,
                 background: 'linear-gradient(to right, #bd081a, rgba(254,172,1,0.8))',
-                filter: 'url(#rdr-paint-container)',
               }}
               animate={{ width: `${progress}%` }}
               transition={{ duration: 0.15, ease: 'linear' }}
             />
           </div>
-          <p style={{
-            fontFamily: 'Courier New, monospace',
-            fontSize: '0.55rem',
-            letterSpacing: '0.22em',
-            textTransform: 'uppercase',
-            color: 'rgba(200,180,130,0.4)',
-            textAlign: 'center',
-            marginTop: 6,
-          }}>
-            {Math.floor(progress)}%
-          </p>
         </div>
       )}
 
@@ -266,10 +254,12 @@ export default function LoadingScreen({ onComplete, indefinite = false }: Loadin
             style={{
               fontFamily: 'sans-serif',
               fontSize: 'clamp(0.62rem, 1.1vw, 0.78rem)',
-              color: 'rgba(200,180,140,0.7)',
+              color: '#e8dfc0',
               lineHeight: 1.6,
               letterSpacing: '0.02em',
               fontStyle: 'italic',
+              mixBlendMode: 'difference',
+              textShadow: '0 1px 2px rgba(0,0,0,0.5)',
             }}
           >
             {TIPS[tipIndex]}
@@ -280,30 +270,7 @@ export default function LoadingScreen({ onComplete, indefinite = false }: Loadin
       {/* ── Revólver loader — esquina inferior derecha ── */}
       <RevolverLoader variant="light" speed={2.5} size={44} />
 
-      {/* ── Título de carga — barra superior ── */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '8%',
-          display: 'flex',
-          alignItems: 'center',
-          paddingLeft: 'clamp(16px, 3vw, 32px)',
-          zIndex: 20,
-        }}
-      >
-        <p style={{
-          fontFamily: 'var(--font-chinese-rocks), Impact, sans-serif',
-          fontSize: 'clamp(0.55rem, 1.1vw, 0.72rem)',
-          letterSpacing: '0.28em',
-          textTransform: 'uppercase',
-          color: 'rgba(200,180,140,0.55)',
-        }}>
-          Cargando mundo...
-        </p>
-      </div>
+
 
     </div>
   )
