@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { ASSET_PATHS } from '@/lib/assets'
+import { ASSETS } from '@/lib/assets'
 
 interface ShotgunBlastProps {
   onComplete: () => void
@@ -69,7 +69,7 @@ export default function ShotgunBlast({ onComplete }: ShotgunBlastProps) {
       >
         <video
           ref={videoRef}
-          src={ASSET_PATHS.INTRO_VIDEO}
+          src={ASSETS.INTRO_VIDEO}
           className="absolute inset-0 w-full h-full object-cover"
           playsInline
           muted
