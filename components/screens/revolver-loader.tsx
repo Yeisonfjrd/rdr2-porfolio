@@ -1,6 +1,6 @@
 'use client'
 import { motion, useAnimationControls } from 'framer-motion'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 interface RevolverLoaderProps {
   /** 'light' = cream color (on dark backgrounds) | 'dark' = dark brown (on light/sepia backgrounds) */
@@ -34,14 +34,22 @@ export default function RevolverLoader({
   const textColor = variant === 'light' ? 'rgba(232,223,192,0.45)' : 'rgba(26,18,8,0.45)'
   
   const controls = useAnimationControls()
+  const isMountedRef = useRef(false)
+  const stepRef = useRef(0)
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
-    let step = 0
+    isMountedRef.current = true
+
     const animate = async () => {
-      while (true) {
-        step += 1
+      // Only run animation loop if component is still mounted
+      if (!isMountedRef.current) return
+
+      stepRef.current += 1
+      
+      try {
         await controls.start({
-          rotate: step * 60,
+          rotate: stepRef.current * 60,
           transition: {
             type: 'spring',
             stiffness: 300,
@@ -49,11 +57,29 @@ export default function RevolverLoader({
             mass: 0.8,
           },
         })
-        // Pause between steps for mechanical feel
-        await new Promise(resolve => setTimeout(resolve, stepDuration * 1000 - 200))
+      } catch (error) {
+        // Component unmounted during animation
+        return
+      }
+
+      // Schedule next step with pause for mechanical feel
+      if (isMountedRef.current) {
+        timeoutRef.current = setTimeout(() => {
+          animate()
+        }, stepDuration * 1000 - 200)
       }
     }
+
+    // Start animation on mount
     animate()
+
+    // Cleanup on unmount
+    return () => {
+      isMountedRef.current = false
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
   }, [controls, stepDuration])
 
   // Calculate positions for 6 cylinder notches on outer edge

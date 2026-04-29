@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import TitleScreen from '@/components/screens/title-screen'
 import MainMenu, { type GameScreen } from '@/components/screens/main-menu'
 import PortfolioMenu, { type PortfolioInitialSection } from '@/components/screens/portfolio-menu'
+import ActivitiesScreen from '@/components/screens/activities-screen'
 import LoadingScreen from '@/components/screens/loading-screen'
 
 // Timing constants for smart loading
@@ -17,6 +18,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false)
   const [shouldShowLoader, setShouldShowLoader] = useState(false)
   const [initialSection, setInitialSection] = useState<PortfolioInitialSection | undefined>(undefined)
+  const [showActivities, setShowActivities] = useState(false)
 
   const timerRef = useRef<number | null>(null)
   const loadingStartRef = useRef<number | null>(null)
@@ -106,6 +108,31 @@ export default function Home() {
     setIsTransitioning(true)
     timerRef.current = window.setTimeout(() => {
       setCurrentScreen('title')
+      setShowActivities(false)
+      setIsTransitioning(false)
+      timerRef.current = null
+    }, 220)
+  }
+
+  const goToActivities = () => {
+    if (isTransitioning) return
+    clearTimer()
+    setIsTransitioning(true)
+    setShowActivities(true)
+    setCurrentScreen('portfolio')
+    timerRef.current = window.setTimeout(() => {
+      setIsTransitioning(false)
+      timerRef.current = null
+    }, 220)
+  }
+
+  const exitActivities = () => {
+    if (isTransitioning) return
+    clearTimer()
+    setIsTransitioning(true)
+    setShowActivities(false)
+    timerRef.current = window.setTimeout(() => {
+      setCurrentScreen('main')
       setIsTransitioning(false)
       timerRef.current = null
     }, 220)
@@ -172,14 +199,20 @@ export default function Home() {
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
             <MainMenu
-              onNavigate={(screen, section) => goToScreen(screen, section)}
+              onNavigate={(screen, section) => {
+                if (section === 'activities') {
+                  goToActivities()
+                } else {
+                  goToScreen(screen, section)
+                }
+              }}
               onBack={goToTitle}
             />
           </motion.div>
         )}
 
         {/* PORTAFOLIO / COMPENDIO */}
-        {currentScreen === 'portfolio' && (
+        {currentScreen === 'portfolio' && !showActivities && (
           <motion.div
             key="portfolio"
             className="absolute inset-0"
@@ -192,6 +225,20 @@ export default function Home() {
               onBack={goToMain}
               initialSection={initialSection}
             />
+          </motion.div>
+        )}
+
+        {/* ACTIVITIES SCREEN */}
+        {currentScreen === 'portfolio' && showActivities && (
+          <motion.div
+            key="activities"
+            className="absolute inset-0"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.4 }}
+          >
+            <ActivitiesScreen onBack={exitActivities} />
           </motion.div>
         )}
       </AnimatePresence>
