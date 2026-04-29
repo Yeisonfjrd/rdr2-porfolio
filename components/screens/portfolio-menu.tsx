@@ -224,18 +224,27 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
           }}
         >
           <div style={{ padding: '20px 22px 16px', borderBottom: '1px solid rgba(200,180,130,0.1)' }}>
-            <p style={{ fontFamily: 'Courier New, monospace', fontSize: '0.6rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: '#3d3428', marginBottom: 10 }}>
+            <motion.p
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+              style={{ fontFamily: 'Courier New, monospace', fontSize: '0.6rem', letterSpacing: '0.3em', textTransform: 'uppercase', color: '#3d3428', marginBottom: 10 }}
+            >
               Compendio
-            </p>
-            <button
+            </motion.p>
+            <motion.button
               type="button"
               onClick={onBack}
+              initial={{ opacity: 0, x: -12 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.25, delay: 0.15 }}
+              whileHover={{ x: -4, color: '#c8b898' }}
+              whileTap={{ scale: 0.98 }}
               style={{ fontFamily: 'Courier New, monospace', fontSize: '0.7rem', letterSpacing: '0.15em', color: '#5a4a38', textTransform: 'uppercase', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-              onMouseEnter={e => (e.currentTarget.style.color = '#c8b898')}
-              onMouseLeave={e => (e.currentTarget.style.color = '#5a4a38')}
             >
               ← Volver
-            </button>
+            </motion.button>
           </div>
 
           <nav style={{ flex: 1, paddingTop: 8, paddingBottom: 8 }}>
