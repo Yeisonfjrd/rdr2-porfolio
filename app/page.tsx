@@ -1,19 +1,26 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import TitleScreen from '@/components/screens/title-screen'
 import MainMenu, { type GameScreen } from '@/components/screens/main-menu'
 import PortfolioMenu, { type PortfolioInitialSection } from '@/components/screens/portfolio-menu'
-import LoadingScreen from '@/components/screens/loading-screen' // Asegúrate de tener este import
+import LoadingScreen from '@/components/screens/loading-screen'
+
+// Timing constants for smart loading
+const LOADING_THRESHOLD_MS = 200  // Show loader only if operation takes longer than this
+const MIN_LOADING_DISPLAY_MS = 2000  // Minimum time to display loader once shown
 
 export default function Home() {
   const [currentScreen, setCurrentScreen] = useState<GameScreen>('title')
   const [isTransitioning, setIsTransitioning] = useState(false)
-  const [isLoading, setIsLoading] = useState(false) // Nuevo estado para la carga cinematográfica
+  const [isLoading, setIsLoading] = useState(false)
+  const [shouldShowLoader, setShouldShowLoader] = useState(false)
   const [initialSection, setInitialSection] = useState<PortfolioInitialSection | undefined>(undefined)
 
   const timerRef = useRef<number | null>(null)
+  const loadingStartRef = useRef<number | null>(null)
+  const thresholdTimerRef = useRef<number | null>(null)
 
   const clearTimer = () => {
     if (timerRef.current !== null) {
@@ -21,6 +28,14 @@ export default function Home() {
       timerRef.current = null
     }
   }
+
+  const clearAllTimers = useCallback(() => {
+    clearTimer()
+    if (thresholdTimerRef.current !== null) {
+      window.clearTimeout(thresholdTimerRef.current)
+      thresholdTimerRef.current = null
+    }
+  }, [])
 
   // Lógica de navegación con carga opcional
   const goToScreen = (screen: GameScreen, section?: PortfolioInitialSection) => {
@@ -39,17 +54,38 @@ export default function Home() {
   const startSequence = () => {
     if (isTransitioning || isLoading) return
     setIsTransitioning(true)
+    
+    // Track when loading starts for smart timing
+    loadingStartRef.current = Date.now()
 
-    // 1. Pequeño fade out del TitleScreen
+    // 1. Small fade out from TitleScreen
     timerRef.current = window.setTimeout(() => {
-      setIsLoading(true) // 2. Activamos la pantalla de carga de fotos
+      setIsLoading(true)
       setIsTransitioning(false)
+      
+      // 2. Set threshold timer - only show visual loader if operation takes > 200ms
+      thresholdTimerRef.current = window.setTimeout(() => {
+        setShouldShowLoader(true)
+      }, LOADING_THRESHOLD_MS)
 
-      // 3. Simulamos la carga del "mundo" (tus proyectos)
+      // 3. Simulate world loading (your projects)
       timerRef.current = window.setTimeout(() => {
-        setIsLoading(false)
-        setCurrentScreen('main')
-      }, 4500) // Tiempo suficiente para ver un par de fotos sepia
+        const elapsed = Date.now() - (loadingStartRef.current ?? Date.now())
+        
+        // If loader was shown, ensure minimum display time
+        if (shouldShowLoader && elapsed < MIN_LOADING_DISPLAY_MS) {
+          const remaining = MIN_LOADING_DISPLAY_MS - elapsed
+          timerRef.current = window.setTimeout(() => {
+            setShouldShowLoader(false)
+            setIsLoading(false)
+            setCurrentScreen('main')
+          }, remaining)
+        } else {
+          setShouldShowLoader(false)
+          setIsLoading(false)
+          setCurrentScreen('main')
+        }
+      }, 4500) // Time to see a couple sepia photos
     }, 400)
   }
 
@@ -91,14 +127,14 @@ export default function Home() {
   }, [currentScreen, isTransitioning, isLoading])
 
   useEffect(() => {
-    return () => clearTimer()
-  }, [])
+    return () => clearAllTimers()
+  }, [clearAllTimers])
 
   return (
     <main className="fixed inset-0 bg-[#0c0a07] overflow-hidden rdr-grain">
       <AnimatePresence mode="wait">
-        {/* PANTALLA DE CARGA (FOTOS SEPIA) */}
-        {isLoading && (
+        {/* PANTALLA DE CARGA (FOTOS SEPIA) - Only renders when threshold exceeded */}
+        {isLoading && shouldShowLoader && (
           <motion.div
             key="loading"
             initial={{ opacity: 0 }}
