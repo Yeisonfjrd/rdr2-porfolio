@@ -6,6 +6,7 @@ import TitleScreen from '@/components/screens/title-screen'
 import MainMenu, { type GameScreen } from '@/components/screens/main-menu'
 import PortfolioMenu, { type PortfolioInitialSection } from '@/components/screens/portfolio-menu'
 import ActivitiesScreen from '@/components/screens/activities-screen'
+import ShotgunBlast from '@/components/screens/shotgun-blast'
 import LoadingScreen from '@/components/screens/loading-screen'
 
 // Timing constants for smart loading
@@ -19,10 +20,32 @@ export default function Home() {
   const [shouldShowLoader, setShouldShowLoader] = useState(false)
   const [initialSection, setInitialSection] = useState<PortfolioInitialSection | undefined>(undefined)
   const [showActivities, setShowActivities] = useState(false)
+  const [showShotgunBlast, setShowShotgunBlast] = useState(false)
+  const [introPlayed, setIntroPlayed] = useState(false)
 
   const timerRef = useRef<number | null>(null)
   const loadingStartRef = useRef<number | null>(null)
   const thresholdTimerRef = useRef<number | null>(null)
+
+  // Check if intro has already been played in this session
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const introPreviouslyPlayed = sessionStorage.getItem('rdr2_intro_played') === 'true'
+      setIntroPlayed(introPreviouslyPlayed)
+      
+      // Show shotgun blast only on first visit (not in sessionStorage)
+      if (!introPreviouslyPlayed) {
+        setShowShotgunBlast(true)
+      }
+    }
+  }, [])
+
+  const handleShotgunBlastComplete = () => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('rdr2_intro_played', 'true')
+    }
+    setShowShotgunBlast(false)
+  }
 
   const clearTimer = () => {
     if (timerRef.current !== null) {
@@ -159,6 +182,11 @@ export default function Home() {
 
   return (
     <main className="fixed inset-0 bg-[#0c0a07] overflow-hidden rdr-grain">
+      {/* SHOTGUN BLAST INTRO - Plays once per session */}
+      {showShotgunBlast && (
+        <ShotgunBlast onComplete={handleShotgunBlastComplete} />
+      )}
+
       <AnimatePresence mode="wait">
         {/* PANTALLA DE CARGA (FOTOS SEPIA) - Only renders when threshold exceeded */}
         {isLoading && shouldShowLoader && (
