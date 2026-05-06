@@ -5,9 +5,9 @@
 
 export const ASSETS = {
   // Intro video - Shotgun Blast sequence
-  INTRO_VIDEO: '/intro/intro.mp4', // Shotgun blast video (mp4 format)
+  INTRO_VIDEO: '/videos/intro.mp4', // Shotgun blast video (mp4 format)
   intro: {
-    shotgun: '/intro/shotgun.mp4', // Shotgun blast video (mp4 format)
+    shotgun: '/videos/intro.mp4', // Shotgun blast video (mp4 format)
   },
   
   // Loading screen images - sepia-toned Western-style photos
