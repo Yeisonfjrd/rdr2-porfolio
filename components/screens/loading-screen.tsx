@@ -193,38 +193,6 @@ export default function LoadingScreen({ onComplete, indefinite = false }: Loadin
       <div className="absolute bottom-0 left-0 right-0" style={{ height: '18%', background: '#000', zIndex: 10 }} />
       <div className="rdr-bar-paint-edge-bottom" style={{ bottom: 'calc(18% - 8px)', zIndex: 11 }} aria-hidden />
 
-      {/* ── Barra de progreso — estilo RDR2 (sin porcentaje) ── */}
-      {!indefinite && (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '18%',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: 'clamp(160px, 30vw, 320px)',
-            zIndex: 20,
-            marginBottom: 8,
-          }}
-        >
-          <div style={{
-            height: 2,
-            background: 'rgba(200,180,130,0.15)',
-            position: 'relative',
-            overflow: 'hidden',
-          }}>
-            <motion.div
-              style={{
-                position: 'absolute',
-                left: 0, top: 0, bottom: 0,
-                background: 'linear-gradient(to right, #bd081a, rgba(254,172,1,0.8))',
-              }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.15, ease: 'linear' }}
-            />
-          </div>
-        </div>
-      )}
-
       {/* ── Tips / info profesional — esquina inferior izquierda ── */}
       <div
         style={{
@@ -268,7 +236,7 @@ export default function LoadingScreen({ onComplete, indefinite = false }: Loadin
       </div>
 
       {/* ── Revólver loader — esquina inferior derecha ── */}
-      <RevolverLoader variant="light" speed={2.5} size={44} />
+      <RevolverLoader variant="light" size={36} />
 
 
 
