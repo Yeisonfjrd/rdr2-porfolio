@@ -1,164 +1,68 @@
 'use client'
-import { motion, useAnimationControls } from 'framer-motion'
 import { useEffect, useRef } from 'react'
+import { motion, useAnimationControls } from 'framer-motion'
 
-interface RevolverLoaderProps {
-  /** 'light' = cream color (on dark backgrounds) | 'dark' = dark brown (on light/sepia backgrounds) */
-  variant?: 'light' | 'dark'
-  /** Seconds per 60° step (one chamber rotation) */
-  stepDuration?: number
+interface RevolverCylinderLoaderProps {
+  variant?: 'light' | 'dark'  
   size?: number
+  pauseMs?: number
 }
 
-/**
- * Revolver cylinder loader with realistic stepped rotation.
- * 
- * Features:
- * - 6 chambers arranged in a circle with flower-like wavy outline
- * - Stepped 60° rotation with spring easing for mechanical feel
- * - Click sound simulation via animation timing
- * 
- * Usage:
- *   <RevolverLoader />                     → cream, 0.8s/step, 48px
- *   <RevolverLoader variant="dark" />      → dark (on sepia backgrounds)
- *   <RevolverLoader stepDuration={1} size={40} />
- */
-export default function RevolverLoader({
+export default function RevolverCylinderLoader({
   variant = 'light',
-  stepDuration = 0.8,
-  size = 48,
-}: RevolverLoaderProps) {
-  const color = variant === 'light' ? '#e8dfc0' : '#1a1208'
-  const shadow = variant === 'light' ? 'drop-shadow(0 0 6px rgba(232,223,192,0.4))' : 'none'
-  const textColor = variant === 'light' ? 'rgba(232,223,192,0.45)' : 'rgba(26,18,8,0.45)'
-  
-  const controls = useAnimationControls()
-  const isMountedRef = useRef(false)
-  const stepRef = useRef(0)
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  size = 36,
+  pauseMs = 480,
+}: RevolverCylinderLoaderProps) {
 
-  // 180° rotation cycle: 0° → 60° → 120° → 180° → reset to 0°
-  const STEPS_PER_CYCLE = 3 // 3 steps of 60° = 180°
-  const PAUSE_BETWEEN_STEPS_MS = 300 // Pause for mechanical "click" feel
+  const fill      = variant === 'light' ? '#e8dfc0' : '#1a1208'
+  const textColor = variant === 'light' ? 'rgba(232,223,192,0.45)' : 'rgba(26,18,8,0.45)'
+  const glow      = variant === 'light' ? 'drop-shadow(0 0 5px rgba(232,223,192,0.35))' : 'none'
+
+  const controls = useAnimationControls()
+  const mounted  = useRef(false)
+  const totalRot = useRef(0)
+  const timer    = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
-    isMountedRef.current = true
+    mounted.current = true
 
-    const animate = async () => {
-      if (!isMountedRef.current) return
-
-      stepRef.current += 1
-      const currentStep = stepRef.current % (STEPS_PER_CYCLE + 1)
-      
-      // Reset rotation after completing 180° cycle
-      const targetRotation = currentStep === 0 ? 0 : currentStep * 60
+    const tick = async () => {
+      if (!mounted.current) return
+      totalRot.current += 60
 
       try {
-        // If resetting to 0, do a quick snap back
-        if (currentStep === 0) {
-          await controls.start({
-            rotate: 0,
-            transition: {
-              duration: 0.1,
-              ease: 'linear',
-            },
-          })
-        } else {
-          await controls.start({
-            rotate: targetRotation,
-            transition: {
-              type: 'spring',
-              stiffness: 300,
-              damping: 20,
-              mass: 0.8,
-            },
-          })
-        }
+        await controls.start({
+          rotate: totalRot.current,
+          transition: { type: 'spring', stiffness: 700, damping: 32, mass: 0.5 },
+        })
       } catch {
         return
       }
 
-      if (isMountedRef.current) {
-        // Add pause between steps for mechanical feel
-        const pauseTime = currentStep === STEPS_PER_CYCLE 
-          ? stepDuration * 1000 // Longer pause after completing 180°
-          : PAUSE_BETWEEN_STEPS_MS
-        
-        timeoutRef.current = setTimeout(() => {
-          animate()
-        }, pauseTime)
-      }
+      if (mounted.current) timer.current = setTimeout(tick, pauseMs)
     }
 
-    animate()
+    tick()
 
     return () => {
-      isMountedRef.current = false
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-      }
+      mounted.current = false
+      if (timer.current) clearTimeout(timer.current)
     }
-  }, [controls, stepDuration])
+  }, [controls, pauseMs])
 
-  // Calculate positions for 6 chambers
-  const chamberPositions = Array.from({ length: 6 }).map((_, i) => {
-    const angleDeg = i * 60 - 90
-    const angleRad = (angleDeg * Math.PI) / 180
-    const cx = 50 + 26 * Math.cos(angleRad)
-    const cy = 50 + 26 * Math.sin(angleRad)
-    return { cx, cy }
+  const ORBIT_R   = 27 
+  const BODY_R    = 18 
+  const CHAMBER_R = 12 
+
+  const chambers = Array.from({ length: 6 }, (_, i) => {
+    const rad = ((i * 60 - 90) * Math.PI) / 180
+    return {
+      cx: 50 + ORBIT_R * Math.cos(rad),
+      cy: 50 + ORBIT_R * Math.sin(rad),
+    }
   })
 
-  // Generate flower-like wavy path for outer edge
-  // This creates the characteristic revolver cylinder shape where
-  // the outline bulges outward around each chamber
-  const generateFlowerPath = () => {
-    const centerX = 50
-    const centerY = 50
-    const chamberRadius = 14 // radius of each chamber bulge
-    const chamberDistance = 26 // distance from center to chamber center
-    const numChambers = 6
-    
-    let path = ''
-    
-    for (let i = 0; i < numChambers; i++) {
-      const angle1 = (i * 60 - 90) * (Math.PI / 180)
-      const angle2 = ((i + 1) * 60 - 90) * (Math.PI / 180)
-      
-      // Outer point of current chamber bulge
-      const outerX = centerX + (chamberDistance + chamberRadius) * Math.cos(angle1)
-      const outerY = centerY + (chamberDistance + chamberRadius) * Math.sin(angle1)
-      
-      // Inner point between chambers (the "waist" of the flower)
-      const midAngle = (angle1 + angle2) / 2
-      const innerRadius = chamberDistance - 2 // How deep the curve goes inward
-      const innerX = centerX + innerRadius * Math.cos(midAngle)
-      const innerY = centerY + innerRadius * Math.sin(midAngle)
-      
-      if (i === 0) {
-        path += `M ${outerX} ${outerY} `
-      }
-      
-      // Bezier curve to inner point
-      const ctrl1X = centerX + (chamberDistance + chamberRadius * 0.5) * Math.cos(angle1 + 0.3)
-      const ctrl1Y = centerY + (chamberDistance + chamberRadius * 0.5) * Math.sin(angle1 + 0.3)
-      
-      path += `Q ${ctrl1X} ${ctrl1Y} ${innerX} ${innerY} `
-      
-      // Next outer point
-      const nextOuterX = centerX + (chamberDistance + chamberRadius) * Math.cos(angle2)
-      const nextOuterY = centerY + (chamberDistance + chamberRadius) * Math.sin(angle2)
-      
-      // Bezier curve to next outer point
-      const ctrl2X = centerX + (chamberDistance + chamberRadius * 0.5) * Math.cos(angle2 - 0.3)
-      const ctrl2Y = centerY + (chamberDistance + chamberRadius * 0.5) * Math.sin(angle2 - 0.3)
-      
-      path += `Q ${ctrl2X} ${ctrl2Y} ${nextOuterX} ${nextOuterY} `
-    }
-    
-    path += 'Z'
-    return path
-  }
+  const maskId = 'revolver-chamber-mask'
 
   return (
     <div
@@ -173,7 +77,6 @@ export default function RevolverLoader({
         pointerEvents: 'none',
       }}
     >
-      {/* Loading label */}
       <span
         style={{
           fontFamily: 'Courier New, monospace',
@@ -187,53 +90,40 @@ export default function RevolverLoader({
         Cargando
       </span>
 
-      {/* Animated cylinder SVG */}
-      <motion.div
-        animate={controls}
-        style={{
-          width: size,
-          height: size,
-          filter: shadow,
-        }}
-      >
+      <motion.div animate={controls} style={{ width: size, height: size, filter: glow }}>
         <svg
           width={size}
           height={size}
           viewBox="0 0 100 100"
           xmlns="http://www.w3.org/2000/svg"
-          fill="none"
         >
-          {/* Flower-like outer edge - wavy cylinder shape */}
-          <path
-            d={generateFlowerPath()}
-            stroke={color}
-            strokeWidth="4"
-            fill="none"
-            strokeLinejoin="round"
-          />
+          <defs>
+            <mask id={maskId}>
 
-          {/* 6 outer chambers arranged in circle */}
-          {chamberPositions.map((pos, i) => (
-            <circle
-              key={`chamber-${i}`}
-              cx={pos.cx}
-              cy={pos.cy}
-              r="10"
-              stroke={color}
-              strokeWidth="4"
-              fill="none"
-            />
-          ))}
+              <rect x="0" y="0" width="100" height="100" fill="white" />
 
-          {/* Center ejector rod hole */}
-          <circle
-            cx="50"
-            cy="50"
-            r="8"
-            stroke={color}
-            strokeWidth="4"
-            fill="none"
-          />
+              {chambers.map((pos, i) => (
+                <circle
+                  key={`mask-hole-${i}`}
+                  cx={pos.cx}
+                  cy={pos.cy}
+                  r={CHAMBER_R}
+                  fill="black"
+                />
+              ))}
+            </mask>
+          </defs>  
+          <g mask={`url(#${maskId})`}>
+            {chambers.map((pos, i) => (
+              <circle
+                key={`lobe-${i}`}
+                cx={pos.cx}
+                cy={pos.cy}
+                r={BODY_R}
+                fill={fill}
+              />
+            ))}
+          </g>
         </svg>
       </motion.div>
     </div>
