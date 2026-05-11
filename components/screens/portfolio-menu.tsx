@@ -1,7 +1,7 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
+
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { cn } from '@/lib/utils'
 
 export type PortfolioInitialSection = 'portfolio' | 'about' | 'contact'
 
@@ -30,6 +30,10 @@ function compendiumFallbackSrc(index: number) {
   return `https://picsum.photos/seed/rdr-compendium-${index}/700/520`
 }
 
+/*
+  PAINT_EDGE_TALL / PAINT_EDGE_SHORT — bordes SVG orgánicos.
+  Solo para el trazo oscuro encima de la imagen, NO afectan los píxeles de la foto.
+*/
 const PAINT_EDGE_TALL =
   'M4,4 C8,1 18,6 34,2 C48,5 60,1 74,4 C88,2 102,6 118,3 C132,5 146,2 162,4 C176,3 188,6 198,4 L198,12 C199,28 197,44 198,60 C199,76 197,92 198,108 C199,124 197,140 198,156 C199,172 197,188 198,204 C199,220 197,236 198,252 L198,266 C190,270 178,265 166,268 C154,270 142,265 130,268 C118,270 106,265 94,268 C82,270 70,265 58,268 C46,270 34,265 22,268 C12,270 6,267 2,266 L2,12 C1,28 3,44 2,60 C1,76 3,92 2,108 C1,124 3,140 2,156 C1,172 3,188 2,204 C1,220 3,236 2,252 Z'
 
@@ -43,21 +47,25 @@ const profileData = {
   ubicacion: 'Buenos Aires · Disponible para trabajar',
   descripcion: 'Desarrollador web con experiencia profesional creando aplicaciones avanzadas: interfaces claras, código mantenible y foco en la experiencia de usuario.',
 }
+
 const projectsData = [
-  { name: 'RoadEra',           tech: 'TypeScript · JavaScript · CSS',  status: 'Completado', year: '2024', blurb: 'Alquiler de coches de lujo: registro, panel admin, reservas en tiempo real y pagos con Stripe; gestión de flota y reservas con buen rendimiento en móvil.' },
-  { name: 'Tesla Clone',       tech: 'JavaScript · HTML · CSS',         status: 'Completado', year: '2023', blurb: 'Clon del sitio oficial de Tesla: animaciones, header dinámico, transiciones de color y scroll; un desafío para acercar el comportamiento al original.' },
+  { name: 'RoadEra', tech: 'TypeScript · JavaScript · CSS', status: 'Completado', year: '2024', blurb: 'Alquiler de coches de lujo: registro, panel admin, reservas en tiempo real y pagos con Stripe; gestión de flota y reservas con buen rendimiento en móvil.' },
+  { name: 'Tesla Clone', tech: 'JavaScript · HTML · CSS', status: 'Completado', year: '2023', blurb: 'Clon del sitio oficial de Tesla: animaciones, header dinámico, transiciones de color y scroll; un desafío para acercar el comportamiento al original.' },
   { name: 'X (Twitter) Clone', tech: 'JavaScript · Node.js · MongoDB', status: 'Completado', year: '2023', blurb: 'Red social tipo X: registro e inicio de sesión, sesiones, cierre de sesión y publicaciones con comentarios sobre una base de datos funcional.' },
 ]
+
 const skillsData = {
   frontend: ['React', 'Next.js', 'TypeScript', 'JavaScript', 'Tailwind CSS'],
   backend:  ['Node.js', 'Express', 'Go', 'PostgreSQL', 'MongoDB', 'Prisma'],
   devops:   ['Docker', 'AWS', 'Git', 'Linux', 'CI/CD'],
 }
+
 const experienceData = [
   { puesto: 'Tecnicatura en Desarrollo de Software', empresa: 'Universidad Provincial de Ezeiza', periodo: '2025 — Actualidad', descripcion: 'Formación en backend, APIs con Node.js y Express, bases de datos con Prisma, JWT/OAuth2, Docker y despliegues en la nube.' },
   { puesto: 'Big O, algoritmos y estructuras de datos', empresa: 'Udemy', periodo: 'Enero 2025', descripcion: 'Optimización con Big O, estructuras como listas y grafos, y preparación para entrevistas técnicas.' },
   { puesto: 'Python · Desarrollo Web 4 · Desarrollo Web 3', empresa: 'Aprende Programando', periodo: '2022 — 2024', descripcion: 'Fundamentos de Python; backend avanzado con APIs REST, PostgreSQL, MongoDB, JWT y React para interfaces dinámicas.' },
 ]
+
 const contactData = {
   email: 'andresfajardo1606@gmail.com',
   github: 'github.com/yeisonfjrd',
@@ -65,17 +73,28 @@ const contactData = {
   disponibilidad: 'Disponible para trabajar',
   social: '@yeisonfajardo',
 }
+
 const SECTION_TO_INDEX: Record<PortfolioInitialSection, number> = {
   portfolio: 1, about: 0, contact: 4,
+}
+
+const FOOTER_LABELS: Record<string, string> = {
+  'PERFIL':      'Información general sobre el desarrollador.',
+  'PROYECTOS':   'Proyectos desarrollados con tecnologías modernas.',
+  'HABILIDADES': 'Stack técnico y herramientas dominadas.',
+  'EXPERIENCIA': 'Formación y recorrido profesional.',
+  'CONTACTO':    'Formas de contacto y disponibilidad.',
 }
 
 export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuProps) {
   const [selectedCategory, setSelectedCategory] = useState(1)
   const [hoveredCategory,  setHoveredCategory]  = useState<number | null>(null)
   const [imgTier, setImgTier] = useState<Record<number, number>>({})
+
   const containerRef    = useRef<HTMLDivElement>(null)
   const contentPanelRef = useRef<HTMLDivElement>(null)
-  const activeCategory  = hoveredCategory !== null ? hoveredCategory : selectedCategory
+
+  const activeCategory = hoveredCategory !== null ? hoveredCategory : selectedCategory
 
   useEffect(() => {
     if (!initialSection) return
@@ -83,11 +102,20 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
     if (idx !== undefined) setSelectedCategory(idx)
   }, [initialSection])
 
+  /*
+    Fix stale closure: onBack se pasa como dependencia para que el handler
+    siempre use la referencia actualizada, sin re-registrar el listener
+    en cada render gracias a useCallback en el componente padre.
+  */
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onBack()
-      else if (e.key === 'ArrowUp')   setSelectedCategory(p => Math.max(0, p - 1))
-      else if (e.key === 'ArrowDown') setSelectedCategory(p => Math.min(categories.length - 1, p + 1))
+      if (e.key === 'Escape') {
+        onBack()
+      } else if (e.key === 'ArrowUp') {
+        setSelectedCategory(p => Math.max(0, p - 1))
+      } else if (e.key === 'ArrowDown') {
+        setSelectedCategory(p => Math.min(categories.length - 1, p + 1))
+      }
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
@@ -96,17 +124,21 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
-    let last = 0
+    let lastWheel = 0
     const handleWheel = (e: WheelEvent) => {
       if (contentPanelRef.current?.contains(e.target as Node)) return
       const now = Date.now()
-      if (now - last < 150) return
-      last = now
+      if (now - lastWheel < 150) return
+      lastWheel = now
       if (e.deltaY > 0) setSelectedCategory(p => Math.min(categories.length - 1, p + 1))
       else              setSelectedCategory(p => Math.max(0, p - 1))
     }
     container.addEventListener('wheel', handleWheel, { passive: true })
     return () => container.removeEventListener('wheel', handleWheel)
+  }, [])
+
+  const handleImgError = useCallback((index: number) => {
+    setImgTier(prev => ({ ...prev, [index]: (prev[index] ?? 0) + 1 }))
   }, [])
 
   const renderContent = () => {
@@ -120,7 +152,7 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
             <p style={{ color: '#8a7860', fontSize: '0.9rem', fontFamily: 'sans-serif' }}>{profileData.titulo}</p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
-            {[['Experiencia', profileData.experiencia], ['Ubicación', profileData.ubicacion]].map(([l, v]) => (
+            {([['Experiencia', profileData.experiencia], ['Ubicación', profileData.ubicacion]] as [string, string][]).map(([l, v]) => (
               <div key={l}>
                 <p style={{ fontFamily: 'Courier New, monospace', fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#3d3428', marginBottom: 4 }}>{l}</p>
                 <p style={{ color: '#b8a888', fontSize: '0.8rem', fontFamily: 'sans-serif' }}>{v}</p>
@@ -183,7 +215,7 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
             <p style={{ fontFamily: 'Courier New, monospace', fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#3d3428', marginBottom: 5 }}>Estado</p>
             <p style={{ fontFamily: 'var(--font-chinese-rocks), Impact, sans-serif', color: '#6a9a6a', letterSpacing: '0.06em' }}>{contactData.disponibilidad}</p>
           </div>
-          {[['Red social', contactData.social], ['Email', contactData.email], ['GitHub', contactData.github], ['LinkedIn', contactData.linkedin]].map(([l, v]) => (
+          {([['Red social', contactData.social], ['Email', contactData.email], ['GitHub', contactData.github], ['LinkedIn', contactData.linkedin]] as [string, string][]).map(([l, v]) => (
             <div key={l}>
               <p style={{ fontFamily: 'Courier New, monospace', fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#3d3428', marginBottom: 3 }}>{l}</p>
               <p style={{ fontSize: '0.82rem', color: '#b8a888', fontFamily: 'sans-serif' }}>{v}</p>
@@ -201,13 +233,23 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
       className="rdr-cinematic-bars fixed inset-0 overflow-hidden"
       style={{ background: '#0c0a07' }}
     >
-      <div className="absolute inset-0 pointer-events-none" style={{
-        background: 'radial-gradient(ellipse 90% 85% at 50% 50%, transparent 55%, rgba(0,0,0,0.6) 100%)',
-        zIndex: 1,
-      }} aria-hidden />
+      {/* Vignette */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        aria-hidden
+        style={{
+          background: 'radial-gradient(ellipse 90% 85% at 50% 50%, transparent 55%, rgba(0,0,0,0.6) 100%)',
+          zIndex: 1,
+        }}
+      />
 
-      <motion.div className="rdr-grain absolute inset-0 pointer-events-none" style={{ zIndex: 2 }}
-        animate={{ opacity: [0.025, 0.05, 0.025] }} transition={{ duration: 4, repeat: Infinity }} />
+      <motion.div
+        className="rdr-grain absolute inset-0 pointer-events-none"
+        aria-hidden
+        style={{ zIndex: 2 }}
+        animate={{ opacity: [0.025, 0.05, 0.025] }}
+        transition={{ duration: 4, repeat: Infinity }}
+      />
 
       <div className="rdr-bar-paint-edge-top"    style={{ top:    'calc(12% - 10px)', zIndex: 22 }} aria-hidden />
       <div className="rdr-bar-paint-edge-bottom" style={{ bottom: 'calc(12% - 10px)', zIndex: 22 }} aria-hidden />
@@ -215,15 +257,15 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
       <div className="relative flex h-full" style={{ zIndex: 30 }}>
 
         {/* ── SIDEBAR ── */}
-        <div
+        <aside
           className="flex-shrink-0 flex flex-col"
           style={{
-            width: 'clamp(200px, 22vw, 270px)',
+            width: 'clamp(160px, 20vw, 270px)',
             background: 'linear-gradient(90deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.15) 100%)',
             borderRight: '1px solid rgba(200,180,130,0.1)',
           }}
         >
-          <div style={{ padding: '20px 22px 16px', borderBottom: '1px solid rgba(200,180,130,0.1)' }}>
+          <div style={{ padding: '20px 18px 16px', borderBottom: '1px solid rgba(200,180,130,0.1)' }}>
             <motion.p
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -237,17 +279,17 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
               onClick={onBack}
               initial={{ opacity: 0, x: -12 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.25, delay: 0.15 }}
-              whileHover={{ x: -4, color: '#c8b898' }}
+              whileHover={{ x: -4 }}
               whileTap={{ scale: 0.98 }}
+              aria-label="Volver al menú anterior"
               style={{ fontFamily: 'Courier New, monospace', fontSize: '0.7rem', letterSpacing: '0.15em', color: '#5a4a38', textTransform: 'uppercase', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
             >
               ← Volver
             </motion.button>
           </div>
 
-          <nav style={{ flex: 1, paddingTop: 8, paddingBottom: 8 }}>
+          <nav aria-label="Secciones del compendio" style={{ flex: 1, paddingTop: 8, paddingBottom: 8 }}>
             {categories.map((cat, index) => {
               const isActive = activeCategory === index
               return (
@@ -255,11 +297,14 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
                   key={cat.id}
                   type="button"
                   className="w-full text-left relative"
+                  aria-label={`Ir a sección ${cat.label}`}
+                  aria-current={selectedCategory === index ? 'page' : undefined}
                   style={{
-                    padding: '11px 22px',
+                    padding: '11px 18px',
                     background: isActive ? 'rgba(255,255,255,0.025)' : 'transparent',
                     border: 'none',
                     cursor: 'pointer',
+                    minHeight: 44, // target táctil cómodo
                   }}
                   onMouseEnter={() => setHoveredCategory(index)}
                   onMouseLeave={() => setHoveredCategory(null)}
@@ -278,7 +323,7 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
                   )}
                   <span style={{
                     fontFamily: 'var(--font-chinese-rocks), Impact, sans-serif',
-                    fontSize: '0.78rem',
+                    fontSize: 'clamp(0.7rem, 1.1vw, 0.78rem)',
                     letterSpacing: '0.12em',
                     textTransform: 'uppercase',
                     color: isActive ? '#e8d8b0' : '#3a3028',
@@ -291,18 +336,18 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
             })}
           </nav>
 
-          <div style={{ padding: '14px 22px', borderTop: '1px solid rgba(200,180,130,0.08)' }}>
+          <div style={{ padding: '14px 18px', borderTop: '1px solid rgba(200,180,130,0.08)' }}>
             {['Scroll para navegar', 'Esc para volver'].map(t => (
               <p key={t} style={{ fontFamily: 'Courier New, monospace', fontSize: '0.6rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#2a2218', marginBottom: 3 }}>{t}</p>
             ))}
           </div>
-        </div>
+        </aside>
 
         {/* ── ÁREA PRINCIPAL ── */}
-        <div
+        <main
           ref={contentPanelRef}
           className="flex-1 flex flex-col overflow-y-auto min-h-0"
-          style={{ padding: 'clamp(14px, 2vw, 28px)' }}
+          style={{ padding: 'clamp(12px, 2vw, 28px)' }}
         >
           <div style={{ marginBottom: 14 }}>
             <h1 style={{
@@ -318,15 +363,37 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
             <div style={{ height: 1, background: 'rgba(200,180,130,0.2)', marginBottom: 16 }} />
           </div>
 
-          {/* ── GRID DE CARDS ── */}
+          {/* ── GRID DE CARDS ──
+              FIX IMAGEN: la imagen va FUERA del paint-wrapper.
+              El paint-wrapper solo contiene el overlay oscuro de vignette
+              → el feDisplacementMap distorsiona los bordes del overlay (efecto pintura)
+              → la imagen queda nítida debajo
+          */}
           <div
             className="shrink-0"
             style={{
               display: 'grid',
-              gridTemplateColumns: '1.45fr 1fr 1fr',
+              /*
+                Responsive:
+                - < 640px:  1 columna (mobile, se ve como lista)
+                - 640-1023: 2 columnas (tablet)
+                - ≥ 1024px: 3 columnas proporcionales (desktop)
+              */
+              gridTemplateColumns: 'var(--compendium-cols, 1.45fr 1fr 1fr)',
               gridTemplateRows: 'auto auto',
               gap: 8,
               marginBottom: 16,
+            }}
+            ref={(el) => {
+              // Aplica grid responsive via ResizeObserver (sin media queries inline)
+              if (!el) return
+              const observer = new ResizeObserver(([entry]) => {
+                const w = entry.contentRect.width
+                if (w < 400) el.style.setProperty('--compendium-cols', '1fr')
+                else if (w < 680) el.style.setProperty('--compendium-cols', '1fr 1fr')
+                else el.style.setProperty('--compendium-cols', '1.45fr 1fr 1fr')
+              })
+              observer.observe(el)
             }}
           >
             {categories.map((cat, index) => {
@@ -340,6 +407,7 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
                   key={cat.id}
                   type="button"
                   aria-label={`Abrir sección ${cat.label}`}
+                  aria-pressed={isActive}
                   onClick={() => setSelectedCategory(index)}
                   onMouseEnter={() => setHoveredCategory(index)}
                   onMouseLeave={() => setHoveredCategory(null)}
@@ -351,61 +419,108 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
                     border: 'none',
                     padding: 0,
                     outline: 'none',
-                    height: isFeatured ? 'clamp(200px, 32vh, 320px)' : 'clamp(90px, 13vh, 145px)',
+                    height: isFeatured ? 'clamp(180px, 30vh, 320px)' : 'clamp(80px, 12vh, 145px)',
+                    minHeight: 44, // target táctil
                   }}
                 >
-                  {/*
-                    ── MARCO ROJO ACTIVO con paint edge ──
-
-                    CAMBIO: en vez de `border` CSS (que queda recto),
-                    usamos `outline` + `filter: url(#rdr-paint-container-active)`.
-                    El displacement filter deforma el outline → borde orgánico tipo pintura.
-                    box-shadow inset da el "gap" oscuro entre foto y marco rojo.
+                  {/* ── MARCO ROJO ACTIVO con paint edge ──
+                      filter solo en este div, NO en el contenedor de la imagen
                   */}
                   {isActive && (
                     <div
                       className="absolute pointer-events-none"
+                      aria-hidden
                       style={{
                         inset: -5,
                         outline: '3px solid #bd081a',
                         outlineOffset: '0px',
                         boxShadow: 'inset 0 0 0 2px rgba(0,0,0,0.8), 0 0 16px rgba(189,8,26,0.4)',
                         zIndex: 10,
-                        /* Paint edge: deforma el outline con feTurbulence → look de pincelada */
                         filter: 'url(#rdr-paint-container-active)',
                       }}
-                      aria-hidden
                     />
                   )}
 
-                  {/* ── FOTO + máscara de borde pintado ── */}
+                  {/*
+                    ── FIX PRINCIPAL: IMAGEN NÍTIDA ──
+
+                    ANTES (borroso):
+                      <div className="rdr-paint-wrapper-sm"> ← filter displacement aquí
+                        <div className="rdr-card-photo-bg">
+                          <img /> ← imagen sufría el filtro → borrosa
+                        </div>
+                      </div>
+
+                    AHORA (nítido):
+                      1. Imagen directa, sin ningún filter wrapper encima
+                      2. Overlay de vignette oscuro DENTRO del paint-wrapper
+                         → el displacement solo distorsiona el gradiente oscuro de los bordes
+                         → borde pintado sin tocar la imagen
+                  */}
+
+                  {/* 1. Imagen: directa, sin filtros de desplazamiento */}
                   <div
-                    className={isFeatured ? 'rdr-paint-wrapper-lg' : 'rdr-paint-wrapper-sm'}
-                    style={{ position: 'absolute', inset: 0 }}
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      overflow: 'hidden',
+                      background: '#1a1410',
+                    }}
                   >
-                    <div
-                      className="rdr-card-photo-bg"
-                      style={{ background: '#1a1410' }}
-                    >
-                      {src && (
-                        <img
-                          src={src}
-                          alt=""
-                          loading="lazy"
-                          decoding="async"
-                          onError={() => setImgTier(prev => ({ ...prev, [index]: (prev[index] ?? 0) + 1 }))}
-                          style={{
-                            position: 'absolute', inset: 0,
-                            width: '100%', height: '100%',
-                            objectFit: 'cover',
-                            filter: 'sepia(75%) contrast(120%) brightness(82%) grayscale(25%) saturate(70%)',
-                          }}
-                        />
-                      )}
-                    </div>
+                    {src && (
+                      <img
+                        src={src}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        onError={() => handleImgError(index)}
+                        style={{
+                          position: 'absolute',
+                          inset: 0,
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          /*
+                            Filtro fotográfico aplicado solo a la imagen (sepia/contraste).
+                            NO es el feDisplacementMap — este es un filter CSS estándar,
+                            no distorsiona píxeles, solo ajusta color.
+                          */
+                          filter: isActive
+                            ? 'sepia(55%) contrast(118%) brightness(85%) grayscale(15%) saturate(75%)'
+                            : 'sepia(78%) contrast(115%) brightness(68%) grayscale(38%) saturate(50%)',
+                          transition: 'filter 0.35s ease, transform 0.35s ease',
+                          transform: hoveredCategory === index ? 'scale(1.04)' : 'scale(1)',
+                        }}
+                      />
+                    )}
                   </div>
 
-                  {/* ── SVG borde pintado a mano ── */}
+                  {/* 2. Overlay de vignette con paint edge (displacement aquí, no en la imagen) */}
+                  <div
+                    className={isFeatured ? 'rdr-paint-wrapper-lg' : 'rdr-paint-wrapper-sm'}
+                    aria-hidden
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      pointerEvents: 'none',
+                      zIndex: 2,
+                    }}
+                  >
+                    {/*
+                      Gradiente oscuro en los bordes: la elipse se desvanece.
+                      El feDisplacementMap del wrapper distorsiona ESTE gradiente
+                      → bordes orgánicos de pintura. La imagen sigue limpia debajo.
+                    */}
+                    <div
+                      style={{
+                        position: 'absolute',
+                        inset: 0,
+                        background: 'radial-gradient(ellipse 88% 85% at 50% 50%, transparent 52%, rgba(12,10,7,0.92) 100%)',
+                      }}
+                    />
+                  </div>
+
+                  {/* 3. SVG borde pintado a mano — encima de todo, sin filtros */}
                   <svg
                     viewBox={isFeatured ? '0 0 200 270' : '0 0 200 130'}
                     preserveAspectRatio="none"
@@ -430,8 +545,9 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
                     />
                   </svg>
 
-                  {/* ── Label inferior ── */}
+                  {/* 4. Label inferior */}
                   <div
+                    aria-hidden
                     style={{
                       position: 'absolute',
                       bottom: 0, left: 0, right: 0,
@@ -452,17 +568,16 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
                     </span>
                   </div>
 
-                  {/* Hover overlay sutil */}
+                  {/* 5. Hover overlay sutil */}
                   {!isActive && (
                     <div
                       className="absolute inset-0 transition-opacity duration-200"
+                      aria-hidden
                       style={{
-                        background: 'rgba(255,255,255,0)',
                         zIndex: 6,
                         opacity: hoveredCategory === index ? 1 : 0,
                         boxShadow: 'inset 0 0 0 1px rgba(200,180,130,0.25)',
                       }}
-                      aria-hidden
                     />
                   )}
                 </button>
@@ -477,7 +592,7 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
               background: 'linear-gradient(160deg, rgba(22,17,11,0.97) 0%, rgba(14,11,7,0.99) 100%)',
               border: '1px solid rgba(200,180,130,0.12)',
               boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.02)',
-              padding: 'clamp(14px, 2vw, 24px)',
+              padding: 'clamp(12px, 2vw, 24px)',
               minHeight: 120,
             }}
           >
@@ -516,14 +631,10 @@ export default function PortfolioMenu({ onBack, initialSection }: PortfolioMenuP
               letterSpacing: '0.04em',
               fontStyle: 'italic',
             }}>
-              {categories[activeCategory].label === 'PERFIL' && 'Información general sobre el desarrollador.'}
-              {categories[activeCategory].label === 'PROYECTOS' && 'Proyectos desarrollados con tecnologías modernas.'}
-              {categories[activeCategory].label === 'HABILIDADES' && 'Stack técnico y herramientas dominadas.'}
-              {categories[activeCategory].label === 'EXPERIENCIA' && 'Formación y recorrido profesional.'}
-              {categories[activeCategory].label === 'CONTACTO' && 'Formas de contacto y disponibilidad.'}
+              {FOOTER_LABELS[categories[activeCategory].label]}
             </p>
           </div>
-        </div>
+        </main>
       </div>
     </div>
   )
