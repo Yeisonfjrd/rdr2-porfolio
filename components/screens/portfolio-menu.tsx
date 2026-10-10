@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-export type PortfolioInitialSection = 'portfolio' | 'about' | 'contact'
+export type PortfolioInitialSection = 'perfil' | 'proyectos' | 'habilidades' | 'experiencia' | 'contacto'
 
 interface PortfolioMenuProps {
   onBack: () => void
@@ -75,7 +75,7 @@ const contactData = {
 }
 
 const SECTION_TO_INDEX: Record<PortfolioInitialSection, number> = {
-  portfolio: 1, about: 0, contact: 4,
+  perfil: 0, proyectos: 1, habilidades: 2, experiencia: 3, contacto: 4,
 }
 
 const FOOTER_LABELS: Record<string, string> = {

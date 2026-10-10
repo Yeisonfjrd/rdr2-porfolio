@@ -46,47 +46,29 @@ export default function RDR2ControlPrompts({
       className={`fixed z-50 flex items-center gap-6 ${positionClasses[position]} ${className}`}
     >
       {prompts.map((prompt, index) => (
-        <div key={index} className="flex items-center gap-2">
-          {/* Key indicator */}
+        // The game shows "Select (x)  Back (o)": the action in the menu font, then the button
+        <div key={index} className="flex items-center gap-2" title={prompt.key}>
           <span
-            className="px-2 py-0.5 text-[10px] font-bold tracking-wider"
-            style={{
-              fontFamily: 'Courier New, monospace',
-              color: '#0d0b08',
-              background: '#e8dfc0',
-              borderRadius: 2,
-              minWidth: 28,
-              textAlign: 'center',
-            }}
-          >
-            {prompt.key}
-          </span>
-          
-          {/* Label */}
-          <span
-            style={{
-              fontFamily: 'Courier New, monospace',
-              fontSize: '0.6rem',
-              letterSpacing: '0.18em',
-              textTransform: 'uppercase',
-              color: 'rgba(138,125,107,0.9)',
-            }}
+            className="font-chinese-rocks uppercase"
+            style={{ fontSize: "clamp(0.8rem, 1vw, 0.95rem)", letterSpacing: "0.06em", color: "rgba(255,255,255,0.88)", textShadow: "0 1px 2px #000" }}
           >
             {prompt.label}
           </span>
-          
-          {/* PlayStation-style icon */}
-          {prompt.icon && (
-            <span
-              style={{
-                fontSize: '0.7rem',
-                color: prompt.icon === 'circle' ? 'rgba(189,8,26,0.7)' : 'rgba(100,149,237,0.7)',
-                marginLeft: 2,
-              }}
-            >
-              {prompt.icon === 'circle' ? '○' : '✕'}
-            </span>
-          )}
+          <span
+            className="inline-flex items-center justify-center rounded-full"
+            style={{
+              minWidth: 22, height: 22, padding: prompt.icon ? 0 : "0 7px",
+              border: "1.5px solid rgba(255,255,255,0.85)",
+              color: "rgba(255,255,255,0.92)",
+              fontSize: prompt.icon ? "0.7rem" : "0.55rem",
+              fontFamily: prompt.icon ? "inherit" : "Arial, sans-serif",
+              fontWeight: 700,
+              letterSpacing: prompt.icon ? 0 : "0.04em",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.6)",
+            }}
+          >
+            {prompt.icon === "circle" ? "○" : prompt.icon === "cross" ? "✕" : prompt.key}
+          </span>
         </div>
       ))}
     </motion.div>
