@@ -69,7 +69,7 @@ const experienceData = [
 const contactData = {
   email: 'andresfajardo1606@gmail.com',
   github: 'github.com/yeisonfjrd',
-  linkedin: 'linkedin.com/in/yeisonfajardo',
+  linkedin: 'linkedin.com/in/yeison-fajardo',
   disponibilidad: 'Disponible para trabajar',
   social: '@yeisonfajardo',
 }
