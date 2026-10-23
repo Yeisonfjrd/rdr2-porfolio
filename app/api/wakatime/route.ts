@@ -41,13 +41,11 @@ function toHoursMinutes(totalMinutes: number): string {
 
 export async function GET() {
   if (!WAKATIME_API_KEY) {
-    // Sin clave configurada → fallback honesto
-    return NextResponse.json({
-      dailyAvgHours: 'N/A',
-      topLanguage:   'TypeScript',
-      topProject:    'N/A',
-      editor:        'VS Code',
-    } satisfies WakaTimeActivityData)
+    // Sin clave no hay datos: mejor "Sin datos" en pantalla que inventar un lenguaje y un editor.
+    return NextResponse.json(
+      { error: 'WakaTime no está configurado' },
+      { status: 503 }
+    )
   }
 
   try {

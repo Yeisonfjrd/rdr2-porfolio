@@ -1,28 +1,39 @@
-# rdr2-porfolio — A Next.js portfolio project
-## Overview
-The rdr2-porfolio project is a web application built with Next.js, utilizing Node.js and npm for package management. This project aims to showcase a portfolio, providing a platform for users to explore and interact with the content. The application is designed to be scalable and maintainable.
+# RDR2 Portfolio · frontend
 
-## Tech Stack
-* Node.js
-* npm
-* Next.js
+My portfolio, built to feel like the menus of Red Dead Redemption 2: a shotgun intro, the title screen, a sepia loading screen and the pause menu, where each item opens a section of the portfolio.
 
-## Prerequisites
-To run this project, you need to have Node.js and npm installed on your machine.
+Next.js 16 (App Router) · React 19 · Tailwind CSS v4 · Framer Motion · TypeScript · pnpm. Live at https://v0-yeison-fajardo-portfolio.vercel.app
 
-## Getting Started
-To get started, clone the repository using `git clone https://github.com/your-username/rdr2-porfolio.git`, then install the dependencies with `npm install`. Configure the project as needed, and run it using `npm run dev`.
+```
+GET  /api/github     public repos, total stars, top language and last push (cached 5 min)
+GET  /api/wakatime   last 7 days of coding: daily average, top language, project, editor (cached 10 min)
+```
 
-## Environment Variables
-| Variable | Default | Description |
-| --- | --- | --- |
-| PORT | 3000 | The port number the application runs on |
+## How it works
 
-## API Reference
-Not applicable for this project.
+- **One page, a screen state machine.** `app/page.tsx` switches between `title`, `main` and `portfolio` with React state. The shotgun intro plays once per browser session (`sessionStorage` key `rdr2_intro_played`). The loading screen only shows if a transition takes longer than 200 ms, and then it stays at least 2 s so it does not flash.
+- **The look is CSS and SVG, not images.** The red dry-brush column and the torn edges are SVG filters (`#rdr-paint-sm`, `#rdr-paint-lg`, in `components/screens/rdr-filters.tsx`) applied with `filter: url(...)`. The palette lives in `app/globals.css` (crimson `#bd081a`, gold `#feac01`, sepia), with the Chinese Rocks font for menu items and Crimson Text for body copy.
+- **Pause menu.** Perfil, Proyectos, Habilidades, Experiencia, Contacto, Actividad and Salir. A pocket watch shows the real time.
+- **API keys stay on the server.** The Actividad screen calls the two route handlers above, which talk to GitHub and WakaTime. The tokens never reach the browser. Without a WakaTime key the endpoint answers 503 and the screen says "Sin datos" instead of showing made-up numbers.
 
-## Testing
-To run tests, use the command `npm run test`. This will execute the test suite and report any failures.
+## Running it
 
-## Contributing
-Contributions to the rdr2-porfolio project are welcome. If you're interested in contributing, please fork the repository, make your changes, and submit a pull request. Ensure your changes are properly tested and follow the existing code style and conventions.
+```bash
+pnpm install
+pnpm dev
+```
+
+With pnpm 11, `pnpm dev` stops on ignored build scripts (msw, sharp). Approve them with `pnpm approve-builds`, or run `node node_modules/next/dist/bin/next dev`.
+
+Environment variables (all optional):
+
+- `GITHUB_USERNAME` (default `yeisonfjrd`)
+- `GITHUB_TOKEN` (without it, GitHub allows 60 requests per hour)
+- `WAKATIME_API_KEY`
+
+## Things I'd change
+
+- `next.config.mjs` has `typescript.ignoreBuildErrors: true`, so a type error does not fail the build, and CI only runs `pnpm build`. Fix: remove the flag and add `tsc --noEmit` to CI.
+- There are no tests yet, even though Vitest, Testing Library and MSW are installed. The two API routes are the first thing worth testing, with MSW faking GitHub and WakaTime.
+- The project started from a v0 scaffold: `components/ui` has 58 components and the screens import 2 of them (`rdr` and `toast`), so most Radix dependencies in `package.json` are unused. The package is still named `my-project`.
+- `/api/github` reads only the first 100 repos (`per_page=100`). That is fine with 29 public repos, but stars and top language would be off past 100.
